@@ -2,13 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/pick_evnt"
+        android:icon="@drawable/ic_local_offer_black_24dp"
+        android:title="@string/menu_pick"/>
+
+    <item
         android:id="@+id/browse_evnt"
         android:icon="@drawable/ic_search_black_24dp"
         android:title="@string/menu_browse"/>
 
     <item
         android:id="@+id/chat_evnt"
-        android:icon="@drawable/ic_person_pin_black_24dp"
+        android:icon="@drawable/ic_chat_black_24dp"
         android:title="@string/menu_chat"/>
 
     <item

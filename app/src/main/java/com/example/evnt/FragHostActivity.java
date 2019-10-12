@@ -18,7 +18,7 @@ public class FragHostActivity extends AppCompatActivity {
         bottomNav.setOnNavigationItemSelectedListener(listener);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                new BrowseFragment()).commit();
+                new PickEvntFragment()).commit();
 
     }
 
@@ -28,6 +28,10 @@ public class FragHostActivity extends AppCompatActivity {
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                     Fragment selected = null;
                     switch (menuItem.getItemId()) {
+                        case R.id.pick_evnt:
+                            selected = new PickEvntFragment();
+                            break;
+
                         case R.id.browse_evnt:
                             selected = new BrowseFragment();
                             break;
@@ -42,10 +46,6 @@ public class FragHostActivity extends AppCompatActivity {
 
                         case R.id.profile_evnt:
                             selected = new ProfileFragment();
-                            break;
-
-                        default:
-                            selected = new BrowseFragment();
                             break;
                     }
 

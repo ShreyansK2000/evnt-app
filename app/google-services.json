@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1041793232852",
+    "firebase_url": "https://evnt-69062.firebaseio.com",
+    "project_id": "evnt-69062",
+    "storage_bucket": "evnt-69062.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1041793232852:android:943bc9790703b89cd8b041",
+        "android_client_info": {
+          "package_name": "com.example.evnt"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1041793232852-930905pb2q9tsm1idikcpqoe524bgqrs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.evnt",
+            "certificate_hash": "7b8db83f0cb302ab09bc37f19f6f87def5cfbdb2"
+          }
+        },
+        {
+          "client_id": "1041793232852-2jsa1n6ittgicprmojocvnkrt7ma8c47.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfJmEwgDwnunrf8R7kKj6FTXtGxP-y58Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1041793232852-2jsa1n6ittgicprmojocvnkrt7ma8c47.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

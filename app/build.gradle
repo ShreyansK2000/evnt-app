@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.example.evnt"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -32,6 +32,8 @@ dependencies {
 //    implementation 'com.google.firebase:firebase-core:16.0.8'
 //    implementation 'com.google.firebase:firebase-messaging:17.3.4'
     implementation 'com.google.firebase:firebase-messaging:20.0.0'
+    implementation 'com.android.volley:volley:1.1.1'
+    implementation 'de.hdodenhof:circleimageview:3.0.1'
 
 //    api 'com.google.android.material:material:1.1.0-alpha06'
 }

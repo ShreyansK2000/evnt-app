@@ -25,6 +25,7 @@ public class FragHostActivity extends AppCompatActivity {
     protected String name, email, id, tokenString;
     protected AccessToken loginAccessToken;
     protected Bundle serverCommArgs;
+    protected ServerRequestModule serverRequestModule;
     private final String TAG = "FragHostActivity";
 
     @Override
@@ -46,6 +47,7 @@ public class FragHostActivity extends AppCompatActivity {
         System.out.println(tokenString);
         System.out.println(loginAccessToken);
 
+        serverRequestModule = new ServerRequestModule();
 
         GraphRequest request = GraphRequest.newMeRequest(loginAccessToken, new GraphRequest.GraphJSONObjectCallback() {
             @Override
@@ -71,6 +73,7 @@ public class FragHostActivity extends AppCompatActivity {
                     serverCommArgs.putString("profilePicURI", profilePicURI.toString());
                     serverCommArgs.putString("name", name);
                     serverCommArgs.putString("email", email);
+                    serverCommArgs.putSerializable("requestModule", serverRequestModule);
 
                     Fragment selected = new PickEvntFragment();
                     selected.setArguments(serverCommArgs);

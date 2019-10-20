@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+// TODO see if we need to add more specific information to include in a search profile (date, time, tag)
 public class PickEvntFragment extends Fragment {
 
     // save the result from the selected item in the spinner
@@ -34,6 +35,7 @@ public class PickEvntFragment extends Fragment {
             public void onClick(View view)
             {
                 Toast.makeText(getContext(), spinnerString, Toast.LENGTH_LONG).show();
+                // TODO server calls, open new fragment with event information.
                 // get most likely even logic here, maybe even create a new fragment on top
                 // of this one to show the result
 

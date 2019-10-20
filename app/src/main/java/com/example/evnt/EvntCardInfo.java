@@ -2,6 +2,13 @@ package com.example.evnt;
 
 import java.io.Serializable;
 
+/**
+ * Stores the information about a given event, images are
+ * currently stored as drawable IDs
+ *
+ * TODO figure out how to store images associated with events using server calls (cache?)
+ * TODO figure out how to get location and such to show map snippet
+ */
 public class EvntCardInfo implements Serializable {
 
 

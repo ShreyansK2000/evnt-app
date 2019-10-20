@@ -1,13 +1,23 @@
 package com.example.evnt;
 
+import android.content.Context;
 import android.content.Intent;
 import androidx.annotation.NonNull;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
@@ -27,11 +37,37 @@ public class FragHostActivity extends AppCompatActivity {
     protected Bundle serverCommArgs;
     protected ServerRequestModule serverRequestModule;
     private final String TAG = "FragHostActivity";
+    private final String APIs = "api.evnt.me/";
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_frag_host);
+        context = this;
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url ="https://api.evnt.me/events";
+
+// Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(TAG, response);
+                        // Display the first 500 characters of the response string.
+                        Toast.makeText(context, "Response is: "+ response, Toast.LENGTH_LONG).show();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, error.toString());
+                Toast.makeText(context, "didnt work!!!!!", Toast.LENGTH_LONG).show();
+            }
+        });
+
+// Add the request to the RequestQueue.
+        queue.add(stringRequest);
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
         bottomNav.setOnNavigationItemSelectedListener(listener);
@@ -96,28 +132,28 @@ public class FragHostActivity extends AppCompatActivity {
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener listener =
-            new BottomNavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                    Fragment selected = null;
-                    switch (menuItem.getItemId()) {
-                        case R.id.pick_evnt:  selected = new PickEvntFragment(); break;
-                        case R.id.browse_evnt: selected = new BrowseFragment(); break;
-                        case R.id.chat_evnt: selected = new ChatFragment(); break;
-                        case R.id.another_evnt: selected = new OtherFragment(); break;
-                        case R.id.profile_evnt: selected = new ProfileFragment(); break;
-                        default: selected = new PickEvntFragment(); break;
-                    }
-
-                    try {
-                        selected.setArguments(serverCommArgs);
-                    } catch (NullPointerException e){
-                        System.out.println(e.getStackTrace());
-                    }
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                            selected).commit();
-
-                    return true;
+        new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                Fragment selected = null;
+                switch (menuItem.getItemId()) {
+                    case R.id.pick_evnt:  selected = new PickEvntFragment(); break;
+                    case R.id.browse_evnt: selected = new BrowseFragment(); break;
+                    case R.id.chat_evnt: selected = new ChatFragment(); break;
+                    case R.id.another_evnt: selected = new HostingEventsFragment(); break;
+                    case R.id.profile_evnt: selected = new ProfileFragment(); break;
+                    default: selected = new PickEvntFragment(); break;
                 }
-            };
+
+                try {
+                    selected.setArguments(serverCommArgs);
+                } catch (NullPointerException e){
+                    System.out.println(e.getStackTrace());
+                }
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        selected).commit();
+
+                return true;
+            }
+        };
 }

@@ -12,7 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-
+// TODO setup ALL api requests;
 public class ServerRequestModule implements Serializable {
     private static final String url = "https://api.evnt.me";
     private String resultString;

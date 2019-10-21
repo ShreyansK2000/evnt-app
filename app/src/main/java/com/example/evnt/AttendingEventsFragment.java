@@ -49,7 +49,8 @@ public class AttendingEventsFragment extends Fragment {
         }
 
         // TODO server call for user's registered events here
-        loadList();
+        evntlist = new ArrayList<>();
+//        loadList();
     }
 
     /**
@@ -85,10 +86,10 @@ public class AttendingEventsFragment extends Fragment {
      *
      * TODO need to modify the params and use them to build arraylist
      */
-    private void loadList() {
-        evntlist = new ArrayList<>();
-        evntlist.add(new EvntCardInfo("here", "This is the event name", "Shrek", "11-1", "desc - doing stuff", R.drawable.shreyans_profile));
-        evntlist.add(new EvntCardInfo("there", "This is the event also", "Tito", "3-5", "321 assignment", R.drawable.tito_profile));
-        evntlist.add(new EvntCardInfo("my place", "This is the event tooo", "Leslie", "8-10", "chillin", R.drawable.leslie_profile));
-    }
+//    private void loadList() {
+//        evntlist = new ArrayList<>();
+//        evntlist.add(new EvntCardInfo("here", "This is the event name", "Shrek", "11-1", "desc - doing stuff", R.drawable.shreyans_profile));
+//        evntlist.add(new EvntCardInfo("there", "This is the event also", "Tito", "3-5", "321 assignment", R.drawable.tito_profile));
+//        evntlist.add(new EvntCardInfo("my place", "This is the event tooo", "Leslie", "8-10", "chillin", R.drawable.leslie_profile));
+//    }
 }

@@ -2,10 +2,13 @@ package com.example.evnt;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -16,20 +19,34 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class HostingEventsFragment extends Fragment {
 
     private final String TAG = "BrowseFragment";
-    private static final String DESCRIBABLE_KEY = "describable_key";
-    private ServerRequestModule mServerRequestModule;
     private Context context;
     private RecyclerView recyclerView;
     private EvntHostListAdapter evntHostListAdapter;
-    private Button create_event_button;
+    private FloatingActionButton create_event_button;
 
     List<EvntCardInfo> evntlist;
+
+    private IdentProvider ident;
+    Fragment ctx;
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -46,14 +63,11 @@ public class HostingEventsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        try {
-            mServerRequestModule = (ServerRequestModule) getArguments().getSerializable("serverRequestModule");
-        } catch (NullPointerException e) {
-            e.getStackTrace();
-        }
+        ident = new IdentProvider(getContext());
+        ctx = this;
 
         // TODO server call for user's hosted/ing events here
+        evntlist = new ArrayList<>();
         loadList();
     }
 
@@ -73,44 +87,42 @@ public class HostingEventsFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_hosting_events,
                 container, false);
 
-        create_event_button = (Button) view.findViewById(R.id.create_event);
+        create_event_button = view.findViewById(R.id.create_event);
         create_event_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                LayoutInflater inflater1 = getLayoutInflater();
-                View layout = inflater1.inflate(R.layout.create_event_layout, container);
-                final EditText nameBox = (EditText) layout.findViewById(R.id.event_name_field);
-                final EditText descBox = (EditText) layout.findViewById(R.id.event_desc_field);
-                final EditText start = (EditText) layout.findViewById(R.id.start_time_field);
-                final EditText end = (EditText) layout.findViewById(R.id.end_time_field);
-                final EditText tags = (EditText) layout.findViewById(R.id.tags_name_field);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
+                WebView wv = new WebView(getContext()) {
+                    @Override
+                    protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
+                        super.onFocusChanged(true, direction, previouslyFocusedRect);
+                    }
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-
-                builder.setTitle("Create an Event")
-                        .setMessage("Please fill in the following information")
-                        .setView(layout)
-
-                        // Specifying a listener allows you to take an action before dismissing the dialog.
-                        // The dialog is automatically dismissed when a dialog button is clicked.
-                        .setPositiveButton("CREATE", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Continue with delete operation
-                                // TODO api call to save from here
-                            }
-                        })
-
-                        // A null listener allows the button to dismiss the dialog and take no further action.
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // don't do anything
-                                dialog.dismiss();
-                            }
-                        }).show();
-
+                    @Override
+                    public boolean onCheckIsTextEditor() {
+                        return true;
+                    }
+                };
+                wv.getSettings().setJavaScriptEnabled(true);
+                wv.loadUrl(getString(R.string.event_create) + ident.getValue(getString(R.string.user_id)));
+                wv.setWebViewClient(new WebViewClient() {
+                    @Override
+                    public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                        view.loadUrl(url);
+                        return false;
+                    }
+                });
+                builder.setView(wv);
+                builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        loadList();
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
             }
         });
 
@@ -132,16 +144,42 @@ public class HostingEventsFragment extends Fragment {
      * TODO need to modify the params and use them to build arraylist
      */
     private void loadList() {
-        evntlist = new ArrayList<>();
-        evntlist.add(new EvntCardInfo("here", "This is the event name", "Shrek", "11-1", "desc - doing stuff", R.drawable.shreyans_profile));
-        evntlist.add(new EvntCardInfo("there", "This is the event also", "Tito", "3-5", "321 assignment", R.drawable.tito_profile));
-        evntlist.add(new EvntCardInfo("my place", "This is the event tooo", "Leslie", "8-10", "chillin", R.drawable.leslie_profile));
-    }
+        evntlist.clear();
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        String url = getString(R.string.event_get_in) + ident.getValue(getString(R.string.user_id));
+        StringRequest stringBodyRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject res = new JSONObject(response);
+                            JSONArray data = res.getJSONArray("data");
 
-//    public static View.OnClickListener editButtonClicked = new View.OnClickListener() {
-//        @Override
-//        public void onClick(View v) {
-//            getActivity().getLayoutInflater();
-//        }
-//    };
+                            for (int i = 0; i < data.length(); i++) {
+                                JSONObject obj = data.getJSONObject(i);
+                                EvntCardInfo evnt = new EvntCardInfo.Builder()
+                                        .withName((String)obj.get("name"))
+                                        .withDescription((String)obj.get("description"))
+                                        .withTime((String)obj.get("start_time"))
+                                        .build();
+
+                                evntlist.add(evnt);
+                            }
+
+                            // TODO This is a hack to refresh the view, so we redraw the list
+                            getFragmentManager().beginTransaction().detach(ctx).attach(ctx).commit();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Fail
+                    }
+                }
+        );
+        queue.add(stringBodyRequest);
+    }
 }

@@ -5,8 +5,27 @@
     <string name="menu_pick">Choose</string>
     <string name="menu_browse">Browse</string>
     <string name="menu_chat">Chat</string>
-    <string name="menu_phone">Phone</string>
+    <string name="menu_phone">My Events</string>
     <string name="menu_profile">Profile</string>
     <string name="by_browse_nuance">by </string>
     <string name="you_the_host">by you</string>
+
+    <!-- Cached ident props -->
+    <string name="fb_id">facebook_id</string>
+    <string name="user_id">user_id</string>
+    <string name="access_token">access_token</string>
+    <string name="token">token</string>
+    <string name="profile_pic">profile_img_url</string>
+    <string name="user_name">user_name</string>
+    <string name="user_email">user_email</string>
+
+    <!-- API URLs-->
+    <string name="oauth_endpoint">https://api.evnt.me/users/oauth</string>
+    <string name="event_get_in">https://api.evnt.me/events/api/in/</string>
+    <string name="event_get_avail">https://api.evnt.me/events/api/avail/</string>
+    <string name="event_create">https://api.evnt.me/events/create/</string>
+
+    <!-- Notifs TODO -->
+    <string name="default_notification_channel_name">event</string>
+    <string name="default_notification_channel_id">fcm_event_channel</string>
 </resources>

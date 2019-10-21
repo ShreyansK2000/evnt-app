@@ -19,20 +19,33 @@ import com.facebook.login.widget.ProfilePictureView;
 // TODO decide what items we need to show here and what functionality.
 public class ProfileFragment extends Fragment {
 
-    private CallbackManager callbackManager;
     private final String TAG = "ProfileFragment";
     private String name, id, email, profilePicURI;
     private LoginButton logoutButton;
     private ProfilePictureView PPView;
     private AppCompatTextView NameTV;
 
+    private IdentProvider ident;
+
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        profilePicURI = getArguments().getString("profilePicURI");
-        id = getArguments().getString("id");
-        name = getArguments().getString("name");
-        email = getArguments().getString("email");
+        ident = new IdentProvider(getContext());
+        String userId = ident.getValue(getString(R.string.user_id));
+        profilePicURI = ident.getValue(getString(R.string.profile_pic));
+        id = ident.getValue(getString(R.string.fb_id));
+        name = ident.getValue(getString(R.string.user_name));
+        email = ident.getValue(getString(R.string.user_email));
+//        profilePicURI = getArguments().getString("profilePicURI");
+//        id = getArguments().getString("id");
+//        name = getArguments().getString("name");
+//        email = getArguments().getString("email");
     }
 
     @Nullable
@@ -46,7 +59,6 @@ public class ProfileFragment extends Fragment {
         NameTV = (AppCompatTextView) view.findViewById(R.id.name_tv);
         NameTV.setText(name);
 
-        callbackManager = CallbackManager.Factory.create();
         logoutButton = (LoginButton) view.findViewById(R.id.logout_button);
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
@@ -54,6 +66,11 @@ public class ProfileFragment extends Fragment {
             public void onClick(View v) {
                 LoginManager.getInstance().logOut();
                 Intent intent = new Intent(getActivity(), MainActivity.class);
+                ident.setValue(getString(R.string.profile_pic), null);
+                ident.setValue(getString(R.string.fb_id), null);
+                ident.setValue(getString(R.string.user_name), null);
+                ident.setValue(getString(R.string.user_email), null);
+                ident.setValue(getString(R.string.user_id), null);
                 startActivity(intent);
                 getActivity().finish();
             }

@@ -71,7 +71,7 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
 
         holder.event_img_iv.setImageDrawable(context.getDrawable(evntInfo.getImage()));
 
-        final Button editButton = holder.editButton;
+//        final Button editButton = holder.editButton;
 
 //        editButton.setOnClickListener(HostingEventsFragment.editButtonClicked);
 

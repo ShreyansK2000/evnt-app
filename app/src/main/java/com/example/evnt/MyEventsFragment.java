@@ -12,6 +12,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +34,9 @@ public class MyEventsFragment extends Fragment {
     private Context context;
     private RecyclerView recyclerView;
     private EvntListAdapter evntListAdapter;
+
+    private IdentProvider ident;
+    Fragment ctx;
 
     List<EvntCardInfo> evntlist;
 
@@ -41,14 +55,11 @@ public class MyEventsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        try {
-            mServerRequestModule = (ServerRequestModule) getArguments().getSerializable("serverRequestModule");
-        } catch (NullPointerException e) {
-            e.getStackTrace();
-        }
+        ctx = this;
+        ident = new IdentProvider(getContext());
 
         // TODO server call for user's registered events here
+        evntlist = new ArrayList<>();
         loadList();
     }
 
@@ -68,7 +79,7 @@ public class MyEventsFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_my_events,
                 container, false);
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.evnt_list_recycler);
+        recyclerView = view.findViewById(R.id.evnt_list_recycler);
         recyclerView.setHasFixedSize(true);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -86,9 +97,41 @@ public class MyEventsFragment extends Fragment {
      * TODO need to modify the params and use them to build arraylist
      */
     private void loadList() {
-        evntlist = new ArrayList<>();
-        evntlist.add(new EvntCardInfo("here", "This is the event name", "Shrek", "11-1", "desc - doing stuff", R.drawable.shreyans_profile));
-        evntlist.add(new EvntCardInfo("there", "This is the event also", "Tito", "3-5", "321 assignment", R.drawable.tito_profile));
-        evntlist.add(new EvntCardInfo("my place", "This is the event tooo", "Leslie", "8-10", "chillin", R.drawable.leslie_profile));
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        String url = getString(R.string.event_get_in) + ident.getValue(getString(R.string.user_id));
+        StringRequest stringBodyRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject res = new JSONObject(response);
+                            JSONArray data = res.getJSONArray("data");
+
+                            for (int i = 0; i < data.length(); i++) {
+                                JSONObject obj = data.getJSONObject(i);
+                                EvntCardInfo evnt = new EvntCardInfo.Builder()
+                                        .withName((String)obj.get("name"))
+                                        .withDescription((String)obj.get("description"))
+                                        .withTime((String)obj.get("start_time"))
+                                        .build();
+
+                                evntlist.add(evnt);
+                            }
+
+                            // TODO This is a hack to refresh the view, so we redraw the list
+                            getFragmentManager().beginTransaction().detach(ctx).attach(ctx).commit();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Fail
+                    }
+                }
+        );
+        queue.add(stringBodyRequest);
     }
 }

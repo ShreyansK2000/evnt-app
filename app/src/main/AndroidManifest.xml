@@ -23,9 +23,36 @@
             </intent-filter>
         </activity>
 
+        <service
+            android:name=".FirebaseMessagingServiceHandler"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <meta-data
+            android:name="com.example.evnt.default_notification_icon"
+            android:resource="@drawable/chika" />
+        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <meta-data
+            android:name="com.example.evnt.default_notification_color"
+            android:resource="@color/colorAccent" />
+
+        <meta-data
+            android:name="com.example.evnt.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id" />
+
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
+
+        <meta-data android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
+            android:value="false"/>
+        <meta-data android:name="com.facebook.sdk.AdvertiserIDCollectionEnabled"
+            android:value="false"/>
 
         <activity
             android:name="com.facebook.FacebookActivity"

@@ -31,102 +31,59 @@ import java.net.URL;
 
 public class FragHostActivity extends AppCompatActivity {
 
-    protected URL profilePicURI;
-    protected String name, email, id, tokenString;
-    protected AccessToken loginAccessToken;
     protected Bundle serverCommArgs;
-    protected ServerRequestModule serverRequestModule;
     private final String TAG = "FragHostActivity";
-    private final String APIs = "api.evnt.me/";
-    private Context context;
+
+    private IdentProvider ident;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_frag_host);
-        context = this;
-
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url ="https://api.evnt.me/events";
-
-// Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d(TAG, response);
-                        // Display the first 500 characters of the response string.
-                        Toast.makeText(context, "Response is: "+ response, Toast.LENGTH_LONG).show();
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, error.toString());
-                Toast.makeText(context, "didnt work!!!!!", Toast.LENGTH_LONG).show();
-            }
-        });
-
-// Add the request to the RequestQueue.
-        queue.add(stringRequest);
+        ident = new IdentProvider(this);
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
         bottomNav.setOnNavigationItemSelectedListener(listener);
+        bottomNav.setSelectedItemId(R.id.pick_evnt);
 
         Intent intent = getIntent();
-        System.out.println(intent);
         Bundle extras = intent.getExtras();
-        System.out.println(extras);
 
-        tokenString = extras.getString("Token");
-        loginAccessToken = extras.getParcelable("AccessToken");
+        if (intent.hasExtra("accessToken")) {
+            final AccessToken loginAccessToken = extras.getParcelable("accessToken");
+            retrieveFBUserDetails(loginAccessToken);
+        }
+    }
 
-        System.out.println(tokenString);
-        System.out.println(loginAccessToken);
-
-        serverRequestModule = new ServerRequestModule();
-
-        GraphRequest request = GraphRequest.newMeRequest(loginAccessToken, new GraphRequest.GraphJSONObjectCallback() {
+    private void retrieveFBUserDetails(final AccessToken token) {
+//        final ServerRequestModule serverRequestModule = new ServerRequestModule();
+        GraphRequest request = GraphRequest.newMeRequest(token, new GraphRequest.GraphJSONObjectCallback() {
             @Override
             public void onCompleted(JSONObject object, GraphResponse response) {
                 try {
 
                     // retrieve relevant Facebook account information for use in the main activity,
                     // and send it in the intent
-                    profilePicURI = new URL("https://graph.facebook.com/"+object.getString("id")+"/picture?width=250&height=250");
-
-                    //keep for profile page
-                    name = object.getString("first_name");
-                    email = object.getString("email");
+                    String id, name, email;
                     id = object.getString("id");
-
-                    Log.d(TAG, profilePicURI.toString());
-                    Log.d(TAG, name);
-                    Log.d(TAG, email);
-
-                    // async request so we have to do this inside
-                    serverCommArgs = new Bundle();
-                    serverCommArgs.putString("id", id);
-                    serverCommArgs.putString("profilePicURI", profilePicURI.toString());
-                    serverCommArgs.putString("name", name);
-                    serverCommArgs.putString("email", email);
-                    serverCommArgs.putSerializable("requestModule", serverRequestModule);
-
-                    Fragment selected = new PickEvntFragment();
-                    selected.setArguments(serverCommArgs);
-
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                            selected).commit();
-                } catch(MalformedURLException e) {
-                    e.printStackTrace();
+                    name = object.getString("name");
+                    email = object.getString("email");
+                    URL profilePicURI = new URL("https://graph.facebook.com/"+object.getString("id")+"/picture?width=250&height=250");
+                    //keep for profile page
+                    ident.setValue(getString(R.string.user_name), name);
+                    ident.setValue(getString(R.string.user_email), email);
+                    ident.setValue(getString(R.string.fb_id), id);
+                    ident.setValue(getString(R.string.profile_pic), profilePicURI.toString());
                 } catch(JSONException e) {
                     e.printStackTrace();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
                 }
-
             }
         });
 
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "id, email, first_name");
+        parameters.putString("fields", "id,name,email");
         request.setParameters(parameters);
         request.executeAsync();
     }
@@ -135,7 +92,7 @@ public class FragHostActivity extends AppCompatActivity {
         new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                Fragment selected = null;
+                Fragment selected;
                 switch (menuItem.getItemId()) {
                     case R.id.pick_evnt:  selected = new PickEvntFragment(); break;
                     case R.id.browse_evnt: selected = new BrowseFragment(); break;
@@ -148,7 +105,7 @@ public class FragHostActivity extends AppCompatActivity {
                 try {
                     selected.setArguments(serverCommArgs);
                 } catch (NullPointerException e){
-                    System.out.println(e.getStackTrace());
+                    e.printStackTrace();
                 }
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         selected).commit();

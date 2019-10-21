@@ -1,6 +1,7 @@
 package com.example.evnt;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,9 +14,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -24,20 +22,24 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import java.io.IOException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class BrowseFragment extends Fragment {
 
     private final String TAG = "BrowseFragment";
-    private static final String DESCRIBABLE_KEY = "describable_key";
-    private ServerRequestModule mServerRequestModule;
     private Context context;
     private RecyclerView recyclerView;
     private EvntListAdapter evntListAdapter;
 
+    private IdentProvider ident;
+
     List<EvntCardInfo> evntlist;
+    Fragment ctx;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -54,39 +56,10 @@ public class BrowseFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        try {
-            mServerRequestModule = (ServerRequestModule) getArguments().getSerializable("serverRequestModule");
-        } catch (NullPointerException e) {
-            e.getStackTrace();
-        }
-
-        // TODO server call here for initial events?
-        RequestQueue queue = Volley.newRequestQueue(getActivity());
-        String url ="https://api.evnt.me/events";
-
-// Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Log.d(TAG, response);
-                        // Display the first 500 characters of the response string.
-                        Toast.makeText(context, "Response is: "+ response, Toast.LENGTH_LONG).show();
-                        loadList(response);
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, error.toString());
-                Toast.makeText(context, "didnt work, no evnets to show!!!!!", Toast.LENGTH_LONG).show();
-                loadList();
-            }
-        });
-
-// Add the request to the RequestQueue.
-        queue.add(stringRequest);
-
+        ctx = this;
+        ident = new IdentProvider(getContext());
+        evntlist = new ArrayList<>();
+        loadList();
     }
 
     /**
@@ -105,7 +78,7 @@ public class BrowseFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_browse,
                 container, false);
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.evnt_list_recycler);
+        recyclerView = view.findViewById(R.id.evnt_list_recycler);
         recyclerView.setHasFixedSize(true);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -123,16 +96,41 @@ public class BrowseFragment extends Fragment {
      * TODO need to modify the params and use them to build arraylist
      */
     private void loadList() {
-        evntlist = new ArrayList<>();
-        evntlist.add(new EvntCardInfo("here", "This is the event name", "Shrek", "11-1", "desc - doing stuff", R.drawable.shreyans_profile));
-        evntlist.add(new EvntCardInfo("there", "This is the event also", "Tito", "3-5", "321 assignment", R.drawable.tito_profile));
-        evntlist.add(new EvntCardInfo("my place", "This is the event tooo", "Leslie", "8-10", "chillin", R.drawable.leslie_profile));
-    }
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        String url = getString(R.string.event_get_avail) + ident.getValue(getString(R.string.user_id));
+        StringRequest stringBodyRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject res = new JSONObject(response);
+                            JSONArray data = res.getJSONArray("data");
 
-    private void loadList(String events) {
-        evntlist = new ArrayList<>();
-        evntlist.add(new EvntCardInfo("here", "This is the event name", "Shrek", "11-1", "desc - doing stuff", R.drawable.shreyans_profile));
-        evntlist.add(new EvntCardInfo("there", "This is the event also", "Tito", "3-5", "321 assignment", R.drawable.tito_profile));
-        evntlist.add(new EvntCardInfo("my place", "This is the event tooo", "Leslie", "8-10", "chillin", R.drawable.leslie_profile));
+                            for (int i = 0; i < data.length(); i++) {
+                                JSONObject obj = data.getJSONObject(i);
+                                EvntCardInfo evnt = new EvntCardInfo.Builder()
+                                        .withName((String)obj.get("name"))
+                                        .withDescription((String)obj.get("description"))
+                                        .withTime((String)obj.get("start_time"))
+                                        .build();
+
+                                evntlist.add(evnt);
+                            }
+
+                            // TODO This is a hack to refresh the view, so we redraw the list
+                            getFragmentManager().beginTransaction().detach(ctx).attach(ctx).commit();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Fail
+                    }
+                }
+        );
+        queue.add(stringBodyRequest);
     }
 }

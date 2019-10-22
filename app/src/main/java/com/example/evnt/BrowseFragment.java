@@ -9,6 +9,7 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,11 +30,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BrowseFragment extends Fragment {
+public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private final String TAG = "BrowseFragment";
     private Context context;
     private RecyclerView recyclerView;
+    private SwipeRefreshLayout swipeView;
     private EvntListAdapter evntListAdapter;
 
     private IdentProvider ident;
@@ -78,6 +80,8 @@ public class BrowseFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_browse,
                 container, false);
 
+        swipeView = view.findViewById(R.id.main_content);
+        swipeView.setOnRefreshListener(this);
         recyclerView = view.findViewById(R.id.evnt_list_recycler);
         recyclerView.setHasFixedSize(true);
 
@@ -118,7 +122,9 @@ public class BrowseFragment extends Fragment {
                             }
 
                             // TODO This is a hack to refresh the view, so we redraw the list
-                            getFragmentManager().beginTransaction().detach(ctx).attach(ctx).commit();
+                            if (getFragmentManager() != null) {
+                                getFragmentManager().beginTransaction().detach(ctx).attach(ctx).commit();
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -132,5 +138,10 @@ public class BrowseFragment extends Fragment {
                 }
         );
         queue.add(stringBodyRequest);
+    }
+
+    @Override
+    public void onRefresh() {
+        loadList();
     }
 }

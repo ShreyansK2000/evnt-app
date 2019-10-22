@@ -7,9 +7,14 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.VideoView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -36,12 +41,14 @@ import org.json.JSONObject;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private CallbackManager callbackManager;
     private LoginButton loginButton;
+    private VideoView videoView;
     IdentProvider ident;
 
     @Override
@@ -89,6 +96,18 @@ public class MainActivity extends AppCompatActivity {
 
         String userId = ident.getValue(getString(R.string.user_id));
         if (userId == null) {
+            videoView = findViewById(R.id.videoView);
+
+            Objects.requireNonNull(getSupportActionBar()).hide();
+            Uri uri = Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.bg);
+            videoView.setVideoURI(uri);
+            videoView.start();
+            videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    mp.setLooping(true);
+                }
+            });
             beginAuthenticationChain();
         } else {
             Intent intent = new Intent(MainActivity.this, FragHostActivity.class);

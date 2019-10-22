@@ -11,10 +11,10 @@
         android:icon="@drawable/ic_search_black_24dp"
         android:title="@string/menu_browse"/>
 
-    <item
-        android:id="@+id/chat_evnt"
-        android:icon="@drawable/ic_chat_black_24dp"
-        android:title="@string/menu_chat"/>
+<!--    <item-->
+<!--        android:id="@+id/chat_evnt"-->
+<!--        android:icon="@drawable/ic_chat_black_24dp"-->
+<!--        android:title="@string/menu_chat"/>-->
 
     <item
         android:id="@+id/another_evnt"

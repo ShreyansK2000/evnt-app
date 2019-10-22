@@ -93,10 +93,11 @@ public class FragHostActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 Fragment selected;
+                // This lifecycle is a bit suboptimal, as we're creating new fragments every time
                 switch (menuItem.getItemId()) {
                     case R.id.pick_evnt:  selected = new PickEvntFragment(); break;
                     case R.id.browse_evnt: selected = new BrowseFragment(); break;
-                    case R.id.chat_evnt: selected = new ChatFragment(); break;
+//                    case R.id.chat_evnt: selected = new ChatFragment(); break;
                     case R.id.another_evnt: selected = new HostingEventsFragment(); break;
                     case R.id.profile_evnt: selected = new ProfileFragment(); break;
                     default: selected = new PickEvntFragment(); break;

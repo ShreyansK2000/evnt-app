@@ -75,11 +75,11 @@
                 android:orientation="vertical">
 
                 <!--This will be an image of the map-->
-                <TextView
-                    android:id="@+id/evnt_location"
-                    android:layout_width="match_parent"
-                    android:layout_height="118dp"
-                    android:text="this will be the map screenshot, text view placeholder" />
+<!--                <TextView-->
+<!--                    android:id="@+id/evnt_location"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="118dp"-->
+<!--                    android:text="this will be the map screenshot, text view placeholder" />-->
 
                 <!--Make sure to limit description size-->
                 <TextView

@@ -18,6 +18,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -34,11 +35,12 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HostingEventsFragment extends Fragment {
+public class HostingEventsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private final String TAG = "BrowseFragment";
     private Context context;
     private RecyclerView recyclerView;
+    private SwipeRefreshLayout swipeView;
     private EvntHostListAdapter evntHostListAdapter;
     private FloatingActionButton create_event_button;
 
@@ -87,6 +89,9 @@ public class HostingEventsFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_hosting_events,
                 container, false);
 
+        swipeView = view.findViewById(R.id.main_content);
+        swipeView.setOnRefreshListener(this);
+
         create_event_button = view.findViewById(R.id.create_event);
         create_event_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,7 +131,7 @@ public class HostingEventsFragment extends Fragment {
             }
         });
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.evnt_list_recycler);
+        recyclerView = view.findViewById(R.id.evnt_list_recycler);
         recyclerView.setHasFixedSize(true);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -167,7 +172,9 @@ public class HostingEventsFragment extends Fragment {
                             }
 
                             // TODO This is a hack to refresh the view, so we redraw the list
-                            getFragmentManager().beginTransaction().detach(ctx).attach(ctx).commit();
+                            if (getFragmentManager() != null) {
+                                getFragmentManager().beginTransaction().detach(ctx).attach(ctx).commit();
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -181,5 +188,10 @@ public class HostingEventsFragment extends Fragment {
                 }
         );
         queue.add(stringBodyRequest);
+    }
+
+    @Override
+    public void onRefresh() {
+        loadList();
     }
 }

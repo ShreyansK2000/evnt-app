@@ -100,6 +100,7 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
      * TODO need to modify the params and use them to build arraylist
      */
     private void loadList() {
+        evntlist.clear();
         RequestQueue queue = Volley.newRequestQueue(getContext());
         String url = getString(R.string.event_get_avail) + ident.getValue(getString(R.string.user_id));
         StringRequest stringBodyRequest = new StringRequest(Request.Method.GET, url,
@@ -116,6 +117,7 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                         .withName((String)obj.get("name"))
                                         .withDescription((String)obj.get("description"))
                                         .withTime((String)obj.get("start_time"))
+                                        .withId((String)obj.get("_id"))
                                         .build();
 
                                 evntlist.add(evnt);

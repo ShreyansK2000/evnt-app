@@ -1,5 +1,7 @@
 package com.example.evnt;
 
+import org.json.JSONObject;
+
 import java.io.Serializable;
 
 /**
@@ -19,6 +21,7 @@ public class EvntCardInfo implements Serializable {
     private String description;
     private String inORout;
     private int image;
+    private String id;
 
     // We shouldn't have access to this directly
     private EvntCardInfo(EvntCardInfo.Builder builder) {
@@ -29,6 +32,7 @@ public class EvntCardInfo implements Serializable {
         description = builder.description;
         inORout = builder.inORout;
         image = builder.image;
+        id = builder.id;
     }
 
 //    public EvntCardInfo () {
@@ -52,56 +56,32 @@ public class EvntCardInfo implements Serializable {
         return location;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
     public String getEvnt_name() {
         return evnt_name;
-    }
-
-    public void setEvnt_name(String evnt_name) {
-        this.evnt_name = evnt_name;
     }
 
     public String getHost_name() {
         return host_name;
     }
 
-    public void setHost_name(String host_name) {
-        this.host_name = host_name;
-    }
-
     public String getTime() {
         return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
     }
 
     public String getInORout() {
         return inORout;
     }
 
-    public void setInORout(String inORout) {
-        this.inORout = inORout;
-    }
-
     public String getDescription() {
         return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public int getImage() {
         return image;
     }
 
-    public void setImage(int image) {
-        this.image = image;
+    public String getId() {
+        return id;
     }
 
     public static class Builder {
@@ -113,6 +93,7 @@ public class EvntCardInfo implements Serializable {
         private String description;
         private String inORout;
         private int image;
+        private String id;
 
         public Builder() {
             location = "";
@@ -122,6 +103,7 @@ public class EvntCardInfo implements Serializable {
             description = "";
             inORout = "";
             image = R.drawable.chika;
+            id = "";
         }
 
         public Builder withLocation(String location) {
@@ -156,6 +138,11 @@ public class EvntCardInfo implements Serializable {
 
         public Builder withImage(int image) {
             this.image = image;
+            return this;
+        }
+
+        public Builder withId(String id) {
+            this.id = id;
             return this;
         }
 

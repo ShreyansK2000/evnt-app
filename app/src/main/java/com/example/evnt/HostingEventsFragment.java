@@ -159,12 +159,13 @@ public class HostingEventsFragment extends Fragment implements SwipeRefreshLayou
                         try {
                             JSONObject res = new JSONObject(response);
                             JSONArray data = res.getJSONArray("data");
+                            System.out.println(data);
                             String you = ident.getValue(getString(R.string.user_id));
 
                             for (int i = 0; i < data.length(); i++) {
                                 JSONObject obj = data.getJSONObject(i);
                                 EvntCardInfo evnt = new EvntCardInfo.Builder()
-                                        .withName((String)obj.get("name"))
+                                        .withName(obj.get("tag_list").toString().replace("\"", "") + " " + obj.get("name"))
                                         .withDescription((String)obj.get("description"))
                                         .withTime((String)obj.get("start_time"))
                                         .withId((String)obj.get("_id"))

@@ -115,7 +115,7 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
                             for (int i = 0; i < data.length(); i++) {
                                 JSONObject obj = data.getJSONObject(i);
                                 EvntCardInfo evnt = new EvntCardInfo.Builder()
-                                        .withName((String)obj.get("name"))
+                                        .withName(obj.get("tag_list").toString().replace("\"", "") + " " + obj.get("name"))
                                         .withDescription((String)obj.get("description"))
                                         .withTime((String)obj.get("start_time"))
                                         .withId((String)obj.get("_id"))

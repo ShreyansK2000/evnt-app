@@ -4,6 +4,9 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -13,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.HashSet;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -38,6 +42,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import java.util.List;
+import java.util.Set;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -55,14 +60,14 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
     private List<EvntCardInfo> evnt_list;
     private RequestQueue requestQueue;
     private IdentProvider ident;
-
+    private Set<Integer> drawn;
 
     public EvntHostListAdapter(Context context, List<EvntCardInfo> evnt_list) {
         this.context = context;
         this.evnt_list = evnt_list;
         this.ident = new IdentProvider(context);
         this.requestQueue = Volley.newRequestQueue(context);
-
+        this.drawn = new HashSet<>();
     }
 
     @NonNull
@@ -84,12 +89,17 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
         holder.evnt_name_tv.setText(evntInfo.getEvnt_name());
 
         holder.event_img_iv.setImageDrawable(context.getDrawable(evntInfo.getImage()));
+        setAnimation(holder.itemView, position);
 
-//        final Button editButton = holder.editButton;
+    }
 
-//        editButton.setOnClickListener(HostingEventsFragment.editButtonClicked);
-
-
+    private void setAnimation(View viewToAnimate, int position) {
+        if (!drawn.contains(position)) {
+            Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.fade_in);
+            animation.setDuration(350);
+            viewToAnimate.startAnimation(animation);
+            drawn.add(position);
+        }
     }
 
     @Override
@@ -133,10 +143,15 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
                         public void onResponse(String response) {
                             Toast.makeText(context, "event removed from your profile", Toast.LENGTH_LONG).show();
                             // Also a hack, jesus this is all bad
-                            ViewGroup.LayoutParams params = v.getLayoutParams();
-                            params.height = 0;
-                            v.setLayoutParams(params);
-                            v.setVisibility(View.GONE);
+                            v.animate().scaleY(0).alpha(0).setDuration(120).withEndAction(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ViewGroup.LayoutParams params = v.getLayoutParams();
+                                    params.height = 0;
+                                    v.setLayoutParams(params);
+                                    v.setVisibility(View.GONE);
+                                }
+                            });
                         }
                     },
                     new Response.ErrorListener() {

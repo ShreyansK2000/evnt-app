@@ -159,7 +159,6 @@ public class HostingEventsFragment extends Fragment implements SwipeRefreshLayou
                         try {
                             JSONObject res = new JSONObject(response);
                             JSONArray data = res.getJSONArray("data");
-                            System.out.println(data);
                             String you = ident.getValue(getString(R.string.user_id));
 
                             for (int i = 0; i < data.length(); i++) {

@@ -1,9 +1,13 @@
 package com.example.evnt;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -24,7 +28,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -43,11 +51,14 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter._EvntI
     private RequestQueue requestQueue;
     private IdentProvider ident;
 
+    private Set<Integer> drawn;
+
     public EvntListAdapter(Context context, List<EvntCardInfo> evnt_list) {
         this.context = context;
         this.evnt_list = evnt_list;
         this.ident = new IdentProvider(context);
         this.requestQueue = Volley.newRequestQueue(context);
+        this.drawn = new HashSet<>();
     }
 
     @NonNull
@@ -70,6 +81,17 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter._EvntI
         holder.evnt_name_tv.setText(evntInfo.getEvnt_name());
 
         holder.event_img_iv.setImageDrawable(context.getDrawable(evntInfo.getImage()));
+        setAnimation(holder.itemView, position);
+
+    }
+
+    private void setAnimation(View viewToAnimate, int position) {
+        if (!drawn.contains(position)) {
+            Animation animation = AnimationUtils.loadAnimation(context, android.R.anim.fade_in);
+            animation.setDuration(350);
+            viewToAnimate.startAnimation(animation);
+            drawn.add(position);
+        }
     }
 
     @Override
@@ -94,7 +116,6 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter._EvntI
             host_name_tv = itemView.findViewById(R.id.host_name);
             descript_tv = itemView.findViewById(R.id.evnt_descript);
             inButton = itemView.findViewById(R.id.in_button);
-//            final Button toggleButton = holder.inButton;
 
             inButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -113,10 +134,15 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter._EvntI
                         public void onResponse(String response) {
                             Toast.makeText(context, "event added to your profile", Toast.LENGTH_LONG).show();
                             // Also a hack, jesus this is all bad
-                            ViewGroup.LayoutParams params = v.getLayoutParams();
-                            params.height = 0;
-                            v.setLayoutParams(params);
-                            v.setVisibility(View.GONE);
+                            v.animate().scaleY(0).alpha(0).setDuration(120).withEndAction(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ViewGroup.LayoutParams params = v.getLayoutParams();
+                                    params.height = 0;
+                                    v.setLayoutParams(params);
+                                    v.setVisibility(View.GONE);
+                                }
+                            });
                         }
                     },
                     new Response.ErrorListener() {

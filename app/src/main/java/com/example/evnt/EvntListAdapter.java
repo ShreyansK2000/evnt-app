@@ -65,7 +65,7 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter._EvntI
         String hostname = context.getResources().getString(R.string.by_browse_nuance) + " " + evntInfo.getHost_name();
         holder.id = evntInfo.getId();
         holder.evnt_name_tv.setText(evntInfo.getEvnt_name());
-        holder.host_name_tv.setText(hostname);
+        holder.host_name_tv.setText(evntInfo.getHost_name());
         holder.descript_tv.setText(evntInfo.getDescription());
         holder.evnt_name_tv.setText(evntInfo.getEvnt_name());
 
@@ -101,22 +101,16 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter._EvntI
                 public void onClick(View v) {
                     //TODO send api call to add this event to user events.
                     markAttendance(itemView);
-//                    if (inButton.getText().equals("I'M IN!")) {
-//                    } else {
-//                        // appropriate server api call
-//                        inButton.setText("I'M IN!");
-//                    }
                 }
             });
         }
 
         private void markAttendance(final View v) {
-            String url = "https://api.evnt.me/events/api/" + id + "/" + ident.getValue(context.getString(R.string.user_id));
+            String url = "https://api.evnt.me/events/api/add/" + id + "/" + ident.getValue(context.getString(R.string.user_id));
             StringRequest stringBodyRequest = new StringRequest(Request.Method.PUT, url,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            System.out.println(response);
                             Toast.makeText(context, "event added to your profile", Toast.LENGTH_LONG).show();
                             // Also a hack, jesus this is all bad
                             ViewGroup.LayoutParams params = v.getLayoutParams();

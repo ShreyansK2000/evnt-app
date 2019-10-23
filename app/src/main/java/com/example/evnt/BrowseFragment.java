@@ -110,6 +110,7 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
                         try {
                             JSONObject res = new JSONObject(response);
                             JSONArray data = res.getJSONArray("data");
+                            String you = ident.getValue(getString(R.string.user_id));
 
                             for (int i = 0; i < data.length(); i++) {
                                 JSONObject obj = data.getJSONObject(i);
@@ -118,6 +119,7 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                         .withDescription((String)obj.get("description"))
                                         .withTime((String)obj.get("start_time"))
                                         .withId((String)obj.get("_id"))
+                                        .withHost(obj.get("host").equals(you) ? "you" : "Anonymous")
                                         .build();
 
                                 evntlist.add(evnt);

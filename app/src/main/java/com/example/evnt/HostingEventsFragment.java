@@ -149,6 +149,9 @@ public class HostingEventsFragment extends Fragment implements SwipeRefreshLayou
      * TODO need to modify the params and use them to build arraylist
      */
     private void loadList() {
+
+        // TODO need to filter out events I'm not hosting. Plus this request causes crashes once in a while
+        // need to double check whats causing it. (Phone orientation changing - so activity restarting causes it)
         evntlist.clear();
         RequestQueue queue = Volley.newRequestQueue(getContext());
         String url = getString(R.string.event_get_in) + ident.getValue(getString(R.string.user_id));

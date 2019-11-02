@@ -1,30 +1,54 @@
 package com.example.evnt;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AttendingEventsFragment extends Fragment {
+public class AttendingEventsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private final String TAG = "BrowseFragment";
-    private static final String DESCRIBABLE_KEY = "describable_key";
-    private ServerRequestModule mServerRequestModule;
     private Context context;
     private RecyclerView recyclerView;
-    private EvntListAdapter evntListAdapter;
+    private SwipeRefreshLayout swipeView;
+    private EvntHostListAdapter evntHostListAdapter;
+    private FloatingActionButton create_event_button;
 
     List<EvntCardInfo> evntlist;
+
+    private IdentProvider ident;
+    Fragment ctx;
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -41,16 +65,12 @@ public class AttendingEventsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ident = new IdentProvider(getContext());
+        ctx = this;
 
-        try {
-            mServerRequestModule = (ServerRequestModule) getArguments().getSerializable("serverRequestModule");
-        } catch (NullPointerException e) {
-            e.getStackTrace();
-        }
-
-        // TODO server call for user's registered events here
+        // TODO server call for user's hosted/ing events here
         evntlist = new ArrayList<>();
-//        loadList();
+        loadList();
     }
 
     /**
@@ -63,19 +83,61 @@ public class AttendingEventsFragment extends Fragment {
      */
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         context = getActivity();
         // Fragment needs its root view before we can actually do stuff
         final View view = inflater.inflate(R.layout.fragment_attending_events,
                 container, false);
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.evnt_list_recycler);
+        swipeView = view.findViewById(R.id.main_content);
+        swipeView.setOnRefreshListener(this);
+
+//        create_event_button = view.findViewById(R.id.create_event);
+//        create_event_button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+//
+//                WebView wv = new WebView(getContext()) {
+//                    @Override
+//                    protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
+//                        super.onFocusChanged(true, direction, previouslyFocusedRect);
+//                    }
+//
+//                    @Override
+//                    public boolean onCheckIsTextEditor() {
+//                        return true;
+//                    }
+//                };
+//                wv.getSettings().setJavaScriptEnabled(true);
+//                wv.loadUrl(getString(R.string.event_create) + ident.getValue(getString(R.string.user_id)));
+//                wv.setWebViewClient(new WebViewClient() {
+//                    @Override
+//                    public boolean shouldOverrideUrlLoading(WebView view, String url) {
+//                        view.loadUrl(url);
+//                        return false;
+//                    }
+//                });
+//                builder.setView(wv);
+//                builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        loadList();
+//                        dialog.dismiss();
+//                    }
+//                });
+//                builder.show();
+//            }
+//        });
+
+        recyclerView = view.findViewById(R.id.evnt_list_recycler);
         recyclerView.setHasFixedSize(true);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-        evntListAdapter = new EvntListAdapter(context, evntlist);
-        recyclerView.setAdapter(evntListAdapter);
+        evntHostListAdapter = new EvntHostListAdapter(context, evntlist);
+        recyclerView.setAdapter(evntHostListAdapter);
 
         return view;
     }
@@ -86,10 +148,56 @@ public class AttendingEventsFragment extends Fragment {
      *
      * TODO need to modify the params and use them to build arraylist
      */
-//    private void loadList() {
-//        evntlist = new ArrayList<>();
-//        evntlist.add(new EvntCardInfo("here", "This is the event name", "Shrek", "11-1", "desc - doing stuff", R.drawable.shreyans_profile));
-//        evntlist.add(new EvntCardInfo("there", "This is the event also", "Tito", "3-5", "321 assignment", R.drawable.tito_profile));
-//        evntlist.add(new EvntCardInfo("my place", "This is the event tooo", "Leslie", "8-10", "chillin", R.drawable.leslie_profile));
-//    }
+    private void loadList() {
+
+        // TODO need to filter non-hosting events
+        evntlist.clear();
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        String url = getString(R.string.event_get_in) + ident.getValue(getString(R.string.user_id));
+        StringRequest stringBodyRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject res = new JSONObject(response);
+                            JSONArray data = res.getJSONArray("data");
+                            String you = ident.getValue(getString(R.string.user_id));
+
+                            for (int i = 0; i < data.length(); i++) {
+                                JSONObject obj = data.getJSONObject(i);
+                                EvntCardInfo evnt = new EvntCardInfo.Builder()
+                                        .withName(obj.get("tag_list").toString().replace("\"", "") + " " + obj.get("name"))
+                                        .withDescription((String)obj.get("description"))
+                                        .withStartTime((String)obj.get("start_time"))
+                                        .withEndTime((String)obj.get("end_time"))
+                                        .withId((String)obj.get("_id"))
+                                        .withHost(obj.get("host").equals(you) ? "you" : "Anonymous")
+                                        .build();
+
+                                evntlist.add(evnt);
+                            }
+
+                            // TODO This is a hack to refresh the view, so we redraw the list
+                            if (getFragmentManager() != null) {
+                                getFragmentManager().beginTransaction().detach(ctx).attach(ctx).commit();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Fail
+                    }
+                }
+        );
+        queue.add(stringBodyRequest);
+    }
+
+    @Override
+    public void onRefresh() {
+        loadList();
+    }
 }

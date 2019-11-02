@@ -60,12 +60,12 @@ public class EvntCardInfo implements Serializable {
         String start_AM_PM = (cal.get(Calendar.AM_PM) == Calendar.AM) ? " AM" : " PM";
         dateString = "On " + months[cal.get(Calendar.MONTH)] + " " + cal.get(Calendar.DATE) + " from "
                 + cal.get(Calendar.HOUR) + ":"
-                + cal.get(Calendar.MINUTE) + start_AM_PM;
+                + String.format("%02d", cal.get(Calendar.MINUTE)) + start_AM_PM;
 
         try {
             Date date = currentTZFormat.parse(end_time);
             cal.setTime(date);
-            cal.setTimeZone(tz);
+//            cal.setTimeZone(tz);
             end_date = cal.get(Calendar.DATE);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -74,11 +74,11 @@ public class EvntCardInfo implements Serializable {
         String end_AM_PM = (cal.get(Calendar.AM_PM) == Calendar.AM) ? " AM" : " PM";
         if (end_date == start_date || end_date == start_date + 1) {
             dateString = dateString + " to " + cal.get(Calendar.HOUR) + ":"
-                         + cal.get(Calendar.MINUTE) + start_AM_PM;
+                         + String.format("%02d", cal.get(Calendar.MINUTE))  + end_AM_PM;
         } else {
             dateString = dateString + " till " + months[cal.get(Calendar.MONTH)] + " " + cal.get(Calendar.DATE)
                          + " at " + cal.get(Calendar.HOUR) + ":"
-                         + cal.get(Calendar.MINUTE) + end_AM_PM;
+                         + String.format("%02d", cal.get(Calendar.MINUTE)) + end_AM_PM;
         }
     }
 

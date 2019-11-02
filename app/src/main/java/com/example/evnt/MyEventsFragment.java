@@ -112,7 +112,8 @@ public class MyEventsFragment extends Fragment {
                                 EvntCardInfo evnt = new EvntCardInfo.Builder()
                                         .withName((String)obj.get("name"))
                                         .withDescription((String)obj.get("description"))
-                                        .withTime((String)obj.get("start_time"))
+                                        .withStartTime((String)obj.get("start_time"))
+                                        .withEndTime((String)obj.get("end_time"))
                                         .build();
 
                                 evntlist.add(evnt);

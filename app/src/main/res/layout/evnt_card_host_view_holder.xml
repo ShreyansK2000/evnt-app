@@ -81,6 +81,12 @@
 <!--                    android:layout_height="118dp"-->
 <!--                    android:text="this will be the map screenshot, text view placeholder" />-->
 
+                <TextView
+                    android:id="@+id/evnt_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"/>
+
                 <!--Make sure to limit description size-->
                 <TextView
                     android:id="@+id/evnt_descript"

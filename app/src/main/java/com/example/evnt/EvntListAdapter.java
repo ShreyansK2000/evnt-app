@@ -78,6 +78,7 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter._EvntI
         holder.evnt_name_tv.setText(evntInfo.getEvnt_name());
         holder.host_name_tv.setText(evntInfo.getHost_name());
         holder.descript_tv.setText(evntInfo.getDescription());
+        holder.date_tv.setText(evntInfo.getDateString());
         holder.evnt_name_tv.setText(evntInfo.getEvnt_name());
 
         holder.event_img_iv.setImageDrawable(context.getDrawable(evntInfo.getImage()));
@@ -103,7 +104,7 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter._EvntI
 
         String id;
 
-        TextView evnt_name_tv, host_name_tv, descript_tv;
+        TextView evnt_name_tv, host_name_tv, descript_tv, date_tv;
         CircleImageView event_img_iv;
 
         Button inButton;
@@ -115,6 +116,7 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter._EvntI
             evnt_name_tv = itemView.findViewById(R.id.evnt_name);
             host_name_tv = itemView.findViewById(R.id.host_name);
             descript_tv = itemView.findViewById(R.id.evnt_descript);
+            date_tv = itemView.findViewById(R.id.evnt_time);
             inButton = itemView.findViewById(R.id.in_button);
 
             inButton.setOnClickListener(new View.OnClickListener() {

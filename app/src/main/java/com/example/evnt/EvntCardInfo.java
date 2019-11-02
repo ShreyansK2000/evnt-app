@@ -1,8 +1,12 @@
 package com.example.evnt;
 
-import org.json.JSONObject;
-
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Stores the information about a given event, images are
@@ -13,14 +17,16 @@ import java.io.Serializable;
  */
 public class EvntCardInfo implements Serializable {
 
-
     private String location;
     private String evnt_name;
     private String host_name;
-    private String time;
+    private String start_time, end_time;
+    private int start_date, end_date;
+    private String dateString;
     private String description;
     private String inORout;
     private int image;
+    private String months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
     private String id;
 
     // We shouldn't have access to this directly
@@ -28,29 +34,53 @@ public class EvntCardInfo implements Serializable {
         location = builder.location;
         evnt_name = builder.evnt_name;
         host_name = builder.host_name;
-        time = builder.time;
+        start_time = builder.start_time;
+        end_time = builder.end_time;
         description = builder.description;
         inORout = builder.inORout;
         image = builder.image;
         id = builder.id;
-    }
 
-//    public EvntCardInfo () {
-//        this.location = "";
-//        this.evnt_name = "";
-//        this.host_name = "";
-//        this.time = "";
-//        this.description = "";
-//    }
-//
-//    public EvntCardInfo(String location, String evnt_name, String host_name, String time, String description, int image) {
-//        this.location = location;
-//        this.evnt_name = evnt_name;
-//        this.host_name = host_name;
-//        this.time = time;
-//        this.description = description;
-//        this.image = image;
-//    }
+        // Operations for date conversion from stored UTC format
+        TimeZone tz = TimeZone.getDefault();
+        System.out.println(start_time);
+        DateFormat currentTZFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        currentTZFormat.setTimeZone(tz);
+
+        Calendar cal = Calendar.getInstance();
+
+        try {
+            Date date = currentTZFormat.parse(start_time);
+            cal.setTime(date);
+            start_date = cal.get(Calendar.DATE);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        String start_AM_PM = (cal.get(Calendar.AM_PM) == Calendar.AM) ? " AM" : " PM";
+        dateString = "On " + months[cal.get(Calendar.MONTH)] + " " + cal.get(Calendar.DATE) + " from "
+                + cal.get(Calendar.HOUR) + ":"
+                + cal.get(Calendar.MINUTE) + start_AM_PM;
+
+        try {
+            Date date = currentTZFormat.parse(end_time);
+            cal.setTime(date);
+            cal.setTimeZone(tz);
+            end_date = cal.get(Calendar.DATE);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        String end_AM_PM = (cal.get(Calendar.AM_PM) == Calendar.AM) ? " AM" : " PM";
+        if (end_date == start_date || end_date == start_date + 1) {
+            dateString = dateString + " to " + cal.get(Calendar.HOUR) + ":"
+                         + cal.get(Calendar.MINUTE) + start_AM_PM;
+        } else {
+            dateString = dateString + " till " + months[cal.get(Calendar.MONTH)] + " " + cal.get(Calendar.DATE)
+                         + " at " + cal.get(Calendar.HOUR) + ":"
+                         + cal.get(Calendar.MINUTE) + end_AM_PM;
+        }
+    }
 
     public String getLocation() {
         return location;
@@ -64,9 +94,11 @@ public class EvntCardInfo implements Serializable {
         return host_name;
     }
 
-    public String getTime() {
-        return time;
-    }
+    public String getStart_time() { return start_time; }
+
+    public String getEnd_time() { return end_time; }
+
+    public String getDateString() { return dateString; }
 
     public String getInORout() {
         return inORout;
@@ -89,7 +121,8 @@ public class EvntCardInfo implements Serializable {
         private String location;
         private String evnt_name;
         private String host_name;
-        private String time;
+        private String start_time;
+        private String end_time;
         private String description;
         private String inORout;
         private int image;
@@ -99,7 +132,8 @@ public class EvntCardInfo implements Serializable {
             location = "";
             evnt_name = "";
             host_name = "Anonymous";
-            time = "";
+            start_time = "";
+            end_time = "";
             description = "";
             inORout = "";
             image = R.drawable.chika;
@@ -121,8 +155,13 @@ public class EvntCardInfo implements Serializable {
             return this;
         }
 
-        public Builder withTime(String time) {
-            this.time = time;
+        public Builder withStartTime(String time) {
+            this.start_time = time;
+            return this;
+        }
+
+        public Builder withEndTime(String time) {
+            this.end_time = time;
             return this;
         }
 

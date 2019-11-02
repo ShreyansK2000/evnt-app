@@ -117,7 +117,8 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                 EvntCardInfo evnt = new EvntCardInfo.Builder()
                                         .withName(obj.get("tag_list").toString().replace("\"", "") + " " + obj.get("name"))
                                         .withDescription((String)obj.get("description"))
-                                        .withTime((String)obj.get("start_time"))
+                                        .withStartTime((String)obj.get("start_time"))
+                                        .withEndTime((String)obj.get("end_time"))
                                         .withId((String)obj.get("_id"))
                                         .withHost(obj.get("host").equals(you) ? "you" : "Anonymous")
                                         .build();

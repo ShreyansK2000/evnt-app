@@ -1,4 +1,4 @@
-package com.example.evnt;
+package com.example.evnt.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,7 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.facebook.CallbackManager;
+import com.example.evnt.IdentProvider;
+import com.example.evnt.MainActivity;
+import com.example.evnt.R;
 import com.facebook.login.LoginManager;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
@@ -19,7 +21,6 @@ import com.facebook.login.widget.ProfilePictureView;
 // TODO decide what items we need to show here and what functionality.
 public class ProfileFragment extends Fragment {
 
-    private final String TAG = "ProfileFragment";
     private String name, id, email, profilePicURI;
     private LoginButton logoutButton;
     private ProfilePictureView PPView;
@@ -37,7 +38,7 @@ public class ProfileFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ident = new IdentProvider(getContext());
-        String userId = ident.getValue(getString(R.string.user_id));
+//        String userId = ident.getValue(getString(R.string.user_id));
         profilePicURI = ident.getValue(getString(R.string.profile_pic));
         id = ident.getValue(getString(R.string.fb_id));
         name = ident.getValue(getString(R.string.user_name));

@@ -1,4 +1,4 @@
-package com.example.evnt;
+package com.example.evnt.fragments;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -12,6 +12,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.example.evnt.R;
 
 // TODO see if we need to add more specific information to include in a search profile (date, time, tag)
 public class PickEvntFragment extends Fragment {

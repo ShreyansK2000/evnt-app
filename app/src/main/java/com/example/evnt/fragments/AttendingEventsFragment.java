@@ -1,4 +1,4 @@
-package com.example.evnt;
+package com.example.evnt.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -14,7 +14,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.example.evnt.EvntCardInfo;
+import com.example.evnt.IdentProvider;
+import com.example.evnt.R;
+import com.example.evnt.networking.ServerRequestModule;
+import com.example.evnt.networking.VolleyCallback;
+import com.example.evnt.adapters.EvntListAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;

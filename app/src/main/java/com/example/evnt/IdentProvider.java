@@ -7,7 +7,7 @@ import android.preference.PreferenceManager;
 
 public class IdentProvider {
 
-    SharedPreferences pref;
+    private SharedPreferences pref;
 
     public IdentProvider(Context ctx) {
         pref = PreferenceManager.getDefaultSharedPreferences(ctx);

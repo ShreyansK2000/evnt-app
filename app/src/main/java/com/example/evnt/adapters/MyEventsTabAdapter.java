@@ -1,4 +1,4 @@
-package com.example.evnt;
+package com.example.evnt.adapters;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;

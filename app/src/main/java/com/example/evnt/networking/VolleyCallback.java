@@ -1,4 +1,4 @@
-package com.example.evnt;
+package com.example.evnt.networking;
 
 import org.json.JSONArray;
 

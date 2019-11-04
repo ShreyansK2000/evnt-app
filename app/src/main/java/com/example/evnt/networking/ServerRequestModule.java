@@ -1,4 +1,4 @@
-package com.example.evnt;
+package com.example.evnt.networking;
 
 import android.content.Context;
 
@@ -8,6 +8,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.evnt.IdentProvider;
+import com.example.evnt.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,12 +20,12 @@ import java.io.Serializable;
 
 // TODO setup ALL api requests;
 public class ServerRequestModule implements Serializable {
-    private static final String apiURL = "https://api.evnt.me";
+//    private static final String apiURL = "https://api.evnt.me";
     private static ServerRequestModule mInstance;
     private static Context context;
     private RequestQueue mRequestQueue;
     private static IdentProvider ident;
-    private String resultString;
+//    private String resultString;
 
     private ServerRequestModule(Context context, IdentProvider ident) {
         this.context = context;

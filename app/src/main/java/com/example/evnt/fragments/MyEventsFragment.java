@@ -1,4 +1,4 @@
-package com.example.evnt;
+package com.example.evnt.fragments;
 
 import android.os.Bundle;
 
@@ -11,6 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.evnt.R;
+import com.example.evnt.networking.ServerRequestModule;
+import com.example.evnt.adapters.MyEventsTabAdapter;
 import com.google.android.material.tabs.TabLayout;
 
 public class MyEventsFragment extends Fragment {

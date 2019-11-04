@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.evnt.EvntCardInfo;
+import com.example.evnt.FragHostActivity;
 import com.example.evnt.IdentProvider;
 import com.example.evnt.R;
 import com.example.evnt.networking.ServerRequestModule;
@@ -111,25 +112,11 @@ public class AttendingEventsFragment extends Fragment implements SwipeRefreshLay
             @Override
             public void onEventsListSuccessResponse(JSONArray data) {
                 String you = ident.getValue(getString(R.string.user_id));
-
                 try {
-                    for (int i = 0; i < data.length(); i++) {
-                        JSONObject obj = data.getJSONObject(i);
-
-                        EvntCardInfo evnt = new EvntCardInfo.Builder()
-                                .withName(obj.get("tagList").toString().replace("\"", "") + " " + obj.get("name"))
-                                .withDescription((String) obj.get("description"))
-                                .withStartTime((String) obj.get("startTime"))
-                                .withEndTime((String) obj.get("endTime"))
-                                .withId((String) obj.get("_id"))
-                                .withHost(obj.get("host").equals(you) ? "you" : "Anonymous")
-                                .build();
-
-                        if (!obj.get("host").equals(you)) {
-                            evntlist.add(evnt);
-                        }
-                    }
-                } catch (JSONException e) {
+                    ((FragHostActivity) getActivity()).sortResponseToList(evntlist, data, you, false);
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 

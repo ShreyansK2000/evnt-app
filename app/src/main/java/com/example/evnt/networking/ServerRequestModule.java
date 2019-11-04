@@ -21,12 +21,12 @@ import java.io.Serializable;
 // TODO setup ALL api requests;
 public class ServerRequestModule implements Serializable {
     private static ServerRequestModule mInstance;
-    private static Context context;
     private static RequestQueue mRequestQueue;
-    private static IdentProvider ident;
+    private Context context;
+    private IdentProvider ident;
 
     private ServerRequestModule(Context context, IdentProvider ident) {
-        this.context = context;
+        this.context = context.getApplicationContext();
         this.ident = ident;
         mRequestQueue = getRequestQueue();
     }

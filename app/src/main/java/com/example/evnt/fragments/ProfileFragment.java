@@ -21,7 +21,10 @@ import com.facebook.login.widget.ProfilePictureView;
 // TODO decide what items we need to show here and what functionality.
 public class ProfileFragment extends Fragment {
 
-    private String name, id, email, profilePicURI;
+    private String name;
+    private String id;
+    private String email;
+//    private String profilePicURI;
     private LoginButton logoutButton;
     private ProfilePictureView PPView;
     private AppCompatTextView NameTV;
@@ -39,7 +42,7 @@ public class ProfileFragment extends Fragment {
         super.onCreate(savedInstanceState);
         ident = new IdentProvider(getContext());
 //        String userId = ident.getValue(getString(R.string.user_id));
-        profilePicURI = ident.getValue(getString(R.string.profile_pic));
+//        profilePicURI = ident.getValue(getString(R.string.profile_pic));
         id = ident.getValue(getString(R.string.fb_id));
         name = ident.getValue(getString(R.string.user_name));
         email = ident.getValue(getString(R.string.user_email));

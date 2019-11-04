@@ -30,17 +30,11 @@ import java.util.List;
 
 public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    private final String TAG = "BrowseFragment";
     private Context context;
-    private RecyclerView recyclerView;
-    private SwipeRefreshLayout swipeView;
-    private EvntListAdapter evntListAdapter;
     private ServerRequestModule mServerRequestModule;
-
     private IdentProvider ident;
-
-    List<EvntCardInfo> evntlist;
-    Fragment ctx;
+    private List<EvntCardInfo> evntlist;
+    private Fragment ctx;
 
     public static BrowseFragment newInstance(ServerRequestModule serverRequestModule) {
         BrowseFragment fragment = new BrowseFragment();
@@ -90,14 +84,14 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
         final View view = inflater.inflate(R.layout.fragment_browse,
                 container, false);
 
-        swipeView = view.findViewById(R.id.main_content);
+        SwipeRefreshLayout swipeView = view.findViewById(R.id.main_content);
         swipeView.setOnRefreshListener(this);
-        recyclerView = view.findViewById(R.id.evnt_list_recycler);
-        recyclerView.setHasFixedSize(true);
 
+        RecyclerView recyclerView = view.findViewById(R.id.evnt_list_recycler);
+        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-        evntListAdapter = new EvntListAdapter(context, evntlist, "browse");
+        EvntListAdapter evntListAdapter = new EvntListAdapter(context, evntlist, "browse");
         recyclerView.setAdapter(evntListAdapter);
 
         return view;
@@ -129,9 +123,9 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
                                 .withHost(obj.get("host").equals(you) ? "you" : "Anonymous")
                                 .build();
 
-//                        if (!obj.get("host").equals(you)) {
+                        if (!obj.get("host").equals(you)) {
                             evntlist.add(evnt);
-//                        }
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

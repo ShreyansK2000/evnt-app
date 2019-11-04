@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -20,13 +21,15 @@ public class EvntCardInfo implements Serializable {
     private String location;
     private String evnt_name;
     private String host_name;
-    private String start_time, end_time;
-    private int start_date, end_date;
+    private String start_time;
+    private String end_time;
+    private int start_date;
+    private int end_date;
     private String dateString;
     private String description;
     private String inORout;
     private int image;
-    private String months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+    private static String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
     private String id;
 
     // We shouldn't have access to this directly
@@ -46,6 +49,7 @@ public class EvntCardInfo implements Serializable {
         System.out.println(start_time);
         DateFormat currentTZFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         currentTZFormat.setTimeZone(tz);
+        Locale currentLocale = Locale.getDefault();
 
         Calendar cal = Calendar.getInstance();
 
@@ -60,7 +64,7 @@ public class EvntCardInfo implements Serializable {
         String start_AM_PM = (cal.get(Calendar.AM_PM) == Calendar.AM) ? " AM" : " PM";
         dateString = "On " + months[cal.get(Calendar.MONTH)] + " " + cal.get(Calendar.DATE) + " from "
                 + cal.get(Calendar.HOUR) + ":"
-                + String.format("%02d", cal.get(Calendar.MINUTE)) + start_AM_PM;
+                + String.format(currentLocale,"%02d", cal.get(Calendar.MINUTE)) + start_AM_PM;
 
         try {
             Date date = currentTZFormat.parse(end_time);
@@ -74,11 +78,11 @@ public class EvntCardInfo implements Serializable {
         String end_AM_PM = (cal.get(Calendar.AM_PM) == Calendar.AM) ? " AM" : " PM";
         if (end_date == start_date || end_date == start_date + 1) {
             dateString = dateString + " to " + cal.get(Calendar.HOUR) + ":"
-                         + String.format("%02d", cal.get(Calendar.MINUTE))  + end_AM_PM;
+                         + String.format(currentLocale, "%02d", cal.get(Calendar.MINUTE))  + end_AM_PM;
         } else {
             dateString = dateString + " till " + months[cal.get(Calendar.MONTH)] + " " + cal.get(Calendar.DATE)
                          + " at " + cal.get(Calendar.HOUR) + ":"
-                         + String.format("%02d", cal.get(Calendar.MINUTE)) + end_AM_PM;
+                         + String.format(currentLocale, "%02d", cal.get(Calendar.MINUTE)) + end_AM_PM;
         }
     }
 
@@ -86,21 +90,21 @@ public class EvntCardInfo implements Serializable {
         return location;
     }
 
-    public String getEvnt_name() {
+    public String getEvntName() {
         return evnt_name;
     }
 
-    public String getHost_name() {
+    public String getHostName() {
         return host_name;
     }
 
-    public String getStart_time() { return start_time; }
+    public String getStartTime() { return start_time; }
 
-    public String getEnd_time() { return end_time; }
+    public String getEndTime() { return end_time; }
 
     public String getDateString() { return dateString; }
 
-    public String getInORout() {
+    public String getInOrOut() {
         return inORout;
     }
 

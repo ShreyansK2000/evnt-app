@@ -37,7 +37,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * TODO figure out how to show google map snippet
  * TODO figure out how to show images from server calls (also in EvntCardInfo)
  */
-public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter._EvntInfoViewHolder> {
+public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntInfoViewHolder> {
 
     private Context context;
     private List<EvntCardInfo> evnt_list;
@@ -58,25 +58,25 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter._EvntI
 
     @NonNull
     @Override
-    public _EvntInfoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public EvntInfoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.evnt_card_view_holder, parent, false);
-        return new _EvntInfoViewHolder(view);
+        return new EvntInfoViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull _EvntInfoViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull EvntInfoViewHolder holder, int position) {
         EvntCardInfo evntInfo = evnt_list.get(position);
 
         String buttonType = cardType.equals(context.getString(R.string.browse)) ? context.getString(R.string.im_in) :
                             context.getString(R.string.nevermind);
-        String hostname = context.getResources().getString(R.string.by_browse_nuance) + " " + evntInfo.getHost_name();
+//        String hostname = context.getResources().getString(R.string.by_browse_nuance) + " " + evntInfo.getHostName();
         holder.id = evntInfo.getId();
-        holder.evnt_name_tv.setText(evntInfo.getEvnt_name());
-        holder.host_name_tv.setText(evntInfo.getHost_name());
+        holder.evnt_name_tv.setText(evntInfo.getEvntName());
+        holder.host_name_tv.setText(evntInfo.getHostName());
         holder.descript_tv.setText(evntInfo.getDescription());
         holder.date_tv.setText(evntInfo.getDateString());
-        holder.evnt_name_tv.setText(evntInfo.getEvnt_name());
+        holder.evnt_name_tv.setText(evntInfo.getEvntName());
         holder.inButton.setText(buttonType);
 
         holder.event_img_iv.setImageDrawable(context.getDrawable(evntInfo.getImage()));
@@ -98,17 +98,19 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter._EvntI
         return evnt_list.size();
     }
 
-    class _EvntInfoViewHolder extends RecyclerView.ViewHolder {
+    class EvntInfoViewHolder extends RecyclerView.ViewHolder {
 
-        String id;
+        private String id;
 
-        TextView evnt_name_tv, host_name_tv, descript_tv, date_tv;
-        CircleImageView event_img_iv;
+        private TextView evnt_name_tv;
+        private TextView host_name_tv;
+        private TextView descript_tv;
+        private TextView date_tv;
+        private CircleImageView event_img_iv;
 
-        Button inButton;
+        private Button inButton;
 
-
-        public _EvntInfoViewHolder(@NonNull final View itemView) {
+        private EvntInfoViewHolder(@NonNull final View itemView) {
             super(itemView);
             event_img_iv = itemView.findViewById(R.id.evnt_img);
             evnt_name_tv = itemView.findViewById(R.id.evnt_name);
@@ -126,7 +128,6 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter._EvntI
                     } else {
                         remAttendance(itemView);
                     }
-
                 }
             });
         }
@@ -153,7 +154,7 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter._EvntI
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            System.out.println(error);
+                            error.printStackTrace();
                             // Fail
                         }
                     }

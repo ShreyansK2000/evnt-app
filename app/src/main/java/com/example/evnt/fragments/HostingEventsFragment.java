@@ -37,16 +37,10 @@ import java.util.List;
 public class HostingEventsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private Context context;
-    private RecyclerView recyclerView;
-    private SwipeRefreshLayout swipeView;
-    private EvntHostListAdapter evntHostListAdapter;
-    private FloatingActionButton create_event_button;
     private ServerRequestModule mServerRequestModule;
-
-    List<EvntCardInfo> evntlist;
-
+    private List<EvntCardInfo> evntlist;
     private IdentProvider ident;
-    Fragment ctx;
+    private Fragment ctx;
 
     public static HostingEventsFragment newInstance(ServerRequestModule serverRequestModule) {
         HostingEventsFragment fragment = new HostingEventsFragment();
@@ -97,10 +91,10 @@ public class HostingEventsFragment extends Fragment implements SwipeRefreshLayou
         final View view = inflater.inflate(R.layout.fragment_hosting_events,
                 container, false);
 
-        swipeView = view.findViewById(R.id.main_content);
+        SwipeRefreshLayout swipeView = view.findViewById(R.id.main_content);
         swipeView.setOnRefreshListener(this);
 
-        create_event_button = view.findViewById(R.id.create_event);
+        FloatingActionButton create_event_button = view.findViewById(R.id.create_event);
         create_event_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -139,12 +133,11 @@ public class HostingEventsFragment extends Fragment implements SwipeRefreshLayou
             }
         });
 
-        recyclerView = view.findViewById(R.id.evnt_list_recycler);
+        RecyclerView recyclerView = view.findViewById(R.id.evnt_list_recycler);
         recyclerView.setHasFixedSize(true);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-        evntHostListAdapter = new EvntHostListAdapter(context, evntlist);
+        EvntHostListAdapter evntHostListAdapter = new EvntHostListAdapter(context, evntlist);
         recyclerView.setAdapter(evntHostListAdapter);
 
         return view;

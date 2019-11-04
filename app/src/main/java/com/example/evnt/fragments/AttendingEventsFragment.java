@@ -31,15 +31,10 @@ import java.util.List;
 public class AttendingEventsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private Context context;
-    private RecyclerView recyclerView;
-    private SwipeRefreshLayout swipeView;
-    private EvntListAdapter evntListAdapter;
     private ServerRequestModule mServerRequestModule;
-
-    List<EvntCardInfo> evntlist;
-
+    private List<EvntCardInfo> evntlist;
     private IdentProvider ident;
-    Fragment ctx;
+    private Fragment ctx;
 
     public static AttendingEventsFragment newInstance(ServerRequestModule serverRequestModule) {
         AttendingEventsFragment fragment = new AttendingEventsFragment();
@@ -88,15 +83,15 @@ public class AttendingEventsFragment extends Fragment implements SwipeRefreshLay
         // Fragment needs its root view before we can actually do stuff
         final View view = inflater.inflate(R.layout.fragment_attending_events,
                 container, false);
-        swipeView = view.findViewById(R.id.main_content);
+
+        SwipeRefreshLayout swipeView = view.findViewById(R.id.main_content);
         swipeView.setOnRefreshListener(this);
 
-        recyclerView = view.findViewById(R.id.evnt_list_recycler);
+        RecyclerView recyclerView = view.findViewById(R.id.evnt_list_recycler);
         recyclerView.setHasFixedSize(true);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-        evntListAdapter = new EvntListAdapter(context, evntlist, "attending");
+        EvntListAdapter evntListAdapter = new EvntListAdapter(context, evntlist, "attending");
         recyclerView.setAdapter(evntListAdapter);
 
         return view;

@@ -29,9 +29,7 @@ import java.net.URL;
 public class FragHostActivity extends AppCompatActivity {
 
     protected Bundle serverCommArgs;
-    private final String TAG = "FragHostActivity";
     private ServerRequestModule serverRequestModule;
-
     private IdentProvider ident;
 
     @Override
@@ -69,7 +67,10 @@ public class FragHostActivity extends AppCompatActivity {
 
                     // retrieve relevant Facebook account information for use in the main activity,
                     // and send it in the intent
-                    String id, name, email;
+                    String id;
+                    String name;
+                    String email;
+
                     id = object.getString("id");
                     name = object.getString("name");
                     email = object.getString("email");

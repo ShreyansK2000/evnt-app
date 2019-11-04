@@ -29,7 +29,6 @@ import com.android.volley.toolbox.Volley;
 import com.example.evnt.EvntCardInfo;
 import com.example.evnt.IdentProvider;
 import com.example.evnt.R;
-
 import java.util.Set;
 
 
@@ -40,7 +39,7 @@ import java.util.Set;
  * TODO figure out how to show google map snippet
  * TODO figure out how to show images from server calls (also in EvntCardInfo)
  */
-public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapter._EvntInfoViewHolder> {
+public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapter.EvntInfoViewHolder> {
 
     private Context context;
     private List<EvntCardInfo> evnt_list;
@@ -58,22 +57,22 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
 
     @NonNull
     @Override
-    public _EvntInfoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public EvntInfoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.evnt_card_host_view_holder, parent, false);
-        return new _EvntInfoViewHolder(view);
+        return new EvntInfoViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull _EvntInfoViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull EvntInfoViewHolder holder, int position) {
         EvntCardInfo evntInfo = evnt_list.get(position);
 
         holder.id = evntInfo.getId();
-        holder.evnt_name_tv.setText(evntInfo.getEvnt_name());
-        holder.host_name_tv.setText(evntInfo.getHost_name());
+        holder.evnt_name_tv.setText(evntInfo.getEvntName());
+        holder.host_name_tv.setText(evntInfo.getHostName());
         holder.descript_tv.setText(evntInfo.getDescription());
         holder.date_tv.setText(evntInfo.getDateString());
-        holder.evnt_name_tv.setText(evntInfo.getEvnt_name());
+        holder.evnt_name_tv.setText(evntInfo.getEvntName());
 
         holder.event_img_iv.setImageDrawable(context.getDrawable(evntInfo.getImage()));
         setAnimation(holder.itemView, position);
@@ -94,18 +93,20 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
         return evnt_list.size();
     }
 
-    class _EvntInfoViewHolder extends RecyclerView.ViewHolder {
+    class EvntInfoViewHolder extends RecyclerView.ViewHolder {
 
-        String id;
-        String hostId;
+        private String id;
 
-        TextView evnt_name_tv, host_name_tv, descript_tv, date_tv;
-        CircleImageView event_img_iv;
+        private TextView evnt_name_tv;
+        private TextView host_name_tv;
+        private TextView descript_tv;
+        private TextView date_tv;
+        private CircleImageView event_img_iv;
 
-        Button editButton, deleteButton;
+        private Button editButton;
+        private Button deleteButton;
 
-
-        public _EvntInfoViewHolder(@NonNull final View itemView) {
+        private EvntInfoViewHolder(@NonNull final View itemView) {
             super(itemView);
             event_img_iv = itemView.findViewById(R.id.evnt_img);
             evnt_name_tv = itemView.findViewById(R.id.evnt_name);
@@ -133,6 +134,7 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
         }
 
         private void markAttendance(final View v) {
+            // TODO change this for editing
             String url = "https://api.evnt.me/events/api/remove/" + id + "/" + ident.getValue(context.getString(R.string.user_id));
             StringRequest stringBodyRequest = new StringRequest(Request.Method.PUT, url,
                     new Response.Listener<String>() {

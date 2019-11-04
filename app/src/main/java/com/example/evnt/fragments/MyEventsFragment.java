@@ -18,14 +18,9 @@ import com.google.android.material.tabs.TabLayout;
 
 public class MyEventsFragment extends Fragment {
 
-    View mFragment;
-    ViewPager mViewPager;
-    TabLayout mTabLayout;
+    private ViewPager mViewPager;
+    private TabLayout mTabLayout;
     private ServerRequestModule mServerRequestModule;
-
-    public MyEventsFragment() {}
-
-//    public static MyEventsFragment getInstance() { return new MyEventsFragment() ; }
 
     public static MyEventsFragment newInstance(ServerRequestModule serverRequestModule) {
         MyEventsFragment fragment = new MyEventsFragment();
@@ -39,7 +34,7 @@ public class MyEventsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_my_events, container, false);
-        mFragment = view;
+        View mFragment = view;
 
         mViewPager = mFragment.findViewById(R.id.m_view_pager);
         mTabLayout = mFragment.findViewById(R.id.my_events_tab_layout);
@@ -61,17 +56,17 @@ public class MyEventsFragment extends Fragment {
 
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-
+                // do nothing
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
+                // do nothing
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-
+                // do nothing
             }
         });
     }

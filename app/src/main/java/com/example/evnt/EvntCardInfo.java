@@ -23,8 +23,6 @@ public class EvntCardInfo implements Serializable {
     private String host_name;
     private String start_time;
     private String end_time;
-    private int start_date;
-    private int end_date;
     private String dateString;
     private String description;
     private String inORout;
@@ -43,6 +41,9 @@ public class EvntCardInfo implements Serializable {
         inORout = builder.inORout;
         image = builder.image;
         id = builder.id;
+
+        int start_date = 0;
+        int end_date = 0;
 
         // Operations for date conversion from stored UTC format
         TimeZone tz = TimeZone.getDefault();

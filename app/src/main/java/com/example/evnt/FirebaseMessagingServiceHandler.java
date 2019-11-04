@@ -24,6 +24,8 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import android.util.Log;
 
@@ -44,7 +46,7 @@ import com.google.firebase.messaging.RemoteMessage;
  */
 public class FirebaseMessagingServiceHandler extends FirebaseMessagingService {
 
-    private static final String TAG = "FirebaseMessagingServiceHandler";
+    private static final String TAG = "FirebaseMsgSrvceHandler";
 
     /**
      * Called when message is received.
@@ -53,7 +55,7 @@ public class FirebaseMessagingServiceHandler extends FirebaseMessagingService {
      */
     // [START receive_message]
     @Override
-    public void onMessageReceived(RemoteMessage remoteMessage) {
+    public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         // [START_EXCLUDE]
         // There are two types of messages data messages and notification messages. Data messages
         // are handled
@@ -78,13 +80,13 @@ public class FirebaseMessagingServiceHandler extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
-            if (/* Check if data needs to be processed by long running job */ true) {
+//            if (/* Check if data needs to be processed by long running job */ true) {
                 // For long-running tasks (10 seconds or more) use WorkManager.
                 scheduleJob();
-            } else {
+//            } else {
                 // Handle message within 10 seconds
-                handleNow();
-            }
+//                handleNow();
+//            }
 
         }
 

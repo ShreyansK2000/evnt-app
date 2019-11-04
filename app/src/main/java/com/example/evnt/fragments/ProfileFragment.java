@@ -24,11 +24,6 @@ public class ProfileFragment extends Fragment {
     private String name;
     private String id;
     private String email;
-//    private String profilePicURI;
-    private LoginButton logoutButton;
-    private ProfilePictureView PPView;
-    private AppCompatTextView NameTV;
-
     private IdentProvider ident;
 
 
@@ -41,15 +36,11 @@ public class ProfileFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ident = new IdentProvider(getContext());
-//        String userId = ident.getValue(getString(R.string.user_id));
-//        profilePicURI = ident.getValue(getString(R.string.profile_pic));
+
         id = ident.getValue(getString(R.string.fb_id));
         name = ident.getValue(getString(R.string.user_name));
         email = ident.getValue(getString(R.string.user_email));
-//        profilePicURI = getArguments().getString("profilePicURI");
-//        id = getArguments().getString("id");
-//        name = getArguments().getString("name");
-//        email = getArguments().getString("email");
+
     }
 
     @Nullable
@@ -57,13 +48,16 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_profile,
                 container, false);
-        PPView = (ProfilePictureView) view.findViewById(R.id.profilePictureView);
+        ProfilePictureView PPView = (ProfilePictureView) view.findViewById(R.id.profilePictureView);
         PPView.setProfileId(id);
 
-        NameTV = (AppCompatTextView) view.findViewById(R.id.name_tv);
+        AppCompatTextView NameTV = (AppCompatTextView) view.findViewById(R.id.name_tv);
         NameTV.setText(name);
 
-        logoutButton = (LoginButton) view.findViewById(R.id.logout_button);
+        AppCompatTextView EmailTV = (AppCompatTextView) view.findViewById(R.id.email_tv);
+        NameTV.setText(email);
+
+        LoginButton logoutButton = (LoginButton) view.findViewById(R.id.logout_button);
 
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override

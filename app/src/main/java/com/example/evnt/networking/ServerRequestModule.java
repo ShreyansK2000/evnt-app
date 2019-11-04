@@ -20,12 +20,10 @@ import java.io.Serializable;
 
 // TODO setup ALL api requests;
 public class ServerRequestModule implements Serializable {
-//    private static final String apiURL = "https://api.evnt.me";
     private static ServerRequestModule mInstance;
     private static Context context;
-    private RequestQueue mRequestQueue;
+    private static RequestQueue mRequestQueue;
     private static IdentProvider ident;
-//    private String resultString;
 
     private ServerRequestModule(Context context, IdentProvider ident) {
         this.context = context;
@@ -41,7 +39,7 @@ public class ServerRequestModule implements Serializable {
         return mInstance;
     }
 
-    public RequestQueue getRequestQueue() {
+    private RequestQueue getRequestQueue() {
         if (mRequestQueue == null) {
             // getApplicationContext() is key. It should not be activity context,
             // or else RequestQueue won't last for the lifetime of your app
@@ -50,7 +48,7 @@ public class ServerRequestModule implements Serializable {
         return mRequestQueue;
     }
 
-    public  void addToRequestQueue(Request req) {
+    private void addToRequestQueue(Request req) {
         getRequestQueue().add(req);
     }
 

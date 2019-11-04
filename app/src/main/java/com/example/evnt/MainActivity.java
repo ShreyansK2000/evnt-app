@@ -45,9 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private CallbackManager callbackManager;
-    private LoginButton loginButton;
-    private VideoView videoView;
-    IdentProvider ident;
+    private IdentProvider ident;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
+        VideoView videoView;
         String userId = ident.getValue(getString(R.string.user_id));
         if (userId == null) {
             videoView = findViewById(R.id.videoView);
@@ -118,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         FacebookSdk.addLoggingBehavior(LoggingBehavior.REQUESTS);
         callbackManager = CallbackManager.Factory.create();
 
-        loginButton = findViewById(R.id.login_button);
+        LoginButton loginButton = findViewById(R.id.login_button);
         loginButton.setReadPermissions(Arrays.asList(
                 "public_profile", "email", "user_birthday", "user_friends"));
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {

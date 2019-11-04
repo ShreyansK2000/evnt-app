@@ -33,6 +33,7 @@ public class FragHostActivity extends AppCompatActivity {
 
     protected Bundle serverCommArgs;
     private final String TAG = "FragHostActivity";
+    private ServerRequestModule serverRequestModule;
 
     private IdentProvider ident;
 
@@ -53,8 +54,15 @@ public class FragHostActivity extends AppCompatActivity {
             final AccessToken loginAccessToken = extras.getParcelable("accessToken");
             retrieveFBUserDetails(loginAccessToken);
         }
-    }
 
+        serverCommArgs = new Bundle();
+        serverRequestModule = ServerRequestModule.getInstance(getApplicationContext(), ident);
+        if (serverRequestModule != null) {
+            serverCommArgs.putSerializable("server_module", serverRequestModule);
+        } else {
+            Toast.makeText(this, "error creating servermodule", Toast.LENGTH_LONG).show();
+        }
+    }
     private void retrieveFBUserDetails(final AccessToken token) {
 //        final ServerRequestModule serverRequestModule = new ServerRequestModule();
         GraphRequest request = GraphRequest.newMeRequest(token, new GraphRequest.GraphJSONObjectCallback() {
@@ -68,7 +76,7 @@ public class FragHostActivity extends AppCompatActivity {
                     id = object.getString("id");
                     name = object.getString("name");
                     email = object.getString("email");
-                    URL profilePicURI = new URL("https://graph.facebook.com/"+object.getString("id")+"/picture?width=250&height=250");
+                    URL profilePicURI = new URL("https://graph.facebook.com/"+ object.getString("id")+"/picture?width=250&height=250");
                     //keep for profile page
                     ident.setValue(getString(R.string.user_name), name);
                     ident.setValue(getString(R.string.user_email), email);
@@ -96,18 +104,13 @@ public class FragHostActivity extends AppCompatActivity {
                 // This lifecycle is a bit suboptimal, as we're creating new fragments every time
                 switch (menuItem.getItemId()) {
                     case R.id.pick_evnt:  selected = new PickEvntFragment(); break;
-                    case R.id.browse_evnt: selected = new BrowseFragment(); break;
+                    case R.id.browse_evnt: selected = BrowseFragment.newInstance(serverRequestModule); break;
 //                    case R.id.chat_evnt: selected = new ChatFragment(); break;
-                    case R.id.another_evnt: selected = new MyEventsFragment(); break;
+                    case R.id.my_events: selected = MyEventsFragment.newInstance(serverRequestModule); break;
                     case R.id.profile_evnt: selected = new ProfileFragment(); break;
                     default: selected = new PickEvntFragment(); break;
                 }
 
-                try {
-                    selected.setArguments(serverCommArgs);
-                } catch (NullPointerException e){
-                    e.printStackTrace();
-                }
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         selected).commit();
 

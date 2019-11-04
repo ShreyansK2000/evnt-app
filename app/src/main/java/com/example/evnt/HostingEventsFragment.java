@@ -9,8 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,12 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -37,18 +30,26 @@ import java.util.List;
 
 public class HostingEventsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    private final String TAG = "BrowseFragment";
     private Context context;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeView;
     private EvntHostListAdapter evntHostListAdapter;
     private FloatingActionButton create_event_button;
+    private ServerRequestModule mServerRequestModule;
 
     List<EvntCardInfo> evntlist;
 
     private IdentProvider ident;
     Fragment ctx;
 
+    public static HostingEventsFragment newInstance(ServerRequestModule serverRequestModule) {
+        HostingEventsFragment fragment = new HostingEventsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("server_module", serverRequestModule);
+        fragment.setArguments(bundle);
+
+        return fragment;
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -67,6 +68,7 @@ public class HostingEventsFragment extends Fragment implements SwipeRefreshLayou
         super.onCreate(savedInstanceState);
         ident = new IdentProvider(getContext());
         ctx = this;
+        mServerRequestModule = (ServerRequestModule) getArguments().getSerializable("server_module");
 
         // TODO server call for user's hosted/ing events here
         evntlist = new ArrayList<>();
@@ -150,51 +152,46 @@ public class HostingEventsFragment extends Fragment implements SwipeRefreshLayou
      */
     private void loadList() {
 
-        // TODO need to filter out events I'm not hosting. Plus this request causes crashes once in a while
-        // need to double check whats causing it. (Phone orientation changing - so activity restarting causes it)
+        // TODO need to filter non-hosting events
         evntlist.clear();
-        RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url = getString(R.string.event_get_in) + ident.getValue(getString(R.string.user_id));
-        StringRequest stringBodyRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject res = new JSONObject(response);
-                            JSONArray data = res.getJSONArray("data");
-                            String you = ident.getValue(getString(R.string.user_id));
+        mServerRequestModule.getEventsRequest(getString(R.string.event_get_in), new VolleyCallback() {
+            @Override
+            public void onEventsListSuccessResponse(JSONArray data) {
+                String you = ident.getValue(getString(R.string.user_id));
 
-                            for (int i = 0; i < data.length(); i++) {
-                                JSONObject obj = data.getJSONObject(i);
-                                EvntCardInfo evnt = new EvntCardInfo.Builder()
-                                        .withName(obj.get("tag_list").toString().replace("\"", "") + " " + obj.get("name"))
-                                        .withDescription((String)obj.get("description"))
-                                        .withStartTime((String)obj.get("start_time"))
-                                        .withEndTime((String)obj.get("end_time"))
-                                        .withId((String)obj.get("_id"))
-                                        .withHost(obj.get("host").equals(you) ? "you" : "Anonymous")
-                                        .build();
+                try {
+                    for (int i = 0; i < data.length(); i++) {
+                        JSONObject obj = data.getJSONObject(i);
 
-                                evntlist.add(evnt);
-                            }
+                        EvntCardInfo evnt = new EvntCardInfo.Builder()
+                                .withName(obj.get("tagList").toString().replace("\"", "") + " " + obj.get("name"))
+                                .withDescription((String) obj.get("description"))
+                                .withStartTime((String) obj.get("startTime"))
+                                .withEndTime((String) obj.get("endTime"))
+                                .withId((String) obj.get("_id"))
+                                .withHost(obj.get("host").equals(you) ? "you" : "Anonymous")
+                                .build();
 
-                            // TODO This is a hack to refresh the view, so we redraw the list
-                            if (getFragmentManager() != null) {
-                                getFragmentManager().beginTransaction().detach(ctx).attach(ctx).commit();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        if (obj.get("host").equals(you)) {
+                            evntlist.add(evnt);
                         }
                     }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // Fail
-                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-        );
-        queue.add(stringBodyRequest);
+
+                // TODO This is a hack to refresh the view, so we redraw the list
+                if (getFragmentManager() != null) {
+                    getFragmentManager().beginTransaction().detach(ctx).attach(ctx).commit();
+                }
+            }
+
+            @Override
+            public void onErrorResponse(String result) {
+                Toast.makeText(context, "unable to load events currently", Toast.LENGTH_LONG).show();
+            }
+        });
+
     }
 
     @Override

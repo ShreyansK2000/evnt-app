@@ -9,15 +9,20 @@
     <string name="menu_profile">Profile</string>
     <string name="by_browse_nuance">by </string>
     <string name="you_the_host">by you</string>
+    <string name="im_in">I\'M IN!</string>
+    <string name="nevermind">NEVERMIND</string>
+    <string name="edit_button">EDIT</string>
+    <string name="delete_button">DELETE</string>
+    <string name="browse">browse</string>
 
     <!-- Cached ident props -->
-    <string name="fb_id">facebook_id</string>
-    <string name="user_id">user_id</string>
-    <string name="access_token">access_token</string>
+    <string name="fb_id">facebookId</string>
+    <string name="user_id">userId</string>
+    <string name="access_token">accessToken</string>
     <string name="token">token</string>
-    <string name="profile_pic">profile_img_url</string>
-    <string name="user_name">user_name</string>
-    <string name="user_email">user_email</string>
+    <string name="profile_pic">profileImgUrl</string>
+    <string name="user_name">userName</string>
+    <string name="user_email">userEmail</string>
 
     <!-- API URLs-->
     <string name="oauth_endpoint">https://api.evnt.me/users/oauth</string>

@@ -95,15 +95,29 @@
                     android:layout_margin="5dp"
                     android:text="Description will live here" />
 
-                <Button
-                    android:id="@+id/edit_button"
-                    android:layout_width="130dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="NEVERMIND"
-                    android:textAlignment="viewStart"
-                    android:theme="@style/PrimaryFlatButton" />
-            </LinearLayout>
+                    android:orientation="horizontal">
 
+                    <Button
+                        android:id="@+id/edit_button"
+                        android:layout_width="64dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/edit_button"
+                        android:textAlignment="viewStart"
+                        android:theme="@style/PrimaryFlatButton" />
+
+                    <Button
+                        android:id="@+id/delete_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/delete_button"
+                        android:textAlignment="viewStart"
+                        android:theme="@style/PrimaryFlatButton" />
+
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </LinearLayout>

@@ -17,7 +17,7 @@
 <!--        android:title="@string/menu_chat"/>-->
 
     <item
-        android:id="@+id/another_evnt"
+        android:id="@+id/my_events"
         android:icon="@drawable/ic_phone_android_black_24dp"
         android:title="@string/menu_phone"/>
 

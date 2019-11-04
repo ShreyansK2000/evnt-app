@@ -1,6 +1,7 @@
 package com.example.evnt;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -116,7 +117,7 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
         TextView evnt_name_tv, host_name_tv, descript_tv, date_tv;
         CircleImageView event_img_iv;
 
-        Button editButton;
+        Button editButton, deleteButton;
 
 
         public _EvntInfoViewHolder(@NonNull final View itemView) {
@@ -127,6 +128,7 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
             descript_tv = itemView.findViewById(R.id.evnt_descript);
             date_tv = itemView.findViewById(R.id.evnt_time);
             editButton = itemView.findViewById(R.id.edit_button);
+            deleteButton = itemView.findViewById(R.id.delete_button);
 
             editButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -135,6 +137,14 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
                     markAttendance(itemView);
                 }
             });
+
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    delEvent(itemView, evnt_name_tv);
+                }
+            });
+
         }
 
         private void markAttendance(final View v) {
@@ -165,6 +175,41 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
                     }
             );
             requestQueue.add(stringBodyRequest);
+        }
+
+        private void delEvent(final View v, final TextView tv) {
+
+            AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+            alertDialog.setTitle("Delete Event");
+            alertDialog.setMessage("Are you sure you want to delete the following event? \n \n " + tv.getText());
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "YES",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // TODO add api call to delete event
+                            Toast.makeText(context, "add api call to delete", Toast.LENGTH_LONG).show();
+
+                            // make view disappear, will come back with screen refresh
+                            v.animate().scaleY(0).alpha(0).setDuration(120).withEndAction(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ViewGroup.LayoutParams params = v.getLayoutParams();
+                                    params.height = 0;
+                                    v.setLayoutParams(params);
+                                    v.setVisibility(View.GONE);
+                                }
+                            });
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "NO",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(context, "did not delete", Toast.LENGTH_LONG).show();
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
+
         }
     }
 

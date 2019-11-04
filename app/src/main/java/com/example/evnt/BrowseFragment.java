@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -37,11 +38,21 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeView;
     private EvntListAdapter evntListAdapter;
+    private ServerRequestModule mServerRequestModule;
 
     private IdentProvider ident;
 
     List<EvntCardInfo> evntlist;
     Fragment ctx;
+
+    public static BrowseFragment newInstance(ServerRequestModule serverRequestModule) {
+        BrowseFragment fragment = new BrowseFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("server_module", serverRequestModule);
+        fragment.setArguments(bundle);
+
+        return fragment;
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -60,6 +71,8 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
         super.onCreate(savedInstanceState);
         ctx = this;
         ident = new IdentProvider(getContext());
+        mServerRequestModule = (ServerRequestModule) getArguments().getSerializable("server_module");
+
         evntlist = new ArrayList<>();
         loadList();
     }
@@ -87,7 +100,7 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-        evntListAdapter = new EvntListAdapter(context, evntlist);
+        evntListAdapter = new EvntListAdapter(context, evntlist, "browse");
         recyclerView.setAdapter(evntListAdapter);
 
         return view;
@@ -101,48 +114,43 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
      */
     private void loadList() {
         evntlist.clear();
-        RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url = getString(R.string.event_get_avail) + ident.getValue(getString(R.string.user_id));
-        StringRequest stringBodyRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject res = new JSONObject(response);
-                            JSONArray data = res.getJSONArray("data");
-                            String you = ident.getValue(getString(R.string.user_id));
+        mServerRequestModule.getEventsRequest(getString(R.string.event_get_avail), new VolleyCallback() {
+            @Override
+            public void onEventsListSuccessResponse(JSONArray data) {
+                String you = ident.getValue(getString(R.string.user_id));
 
-                            for (int i = 0; i < data.length(); i++) {
-                                JSONObject obj = data.getJSONObject(i);
-                                EvntCardInfo evnt = new EvntCardInfo.Builder()
-                                        .withName(obj.get("tag_list").toString().replace("\"", "") + " " + obj.get("name"))
-                                        .withDescription((String)obj.get("description"))
-                                        .withStartTime((String)obj.get("start_time"))
-                                        .withEndTime((String)obj.get("end_time"))
-                                        .withId((String)obj.get("_id"))
-                                        .withHost(obj.get("host").equals(you) ? "you" : "Anonymous")
-                                        .build();
+                try {
+                    for (int i = 0; i < data.length(); i++) {
+                        JSONObject obj = data.getJSONObject(i);
 
-                                evntlist.add(evnt);
-                            }
+                        EvntCardInfo evnt = new EvntCardInfo.Builder()
+                                .withName(obj.get("tagList").toString().replace("\"", "") + " " + obj.get("name"))
+                                .withDescription((String) obj.get("description"))
+                                .withStartTime((String) obj.get("startTime"))
+                                .withEndTime((String) obj.get("endTime"))
+                                .withId((String) obj.get("_id"))
+                                .withHost(obj.get("host").equals(you) ? "you" : "Anonymous")
+                                .build();
 
-                            // TODO This is a hack to refresh the view, so we redraw the list
-                            if (getFragmentManager() != null) {
-                                getFragmentManager().beginTransaction().detach(ctx).attach(ctx).commit();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+//                        if (!obj.get("host").equals(you)) {
+                            evntlist.add(evnt);
+//                        }
                     }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // Fail
-                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-        );
-        queue.add(stringBodyRequest);
+
+                // TODO This is a hack to refresh the view, so we redraw the list
+                if (getFragmentManager() != null) {
+                    getFragmentManager().beginTransaction().detach(ctx).attach(ctx).commit();
+                }
+            }
+
+            @Override
+            public void onErrorResponse(String result) {
+                Toast.makeText(context, "unable to load events currently", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override

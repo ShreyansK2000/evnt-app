@@ -50,15 +50,17 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter._EvntI
     private List<EvntCardInfo> evnt_list;
     private RequestQueue requestQueue;
     private IdentProvider ident;
+    private String cardType;
 
     private Set<Integer> drawn;
 
-    public EvntListAdapter(Context context, List<EvntCardInfo> evnt_list) {
+    public EvntListAdapter(Context context, List<EvntCardInfo> evnt_list, String type) {
         this.context = context;
         this.evnt_list = evnt_list;
         this.ident = new IdentProvider(context);
         this.requestQueue = Volley.newRequestQueue(context);
         this.drawn = new HashSet<>();
+        this.cardType = type;
     }
 
     @NonNull
@@ -73,6 +75,8 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter._EvntI
     public void onBindViewHolder(@NonNull _EvntInfoViewHolder holder, int position) {
         EvntCardInfo evntInfo = evnt_list.get(position);
 
+        String buttonType = cardType.equals(context.getString(R.string.browse)) ? context.getString(R.string.im_in) :
+                            context.getString(R.string.nevermind);
         String hostname = context.getResources().getString(R.string.by_browse_nuance) + " " + evntInfo.getHost_name();
         holder.id = evntInfo.getId();
         holder.evnt_name_tv.setText(evntInfo.getEvnt_name());
@@ -80,6 +84,7 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter._EvntI
         holder.descript_tv.setText(evntInfo.getDescription());
         holder.date_tv.setText(evntInfo.getDateString());
         holder.evnt_name_tv.setText(evntInfo.getEvnt_name());
+        holder.inButton.setText(buttonType);
 
         holder.event_img_iv.setImageDrawable(context.getDrawable(evntInfo.getImage()));
         setAnimation(holder.itemView, position);
@@ -123,7 +128,12 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter._EvntI
                 @Override
                 public void onClick(View v) {
                     //TODO send api call to add this event to user events.
-                    markAttendance(itemView);
+                    if (cardType.equals(context.getString(R.string.browse))) {
+                        markAttendance(itemView);
+                    } else {
+                        remAttendance(itemView);
+                    }
+
                 }
             });
         }
@@ -135,6 +145,36 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter._EvntI
                         @Override
                         public void onResponse(String response) {
                             Toast.makeText(context, "event added to your profile", Toast.LENGTH_LONG).show();
+                            // Also a hack, jesus this is all bad
+                            v.animate().scaleY(0).alpha(0).setDuration(120).withEndAction(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ViewGroup.LayoutParams params = v.getLayoutParams();
+                                    params.height = 0;
+                                    v.setLayoutParams(params);
+                                    v.setVisibility(View.GONE);
+                                }
+                            });
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            System.out.println(error);
+                            // Fail
+                        }
+                    }
+            );
+            requestQueue.add(stringBodyRequest);
+        }
+
+        private void remAttendance(final View v) {
+            String url = "https://api.evnt.me/events/api/remove/" + id + "/" + ident.getValue(context.getString(R.string.user_id));
+            StringRequest stringBodyRequest = new StringRequest(Request.Method.PUT, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Toast.makeText(context, "event removed from your profile", Toast.LENGTH_LONG).show();
                             // Also a hack, jesus this is all bad
                             v.animate().scaleY(0).alpha(0).setDuration(120).withEndAction(new Runnable() {
                                 @Override

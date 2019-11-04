@@ -193,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // Fail
+                        error.printStackTrace();
                     }
                 }
         ){

@@ -20,11 +20,13 @@ import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 public class FragHostActivity extends AppCompatActivity {
 
@@ -115,4 +117,33 @@ public class FragHostActivity extends AppCompatActivity {
                 return true;
             }
         };
+
+    public void sortResponseToList(List<EvntCardInfo> evntlist, JSONArray data, String you, boolean host){
+        try {
+            for (int i = 0; i < data.length(); i++) {
+                JSONObject obj = data.getJSONObject(i);
+
+                EvntCardInfo evnt = new EvntCardInfo.Builder()
+                        .withName(obj.get("tagList").toString().replace("\"", "") + " " + obj.get("name"))
+                        .withDescription((String) obj.get("description"))
+                        .withStartTime((String) obj.get("startTime"))
+                        .withEndTime((String) obj.get("endTime"))
+                        .withId((String) obj.get("_id"))
+                        .withHost(obj.get("host").equals(you) ? "you" : "Anonymous")
+                        .build();
+
+                if (host) {
+                    if (obj.get("host").equals(you)) {
+                        evntlist.add(evnt);
+                    }
+                } else {
+                    if (!obj.get("host").equals(you)) {
+                        evntlist.add(evnt);
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 }

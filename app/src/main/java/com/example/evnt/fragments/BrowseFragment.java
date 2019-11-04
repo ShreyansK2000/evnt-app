@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.evnt.EvntCardInfo;
+import com.example.evnt.FragHostActivity;
 import com.example.evnt.IdentProvider;
 import com.example.evnt.R;
 import com.example.evnt.networking.ServerRequestModule;
@@ -22,8 +23,6 @@ import com.example.evnt.networking.VolleyCallback;
 import com.example.evnt.adapters.EvntListAdapter;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,25 +108,11 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
             @Override
             public void onEventsListSuccessResponse(JSONArray data) {
                 String you = ident.getValue(getString(R.string.user_id));
-
                 try {
-                    for (int i = 0; i < data.length(); i++) {
-                        JSONObject obj = data.getJSONObject(i);
-
-                        EvntCardInfo evnt = new EvntCardInfo.Builder()
-                                .withName(obj.get("tagList").toString().replace("\"", "") + " " + obj.get("name"))
-                                .withDescription((String) obj.get("description"))
-                                .withStartTime((String) obj.get("startTime"))
-                                .withEndTime((String) obj.get("endTime"))
-                                .withId((String) obj.get("_id"))
-                                .withHost(obj.get("host").equals(you) ? "you" : "Anonymous")
-                                .build();
-
-                        if (!obj.get("host").equals(you)) {
-                            evntlist.add(evnt);
-                        }
-                    }
-                } catch (JSONException e) {
+                    ((FragHostActivity) getActivity()).sortResponseToList(evntlist, data, you, false);
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 

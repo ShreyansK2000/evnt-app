@@ -55,7 +55,7 @@ public class ProfileFragment extends Fragment {
         NameTV.setText(name);
 
         AppCompatTextView EmailTV = (AppCompatTextView) view.findViewById(R.id.email_tv);
-        NameTV.setText(email);
+        EmailTV.setText(email);
 
         LoginButton logoutButton = (LoginButton) view.findViewById(R.id.logout_button);
 

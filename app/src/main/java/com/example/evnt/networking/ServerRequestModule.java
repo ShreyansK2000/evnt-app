@@ -21,7 +21,7 @@ import java.io.Serializable;
 // TODO setup ALL api requests;
 public class ServerRequestModule implements Serializable {
     private static ServerRequestModule mInstance;
-    private static RequestQueue mRequestQueue;
+    private RequestQueue mRequestQueue;
     private Context context;
     private IdentProvider ident;
 

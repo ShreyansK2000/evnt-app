@@ -26,7 +26,6 @@ public class ProfileFragment extends Fragment {
     private String email;
     private IdentProvider ident;
 
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);

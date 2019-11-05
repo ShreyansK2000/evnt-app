@@ -61,7 +61,6 @@ public class FragHostActivity extends AppCompatActivity {
         }
     }
     private void retrieveFBUserDetails(final AccessToken token) {
-//        final ServerRequestModule serverRequestModule = new ServerRequestModule();
         GraphRequest request = GraphRequest.newMeRequest(token, new GraphRequest.GraphJSONObjectCallback() {
             @Override
             public void onCompleted(JSONObject object, GraphResponse response) {
@@ -105,7 +104,6 @@ public class FragHostActivity extends AppCompatActivity {
                 switch (menuItem.getItemId()) {
                     case R.id.pick_evnt:  selected = new PickEvntFragment(); break;
                     case R.id.browse_evnt: selected = BrowseFragment.newInstance(serverRequestModule); break;
-//                    case R.id.chat_evnt: selected = new ChatFragment(); break;
                     case R.id.my_events: selected = MyEventsFragment.newInstance(serverRequestModule); break;
                     case R.id.profile_evnt: selected = new ProfileFragment(); break;
                     default: selected = new PickEvntFragment(); break;
@@ -132,6 +130,8 @@ public class FragHostActivity extends AppCompatActivity {
                         .withHost(obj.get("host").equals(you) ? "you" : "Anonymous")
                         .build();
 
+                // if being requested by HostingEventsFragment, get list of events user is hosting
+                // else return events they are attending or can browse
                 if (host) {
                     if (obj.get("host").equals(you)) {
                         evntlist.add(evnt);

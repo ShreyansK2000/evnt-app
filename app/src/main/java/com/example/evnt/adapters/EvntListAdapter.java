@@ -69,8 +69,7 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
         EvntCardInfo evntInfo = evnt_list.get(position);
 
         String buttonType = cardType.equals(context.getString(R.string.browse)) ? context.getString(R.string.im_in) :
-                            context.getString(R.string.nevermind);
-//        String hostname = context.getResources().getString(R.string.by_browse_nuance) + " " + evntInfo.getHostName();
+                                                        context.getString(R.string.nevermind);
         holder.id = evntInfo.getId();
         holder.evnt_name_tv.setText(evntInfo.getEvntName());
         holder.host_name_tv.setText(evntInfo.getHostName());
@@ -184,7 +183,7 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            System.out.println(error);
+                            System.out.println(error.toString());
                             // Fail
                         }
                     }

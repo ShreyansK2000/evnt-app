@@ -16,17 +16,7 @@
 
 package com.example.evnt;
 
-//import android.app.NotificationChannel;
-//import android.app.NotificationManager;
-//import android.app.PendingIntent;
-//import android.content.Context;
-//import android.content.Intent;
-//import android.media.RingtoneManager;
-//import android.net.Uri;
-//import android.os.Build;
-
 import androidx.annotation.NonNull;
-//import androidx.core.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -80,13 +70,8 @@ public class FirebaseMessagingServiceHandler extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
-//            if (/* Check if data needs to be processed by long running job */ true) {
-                // For long-running tasks (10 seconds or more) use WorkManager.
-                scheduleJob();
-//            } else {
-                // Handle message within 10 seconds
-//                handleNow();
-//            }
+            // For long-running tasks (10 seconds or more) use WorkManager.
+            scheduleJob();
 
         }
 
@@ -132,6 +117,7 @@ public class FirebaseMessagingServiceHandler extends FirebaseMessagingService {
 
     /**
      * Handle time allotted to BroadcastReceivers.
+     * Currently unused so commented out
      */
 //    private void handleNow() {
 //        Log.d(TAG, "Short lived task is done.");
@@ -152,6 +138,7 @@ public class FirebaseMessagingServiceHandler extends FirebaseMessagingService {
 
     /**
      * Create and show a simple notification containing the received FCM message.
+     * Currently unused so commented out
      *
      * @param messageBody FCM message body received.
      */

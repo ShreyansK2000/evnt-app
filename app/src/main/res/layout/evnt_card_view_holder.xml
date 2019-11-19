@@ -96,13 +96,32 @@
                     android:layout_margin="5dp"
                     android:text="Description will live here" />
 
-                <Button
-                    android:id="@+id/in_button"
-                    android:layout_width="130dp"
-                    android:layout_height="wrap_content"
-                    android:text="I'M IN!"
-                    android:textAlignment="viewStart"
-                    android:theme="@style/PrimaryFlatButton" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/in_button"
+                        android:layout_width="108dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center|center_horizontal"
+                        android:text="I'M IN!"
+                        android:textAlignment="viewStart"
+                        android:theme="@style/PrimaryFlatButton" />
+
+                    <Button
+                        android:id="@+id/details_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="MORE"
+                        android:textAlignment="viewStart"
+                        android:theme="@style/PrimaryFlatButton" />
+                </LinearLayout>
+
             </LinearLayout>
 
         </LinearLayout>

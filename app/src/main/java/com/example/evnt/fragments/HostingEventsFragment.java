@@ -24,7 +24,7 @@ import com.example.evnt.FragHostActivity;
 import com.example.evnt.IdentProvider;
 import com.example.evnt.R;
 import com.example.evnt.networking.ServerRequestModule;
-import com.example.evnt.networking.VolleyCallback;
+import com.example.evnt.networking.VolleyEventListCallback;
 import com.example.evnt.adapters.EvntHostListAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -152,7 +152,7 @@ public class HostingEventsFragment extends Fragment implements SwipeRefreshLayou
 
         // TODO need to filter non-hosting events
         evntlist.clear();
-        mServerRequestModule.getEventsRequest(getString(R.string.event_get_in), new VolleyCallback() {
+        mServerRequestModule.getEventsRequest(getString(R.string.event_get_in), new VolleyEventListCallback() {
             @Override
             public void onEventsListSuccessResponse(JSONArray data) {
                 String you = ident.getValue(getString(R.string.user_id));

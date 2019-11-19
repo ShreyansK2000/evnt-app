@@ -1,6 +1,9 @@
 package com.example.evnt.networking;
 
 import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -52,7 +55,7 @@ public class ServerRequestModule implements Serializable {
         getRequestQueue().add(req);
     }
 
-    public void getEventsRequest(String requestURL, final VolleyCallback callback) {
+    public void getEventsRequest(String requestURL, final VolleyEventListCallback callback) {
         String url = requestURL + ident.getValue(context.getString(R.string.user_id));
         StringRequest stringBodyRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -74,6 +77,27 @@ public class ServerRequestModule implements Serializable {
                         // Fail
                         error.printStackTrace();
                         callback.onErrorResponse(error.toString());
+                    }
+                }
+        );
+        addToRequestQueue(stringBodyRequest);
+    }
+
+    public void markUserAttendance(String requestURL, final VolleyAttendanceCallback callback) {
+        String url = requestURL + ident.getValue(context.getString(R.string.user_id));
+        StringRequest stringBodyRequest = new StringRequest(Request.Method.PUT, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        callback.onAttendanceSuccessResponse();
+                        // Also a hack, jesus this is all bad
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                        // Fail
                     }
                 }
         );

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
@@ -20,8 +21,14 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.evnt.EvntCardInfo;
+import com.example.evnt.EvntDetailsDialog;
 import com.example.evnt.IdentProvider;
 import com.example.evnt.R;
+import com.example.evnt.networking.ServerRequestModule;
+import com.example.evnt.networking.VolleyAttendanceCallback;
+import com.example.evnt.networking.VolleyEventListCallback;
+
+import org.json.JSONArray;
 
 import java.util.HashSet;
 import java.util.List;
@@ -44,16 +51,21 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
     private RequestQueue requestQueue;
     private IdentProvider ident;
     private String cardType;
+    private FragmentManager supportFragmentManager;
+    private ServerRequestModule serverRequestModule;
 
     private Set<Integer> drawn;
 
-    public EvntListAdapter(Context context, List<EvntCardInfo> evnt_list, String type) {
+    public EvntListAdapter(Context context, List<EvntCardInfo> evnt_list, String type,
+                           FragmentManager supportFragmentManager, ServerRequestModule module) {
         this.context = context;
         this.evnt_list = evnt_list;
         this.ident = new IdentProvider(context);
         this.requestQueue = Volley.newRequestQueue(context);
         this.drawn = new HashSet<>();
         this.cardType = type;
+        this.supportFragmentManager  = supportFragmentManager;
+        this.serverRequestModule = module;
     }
 
     @NonNull
@@ -65,8 +77,8 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
     }
 
     @Override
-    public void onBindViewHolder(@NonNull EvntInfoViewHolder holder, int position) {
-        EvntCardInfo evntInfo = evnt_list.get(position);
+    public void onBindViewHolder(@NonNull final EvntInfoViewHolder holder, int position) {
+        final EvntCardInfo evntInfo = evnt_list.get(position);
 
         String buttonType = cardType.equals(context.getString(R.string.browse)) ? context.getString(R.string.im_in) :
                                                         context.getString(R.string.nevermind);
@@ -81,6 +93,29 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
         holder.event_img_iv.setImageDrawable(context.getDrawable(evntInfo.getImage()));
         setAnimation(holder.itemView, position);
 
+        holder.moreButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDialog(evntInfo.getEvntName(), evntInfo.getDateString(), evntInfo.getDescription(),
+                    new EvntListAdapterCallback() {
+                        @Override
+                        public void removeEvent() {
+                            holder.markAttendance(holder.holderView, false);
+                        }
+
+                        @Override
+                        public void addEvent() {
+                            holder.markAttendance(holder.holderView, true);
+                        }
+                    });
+            }
+        });
+
+    }
+
+    private void openDialog(String event_name, String date_string, String desc, EvntListAdapterCallback callback) {
+        EvntDetailsDialog detailsDialog = new EvntDetailsDialog(context, event_name, date_string, desc, cardType, callback);
+        detailsDialog.show(supportFragmentManager, "");
     }
 
     private void setAnimation(View viewToAnimate, int position) {
@@ -100,6 +135,7 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
     class EvntInfoViewHolder extends RecyclerView.ViewHolder {
 
         private String id;
+        private View holderView;
 
         private TextView evnt_name_tv;
         private TextView host_name_tv;
@@ -108,6 +144,7 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
         private CircleImageView event_img_iv;
 
         private Button inButton;
+        private Button moreButton;
 
         private EvntInfoViewHolder(@NonNull final View itemView) {
             super(itemView);
@@ -117,79 +154,88 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
             descript_tv = itemView.findViewById(R.id.evnt_descript);
             date_tv = itemView.findViewById(R.id.evnt_time);
             inButton = itemView.findViewById(R.id.in_button);
+            moreButton = itemView.findViewById(R.id.details_button);
 
             inButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //TODO send api call to add this event to user events.
                     if (cardType.equals(context.getString(R.string.browse))) {
-                        markAttendance(itemView);
+                        markAttendance(itemView, true);
                     } else {
-                        remAttendance(itemView);
+                        markAttendance(itemView, false);
                     }
                 }
             });
+
+            holderView = itemView;
+
         }
 
-        private void markAttendance(final View v) {
-            String url = "https://api.evnt.me/events/api/add/" + id + "/" + ident.getValue(context.getString(R.string.user_id));
-            StringRequest stringBodyRequest = new StringRequest(Request.Method.PUT, url,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
+        private void markAttendance(final View v, final boolean attending) {
+            String reqURL = "https://api.evnt.me/events/api/";
+            if (attending) {
+                reqURL = reqURL + "add/" + id + "/";
+            } else {
+                reqURL = reqURL + "remove/" + id + "/";
+            }
+            serverRequestModule.markUserAttendance(reqURL,
+                new VolleyAttendanceCallback() {
+
+                    @Override
+                    public void onAttendanceSuccessResponse() {
+                        if (attending) {
                             Toast.makeText(context, "event added to your profile", Toast.LENGTH_LONG).show();
-                            // Also a hack, jesus this is all bad
-                            v.animate().scaleY(0).alpha(0).setDuration(120).withEndAction(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ViewGroup.LayoutParams params = v.getLayoutParams();
-                                    params.height = 0;
-                                    v.setLayoutParams(params);
-                                    v.setVisibility(View.GONE);
-                                }
-                            });
+                        } else {
+                            Toast.makeText(context, "event removed from your profile", Toast.LENGTH_LONG).show();
                         }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            error.printStackTrace();
-                            // Fail
-                        }
+                        v.animate().scaleY(0).alpha(0).setDuration(120).withEndAction(new Runnable() {
+                            @Override
+                            public void run() {
+                                ViewGroup.LayoutParams params = v.getLayoutParams();
+                                params.height = 0;
+                                v.setLayoutParams(params);
+                                v.setVisibility(View.GONE);
+                            }
+                        });
                     }
-            );
-            requestQueue.add(stringBodyRequest);
+
+                    @Override
+                    public void onErrorResponse(String result) {
+                        Toast.makeText(context, "There was an error", Toast.LENGTH_LONG).show();
+                    }
+                });
         }
 
-        private void remAttendance(final View v) {
-            String url = "https://api.evnt.me/events/api/remove/" + id + "/" + ident.getValue(context.getString(R.string.user_id));
-            StringRequest stringBodyRequest = new StringRequest(Request.Method.PUT, url,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            Toast.makeText(context, "event removed from your profile", Toast.LENGTH_LONG).show();
-                            // Also a hack, jesus this is all bad
-                            v.animate().scaleY(0).alpha(0).setDuration(120).withEndAction(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ViewGroup.LayoutParams params = v.getLayoutParams();
-                                    params.height = 0;
-                                    v.setLayoutParams(params);
-                                    v.setVisibility(View.GONE);
-                                }
-                            });
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            System.out.println(error.toString());
-                            // Fail
-                        }
-                    }
-            );
-            requestQueue.add(stringBodyRequest);
-        }
+//        private void remAttendance(final View v) {
+//            String url = "https://api.evnt.me/events/api/remove/" + id + "/" + ident.getValue(context.getString(R.string.user_id));
+//            StringRequest stringBodyRequest = new StringRequest(Request.Method.PUT, url,
+//                    new Response.Listener<String>() {
+//                        @Override
+//                        public void onResponse(String response) {
+//                            Toast.makeText(context, "event removed from your profile", Toast.LENGTH_LONG).show();
+//                            // Also a hack, jesus this is all bad
+//                            v.animate().scaleY(0).alpha(0).setDuration(120).withEndAction(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    ViewGroup.LayoutParams params = v.getLayoutParams();
+//                                    params.height = 0;
+//                                    v.setLayoutParams(params);
+//                                    v.setVisibility(View.GONE);
+//                                }
+//                            });
+//                        }
+//                    },
+//                    new Response.ErrorListener() {
+//                        @Override
+//                        public void onErrorResponse(VolleyError error) {
+//                            System.out.println(error.toString());
+//                            // Fail
+//                        }
+//                    }
+//            );
+//            requestQueue.add(stringBodyRequest);
+//        }
     }
 
 

@@ -19,7 +19,7 @@ import com.example.evnt.FragHostActivity;
 import com.example.evnt.IdentProvider;
 import com.example.evnt.R;
 import com.example.evnt.networking.ServerRequestModule;
-import com.example.evnt.networking.VolleyCallback;
+import com.example.evnt.networking.VolleyEventListCallback;
 import com.example.evnt.adapters.EvntListAdapter;
 
 import org.json.JSONArray;
@@ -90,7 +90,7 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-        EvntListAdapter evntListAdapter = new EvntListAdapter(context, evntlist, "browse");
+        EvntListAdapter evntListAdapter = new EvntListAdapter(context, evntlist, getString(R.string.browse), getActivity().getSupportFragmentManager(), mServerRequestModule);
         recyclerView.setAdapter(evntListAdapter);
 
         return view;
@@ -104,7 +104,7 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
      */
     private void loadList() {
         evntlist.clear();
-        mServerRequestModule.getEventsRequest(getString(R.string.event_get_avail), new VolleyCallback() {
+        mServerRequestModule.getEventsRequest(getString(R.string.event_get_avail), new VolleyEventListCallback() {
             @Override
             public void onEventsListSuccessResponse(JSONArray data) {
                 String you = ident.getValue(getString(R.string.user_id));

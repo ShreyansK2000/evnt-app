@@ -14,6 +14,8 @@
     <string name="edit_button">EDIT</string>
     <string name="delete_button">DELETE</string>
     <string name="browse">browse</string>
+    <string name="attending">attending</string>
+    <string name="event_details">Event Details</string>
 
     <!-- Cached ident props -->
     <string name="fb_id">facebookId</string>
@@ -29,6 +31,11 @@
     <string name="event_get_in">https://api.evnt.me/events/api/in/</string>
     <string name="event_get_avail">https://api.evnt.me/events/api/avail/</string>
     <string name="event_create">https://api.evnt.me/events/create/</string>
+
+    <string name="map_url_call">https://maps.googleapis.com/maps/api/staticmap?</string>
+    <string name="zoom_setting">&amp;zoom=15&amp;size=</string>
+
+    <string name="static_api_key">&amp;key=AIzaSyCLAL5fWb0dCVQCkeZOi94UV0tsL1Dukq0</string>
 
     <!-- Notifs TODO -->
     <string name="default_notification_channel_name">event</string>

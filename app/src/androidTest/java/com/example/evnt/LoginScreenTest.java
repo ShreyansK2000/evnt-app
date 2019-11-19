@@ -24,12 +24,7 @@ public class LoginScreenTest {
     @Test
     public void loginButton_logsYouIn() throws Exception {
         onView(withId(R.id.login_button)).perform(click());
-//
 
-//        x`wait(2000);
-        onView(withId(R.layout.activity_frag_host)).check(matches(isDisplayed()));
+        onView(withId(R.layout.fragment_pickevnt)).check(matches(isDisplayed()));
     }
-
-
-
 }

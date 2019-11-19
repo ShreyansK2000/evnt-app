@@ -38,6 +38,11 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.core.AllOf.allOf;
 
+
+/**
+ * Assumes that we are already logged into the application
+ * Try to open the event details dialog and close it
+ */
 @RunWith(AndroidJUnit4.class)
 public class EventDetailsTest {
     BottomNavigationView bottomNavigationMenu;
@@ -71,6 +76,7 @@ public class EventDetailsTest {
 
     @Before
     public void setUp() throws MalformedURLException {
+        System.out.println("Start setup");
         final FragHostActivity activity = activityRule.getActivity();
         bottomNavigationMenu = activity.findViewById(R.id.bottom_nav);
         this.activity = activityRule.getActivity();
@@ -80,6 +86,7 @@ public class EventDetailsTest {
         ident.setValue(activity.getString(R.string.fb_id), "1198569407002086");
         ident.setValue(activity.getString(R.string.profile_pic), "https://graph.facebook.com/1198569407002086/picture?width=250&height=250");
         serverRequestModule = ServerRequestModule.getInstance(activityRule.getActivity(), ident);
+        System.out.println("Finished setup");
     }
 
     @Test
@@ -87,6 +94,7 @@ public class EventDetailsTest {
         BottomNavigationView.OnNavigationItemSelectedListener mockedListener = listener;
         bottomNavigationMenu.setOnNavigationItemSelectedListener(mockedListener);
 
+        System.out.println("Switching to browse events fragment");
         /* Browse Fragment */
         onView(
                 allOf(
@@ -99,17 +107,30 @@ public class EventDetailsTest {
 
         // verify appropriate fragment is displayed
         onView(withId(R.id.fragment_browse_layout)).check(matches(isDisplayed()));
-        System.out.println("browse itemView worked");
+        System.out.println("On Browse Fragment");
 
+        System.out.println("Opening the details dialog for first event in browse events list");
         // Open the dialog and check that it appears
         onView(withIndex(withId(R.id.details_button), 0)).perform(click());
         onView(withId(R.id.details_dialog)).check(matches(isDisplayed()));
 
+        System.out.println("Closing the details dialog for first event in browse events list");
         // press the close button (x) and check that it vanishes
         onView(withId(R.id.close_button)).perform(click());
         onView(withId(R.id.details_dialog)).check(doesNotExist());
+
+        System.out.println("Success!");
     }
 
+    /**
+     * Stolen this code from stackoverflow
+     * Credit to second answer at
+     * https://stackoverflow.com/questions/29378552/in-espresso-how-to-avoid-ambiguousviewmatcherexception-when-multiple-views-matc
+     *
+     * @param matcher
+     * @param index
+     * @return
+     */
     public static Matcher<View> withIndex(final Matcher<View> matcher, final int index) {
         return new TypeSafeMatcher<View>() {
             int currentIndex = 0;

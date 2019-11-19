@@ -47,7 +47,6 @@ public class EvntCardInfo implements Serializable {
 
         // Operations for date conversion from stored UTC format
         TimeZone tz = TimeZone.getDefault();
-        System.out.println(start_time);
         DateFormat currentTZFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         currentTZFormat.setTimeZone(tz);
         Locale currentLocale = Locale.getDefault();
@@ -70,7 +69,6 @@ public class EvntCardInfo implements Serializable {
         try {
             Date date = currentTZFormat.parse(end_time);
             cal.setTime(date);
-//            cal.setTimeZone(tz);
             end_date = cal.get(Calendar.DATE);
         } catch (ParseException e) {
             e.printStackTrace();

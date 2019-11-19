@@ -40,6 +40,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 //import static junit.framework.TestCase.assertNotNull;
 
+/**
+ * Assumes that we are already logged into the application
+ * Try to log out of the application
+ */
 @RunWith(AndroidJUnit4.class)
 public class LogoutScreenTest {
 
@@ -74,6 +78,7 @@ public class LogoutScreenTest {
 
     @Before
     public void setUp() throws MalformedURLException {
+        System.out.println("Start setup");
         final FragHostActivity activity = activityRule.getActivity();
         bottomNavigationMenu = activity.findViewById(R.id.bottom_nav);
         this.activity = activityRule.getActivity();
@@ -83,6 +88,7 @@ public class LogoutScreenTest {
         ident.setValue(activity.getString(R.string.fb_id), "1198569407002086");
         ident.setValue(activity.getString(R.string.profile_pic), "https://graph.facebook.com/1198569407002086/picture?width=250&height=250");
         serverRequestModule = ServerRequestModule.getInstance(activityRule.getActivity(), ident);
+        System.out.println("Finished setup");
     }
 
     @Test

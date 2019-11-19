@@ -11,6 +11,7 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withResourceName;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.not;
@@ -40,6 +41,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 //import static junit.framework.TestCase.assertNotNull;
 
+
+/**
+ * Assumes that we are already logged into the application
+ * Walk through all the menu items in the bottom navigation menu
+ */
 @RunWith(AndroidJUnit4.class)
 public class MenuNavigationTest {
 
@@ -74,6 +80,7 @@ public class MenuNavigationTest {
 
     @Before
     public void setUp() throws MalformedURLException {
+        System.out.println("Start setup");
         final FragHostActivity activity = activityRule.getActivity();
         bottomNavigationMenu = activity.findViewById(R.id.bottom_nav);
         this.activity = activityRule.getActivity();
@@ -83,16 +90,20 @@ public class MenuNavigationTest {
         ident.setValue(activity.getString(R.string.fb_id), "1198569407002086");
         ident.setValue(activity.getString(R.string.profile_pic), "https://graph.facebook.com/1198569407002086/picture?width=250&height=250");
         serverRequestModule = ServerRequestModule.getInstance(activityRule.getActivity(), ident);
+        System.out.println("Finished setup");
     }
 
     @Test
     public void loads_PickEvntScreen() {
         // make sure bottom navigation activity appears as this activity is loaded
+        System.out.println("Checking some aspects of starting fragment");
+
         onView(withId(R.id.fragment_pickevnt)).check(matches(isDisplayed()));
         onView(withId(R.id.button)).check(matches(isDisplayed()));
-        System.out.println("hello");
         onView(withId(R.id.spinner_frame)).check(matches(isDisplayed()));
         onView(withId(R.id.bottom_nav)).check(matches(isDisplayed()));
+
+        System.out.println("Starting fragment OK");
     }
 
     @Test
@@ -103,6 +114,16 @@ public class MenuNavigationTest {
         BottomNavigationView.OnNavigationItemSelectedListener mockedListener = listener;
         bottomNavigationMenu.setOnNavigationItemSelectedListener(mockedListener);
 
+        System.out.println("We expect to be on pickevent fragment to start");
+
+        /* Started on pickevent fragment*/
+        assertTrue(bottomNavigationMenu.getMenu().findItem(R.id.pick_evnt).isChecked());
+
+        // verify appropriate fragment is displayed
+        onView(withId(R.id.fragment_pickevnt)).check(matches(isDisplayed()));
+        System.out.println("On pick event fragment");
+
+        System.out.println("Test bottom navigation itemview clicks");
         /* Browse Fragment */
         onView(
                 allOf(
@@ -115,7 +136,7 @@ public class MenuNavigationTest {
 
         // verify appropriate fragment is displayed
         onView(withId(R.id.fragment_browse_layout)).check(matches(isDisplayed()));
-        System.out.println("browse itemView worked");
+        System.out.println("On browse fragment");
 
         /* My Events Fragment */
         onView(
@@ -129,7 +150,7 @@ public class MenuNavigationTest {
 
         // verify appropriate fragment is displayed
         onView(withId(R.id.fragment_myevents)).check(matches(isDisplayed()));
-        System.out.println("myEvents itemView worked");
+        System.out.println("On myEvents fragment");
 
         /* Profile Fragment */
         onView(
@@ -143,7 +164,7 @@ public class MenuNavigationTest {
 
         // verify appropriate fragment is displayed
         onView(withId(R.id.fragment_profile)).check(matches(isDisplayed()));
-        System.out.println("profile itemView worked");
+        System.out.println("On profile fragment");
 
         /* Pick event Fragment */
         onView(
@@ -157,7 +178,9 @@ public class MenuNavigationTest {
 
         // verify appropriate fragment is displayed
         onView(withId(R.id.fragment_pickevnt)).check(matches(isDisplayed()));
-        System.out.println("pickEvent itemView worked");
+        System.out.println("On pickevent fragment");
+
+        System.out.println("Success!");
     }
 
 }

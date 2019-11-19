@@ -37,6 +37,12 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.core.AllOf.allOf;
 
+
+/**
+ * Assumes that we are already logged into the application
+ * Swipe to switch between the tabs of the my_events fragment to see
+ * hosting and attending events.
+ */
 @RunWith(AndroidJUnit4.class)
 public class MyEventsTabsTest {
 
@@ -71,6 +77,7 @@ public class MyEventsTabsTest {
 
     @Before
     public void setUp() throws MalformedURLException {
+        System.out.println("Start setup");
         final FragHostActivity activity = activityRule.getActivity();
         bottomNavigationMenu = activity.findViewById(R.id.bottom_nav);
         this.activity = activityRule.getActivity();
@@ -80,6 +87,7 @@ public class MyEventsTabsTest {
         ident.setValue(activity.getString(R.string.fb_id), "1198569407002086");
         ident.setValue(activity.getString(R.string.profile_pic), "https://graph.facebook.com/1198569407002086/picture?width=250&height=250");
         serverRequestModule = ServerRequestModule.getInstance(activityRule.getActivity(), ident);
+        System.out.println("Finished setup");
     }
 
     @Test
@@ -96,22 +104,36 @@ public class MyEventsTabsTest {
 
         // verify appropriate fragment is displayed
         onView(withId(R.id.fragment_myevents)).check(matches(isDisplayed()));
-        System.out.println("myEvents itemView worked");
+        System.out.println("On my events fragment");
 
         // We will differentiate between the tabs using the kinds of buttons used
 
         // Hosting tab has edit and delete buttons, so check for delete button when there are events
         onView(withIndex(withId(R.id.delete_button),0)).check(matches(isDisplayed()));
+        System.out.println("We see a delete button, in hosting tab");
 
         // swipe left and see that details buttons can be seen ("MORE")
         onView(withIndex(withId(R.id.fragment_hosting),0)).perform(ViewActions.swipeLeft());
         onView(withIndex(withId(R.id.details_button),0)).check(matches(isDisplayed()));
+        System.out.println("We see a details ('MORE') button, in attending tab");
 
         // swipe right and see that we can once again see delete buttons
         onView(withIndex(withId(R.id.fragment_hosting),1)).perform(ViewActions.swipeRight());
         onView(withIndex(withId(R.id.delete_button),0)).check(matches(isDisplayed()));
+        System.out.println("We see a details ('MORE') button, in attending tab");
+
+        System.out.println("Success!");
     }
 
+    /**
+     * Stolen this code from stackoverflow
+     * Credit to second answer at
+     * https://stackoverflow.com/questions/29378552/in-espresso-how-to-avoid-ambiguousviewmatcherexception-when-multiple-views-matc
+     *
+     * @param matcher
+     * @param index
+     * @return
+     */
     public static Matcher<View> withIndex(final Matcher<View> matcher, final int index) {
         return new TypeSafeMatcher<View>() {
             int currentIndex = 0;

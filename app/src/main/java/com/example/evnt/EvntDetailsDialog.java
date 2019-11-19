@@ -132,12 +132,10 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
     private void loadImage(String latt, String longt) {
         // TODO setup loading image based on coordinates/address
         String mapImgURL = context.getString(R.string.map_url_call)
-//                            +  "center="+latt+","+longt
                 + "markers=color:red%7C49.262271,-123.250680"
                 + context.getString(R.string.zoom_setting)
                 + (Integer.toString(750) + "x" + Integer.toString(550))
                 + context.getString(R.string.static_api_key);
-        System.out.println(mapImgURL);
         Picasso.get().load(mapImgURL)
                      .into(map_image_iv);
     }

@@ -185,6 +185,11 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
                                     v.setVisibility(View.GONE);
                                 }
                             });
+
+                            evnt_list.remove(getAdapterPosition());
+                            notifyItemRemoved(getAdapterPosition());
+                            notifyItemRangeChanged(getAdapterPosition(), evnt_list.size());
+
                             dialog.dismiss();
                         }
                     });

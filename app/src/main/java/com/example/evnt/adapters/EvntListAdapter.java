@@ -198,6 +198,10 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
                                 v.setVisibility(View.GONE);
                             }
                         });
+
+                        evnt_list.remove(getAdapterPosition());
+                        notifyItemRemoved(getAdapterPosition());
+                        notifyItemRangeChanged(getAdapterPosition(), evnt_list.size());
                     }
 
                     @Override
@@ -207,35 +211,6 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
                 });
         }
 
-//        private void remAttendance(final View v) {
-//            String url = "https://api.evnt.me/events/api/remove/" + id + "/" + ident.getValue(context.getString(R.string.user_id));
-//            StringRequest stringBodyRequest = new StringRequest(Request.Method.PUT, url,
-//                    new Response.Listener<String>() {
-//                        @Override
-//                        public void onResponse(String response) {
-//                            Toast.makeText(context, "event removed from your profile", Toast.LENGTH_LONG).show();
-//                            // Also a hack, jesus this is all bad
-//                            v.animate().scaleY(0).alpha(0).setDuration(120).withEndAction(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    ViewGroup.LayoutParams params = v.getLayoutParams();
-//                                    params.height = 0;
-//                                    v.setLayoutParams(params);
-//                                    v.setVisibility(View.GONE);
-//                                }
-//                            });
-//                        }
-//                    },
-//                    new Response.ErrorListener() {
-//                        @Override
-//                        public void onErrorResponse(VolleyError error) {
-//                            System.out.println(error.toString());
-//                            // Fail
-//                        }
-//                    }
-//            );
-//            requestQueue.add(stringBodyRequest);
-//        }
     }
 
 

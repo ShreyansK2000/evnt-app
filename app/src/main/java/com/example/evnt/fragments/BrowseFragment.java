@@ -83,7 +83,7 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
         final View view = inflater.inflate(R.layout.fragment_browse,
                 container, false);
 
-        SwipeRefreshLayout swipeView = view.findViewById(R.id.main_content);
+        SwipeRefreshLayout swipeView = view.findViewById(R.id.fragment_browse_layout);
         swipeView.setOnRefreshListener(this);
 
         RecyclerView recyclerView = view.findViewById(R.id.evnt_list_recycler);

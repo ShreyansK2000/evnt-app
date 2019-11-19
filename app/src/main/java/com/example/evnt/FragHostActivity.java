@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ import java.util.List;
 
 public class FragHostActivity extends AppCompatActivity {
 
+    public String TAG = "FragHost";
     protected Bundle serverCommArgs;
     private ServerRequestModule serverRequestModule;
     private IdentProvider ident;
@@ -99,6 +101,7 @@ public class FragHostActivity extends AppCompatActivity {
         new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
                 Fragment selected;
                 // This lifecycle is a bit suboptimal, as we're creating new fragments every time
                 switch (menuItem.getItemId()) {

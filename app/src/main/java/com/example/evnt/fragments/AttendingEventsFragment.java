@@ -83,7 +83,7 @@ public class AttendingEventsFragment extends Fragment implements SwipeRefreshLay
         final View view = inflater.inflate(R.layout.fragment_attending_events,
                 container, false);
 
-        SwipeRefreshLayout swipeView = view.findViewById(R.id.main_content);
+        SwipeRefreshLayout swipeView = view.findViewById(R.id.fragment_event_list);
         swipeView.setOnRefreshListener(this);
 
         RecyclerView recyclerView = view.findViewById(R.id.evnt_list_recycler);

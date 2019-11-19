@@ -90,7 +90,7 @@ public class HostingEventsFragment extends Fragment implements SwipeRefreshLayou
         final View view = inflater.inflate(R.layout.fragment_hosting_events,
                 container, false);
 
-        SwipeRefreshLayout swipeView = view.findViewById(R.id.main_content);
+        SwipeRefreshLayout swipeView = view.findViewById(R.id.fragment_event_list);
         swipeView.setOnRefreshListener(this);
 
         FloatingActionButton create_event_button = view.findViewById(R.id.create_event);

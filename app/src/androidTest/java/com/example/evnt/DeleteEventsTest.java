@@ -112,7 +112,7 @@ public class DeleteEventsTest {
         // We will differentiate between the tabs using the kinds of buttons used
 
         Thread.sleep(1000);
-        onView(withIndex(withId(R.id.evnt_list_recycler),0)).check(new RecyclerViewItemCountAssertion(14));
+        onView(withIndex(withId(R.id.evnt_list_recycler),0)).check(new RecyclerViewItemCountAssertion(13));
         System.out.println("Initial amount, set using current hosted events for user.");
 
         // Hosting tab has edit and delete buttons, so check for delete button when there are events
@@ -127,7 +127,7 @@ public class DeleteEventsTest {
 
         onView(withText("YES")).perform(click());
 
-        onView(withIndex(withId(R.id.evnt_list_recycler),0)).check(new RecyclerViewItemCountAssertion(13));
+        onView(withIndex(withId(R.id.evnt_list_recycler),0)).check(new RecyclerViewItemCountAssertion(12));
         System.out.println("When item is removed, the adapter size should be reduced by 1");
 
         System.out.println("Success!");

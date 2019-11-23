@@ -11,6 +11,7 @@ import com.example.evnt.networking.ServerRequestModule;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -35,10 +36,27 @@ public class FragHostActivity extends AppCompatActivity {
     protected Bundle serverCommArgs;
     private ServerRequestModule serverRequestModule;
     private IdentProvider ident;
+    private PickEvntFragment pickEvntFragment;
+    private BrowseFragment browseFragment;
+    private MyEventsFragment myEventsFragment;
+    private ProfileFragment profileFragment;
+    private Fragment current;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        pickEvntFragment = null;
+        browseFragment = null;
+        myEventsFragment = null;
+        profileFragment = null;
+
+//        if (savedInstanceState != null) {
+//            pickEvntFragment = (PickEvntFragment) getSupportFragmentManager().getFragment(savedInstanceState, "pickEvntFrag");
+//            browseFragment = (BrowseFragment) getSupportFragmentManager().getFragment(savedInstanceState, "browseFrag");
+//            myEventsFragment = (MyEventsFragment) getSupportFragmentManager().getFragment(savedInstanceState, "myEventsFrag");
+//            profileFragment = (ProfileFragment) getSupportFragmentManager().getFragment(savedInstanceState, "profileFrag");
+//        }
+
         setContentView(R.layout.activity_frag_host);
         ident = new IdentProvider(this);
 
@@ -61,6 +79,18 @@ public class FragHostActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "error creating servermodule", Toast.LENGTH_LONG).show();
         }
+
+        pickEvntFragment = new PickEvntFragment();
+        browseFragment = BrowseFragment.newInstance(serverRequestModule);
+        myEventsFragment = MyEventsFragment.newInstance(serverRequestModule);
+        profileFragment = new ProfileFragment();
+        FragmentManager fm = getSupportFragmentManager();
+
+        fm.beginTransaction().add(R.id.fragment_container, profileFragment, "profile").hide(profileFragment).commit();
+        fm.beginTransaction().add(R.id.fragment_container, browseFragment, "browse").hide(browseFragment).commit();
+        fm.beginTransaction().add(R.id.fragment_container, myEventsFragment, "myEvents").hide(myEventsFragment).commit();
+        fm.beginTransaction().add(R.id.fragment_container, pickEvntFragment, "pick").commit();
+        current = pickEvntFragment;
     }
     private void retrieveFBUserDetails(final AccessToken token) {
         GraphRequest request = GraphRequest.newMeRequest(token, new GraphRequest.GraphJSONObjectCallback() {
@@ -103,17 +133,62 @@ public class FragHostActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
                 Fragment selected;
+
+                if (current == null) {
+                    pickEvntFragment = new PickEvntFragment();
+                    current = pickEvntFragment;
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                            pickEvntFragment);
+                }
                 // This lifecycle is a bit suboptimal, as we're creating new fragments every time
                 switch (menuItem.getItemId()) {
-                    case R.id.pick_evnt:  selected = new PickEvntFragment(); break;
-                    case R.id.browse_evnt: selected = BrowseFragment.newInstance(serverRequestModule); break;
-                    case R.id.my_events: selected = MyEventsFragment.newInstance(serverRequestModule); break;
-                    case R.id.profile_evnt: selected = new ProfileFragment(); break;
-                    default: selected = new PickEvntFragment(); break;
-                }
+                    case R.id.pick_evnt:
+                        if (pickEvntFragment == null) selected = new PickEvntFragment();
+                        else selected = pickEvntFragment;
 
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        selected).commit();
+                        getSupportFragmentManager().beginTransaction().hide(current).show(selected).commit();
+                        current = selected;
+                        break;
+
+                    case R.id.browse_evnt:
+                        if (browseFragment == null) selected = BrowseFragment
+                                                                .newInstance(serverRequestModule);
+                        else selected = browseFragment;
+
+                        // require onRefresh to load list again to get changes from the server
+//                        ((BrowseFragment) selected).onRefresh();
+                        getSupportFragmentManager().beginTransaction().hide(current).show(selected).commit();
+                        current = selected;
+                        break;
+
+                    case R.id.my_events:
+                        if (myEventsFragment == null) selected = MyEventsFragment
+                                                                .newInstance(serverRequestModule);
+                        else selected = myEventsFragment;
+
+                        getSupportFragmentManager().beginTransaction().hide(current).show(selected).commit();
+                        current = selected;
+                        break;
+
+                    case R.id.profile_evnt:
+                        if (profileFragment == null) selected = new ProfileFragment();
+                        else selected = profileFragment;
+
+                        getSupportFragmentManager().beginTransaction().hide(current).show(selected).commit();
+                        current = selected;
+                        break;
+
+                    default:
+                        if (pickEvntFragment == null) selected = new PickEvntFragment();
+                        else selected = pickEvntFragment;
+
+                        getSupportFragmentManager().beginTransaction().hide(current).show(selected).commit();
+                        current = selected;
+                        break;
+                }
+//
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+//                        selected).commit();
 
                 return true;
             }
@@ -149,4 +224,15 @@ public class FragHostActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+//
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//
+//        getSupportFragmentManager().putFragment(outState, "pickEvntFrag", pickEvntFragment);
+//        getSupportFragmentManager().putFragment(outState, "browseFrag", browseFragment);
+//        getSupportFragmentManager().putFragment(outState, "myEventsFrag", myEventsFragment);
+//        getSupportFragmentManager().putFragment(outState, "profileFrag", profileFragment);
+//
+//    }
 }

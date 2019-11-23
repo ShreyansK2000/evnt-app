@@ -198,12 +198,14 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
                             }
                         });
 
+                        int position = getAdapterPosition();
+
+                        evnt_list.remove(position);
                         if (mCallback != null) {
-                            mCallback.itemRemoved(getAdapterPosition());
+                            mCallback.itemRemoved(position);
                         }
-                        evnt_list.remove(getAdapterPosition());
-                        notifyItemRemoved(getAdapterPosition());
-                        notifyItemRangeChanged(getAdapterPosition(), evnt_list.size());
+                        notifyItemRemoved(position);
+                        notifyItemRangeChanged(position, evnt_list.size());
 
                     }
 

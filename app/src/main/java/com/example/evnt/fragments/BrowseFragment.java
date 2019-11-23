@@ -62,10 +62,20 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
         return fragment;
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
+//    @Override
+//    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+//        super.onActivityCreated(savedInstanceState);
+//        if (savedInstanceState != null) {
+//            //Restore the fragment's state here
+//        }
+//
+//    }
+//
+//    @Override
+//    public void onSaveInstanceState(@NonNull Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//        //Save the fragment's state here
+//    }
 
     /**
      * This is where we will be opening the saved state of the fragmend (if available)
@@ -85,6 +95,8 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
         evntlist = new ArrayList<>();
         loadList();
     }
+
+
 
     /**
      * THis is where we inflate the view and create the cards we need to store using the

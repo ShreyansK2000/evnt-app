@@ -90,7 +90,10 @@ public class AttendingEventsFragment extends Fragment implements SwipeRefreshLay
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-        EvntListAdapter evntListAdapter = new EvntListAdapter(context, evntlist, getString(R.string.attending), getActivity().getSupportFragmentManager(), mServerRequestModule);
+        EvntListAdapter evntListAdapter = new EvntListAdapter(context, evntlist,
+                                                        getString(R.string.attending),
+                                                        getActivity().getSupportFragmentManager(),
+                                                        mServerRequestModule, null);
         recyclerView.setAdapter(evntListAdapter);
 
         return view;

@@ -16,6 +16,8 @@
     <string name="browse">browse</string>
     <string name="attending">attending</string>
     <string name="event_details">Event Details</string>
+    <string name="search">Search Events</string>
+    <string name="search_hint">Search by text (name,desc) &#8230;</string>
 
     <!-- Cached ident props -->
     <string name="fb_id">facebookId</string>

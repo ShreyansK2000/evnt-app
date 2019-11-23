@@ -48,24 +48,23 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
 
     private Context context;
     private List<EvntCardInfo> evnt_list;
-    private RequestQueue requestQueue;
-    private IdentProvider ident;
     private String cardType;
     private FragmentManager supportFragmentManager;
     private ServerRequestModule serverRequestModule;
+    private OnItemRemovedListener mCallback;
 
     private Set<Integer> drawn;
 
     public EvntListAdapter(Context context, List<EvntCardInfo> evnt_list, String type,
-                           FragmentManager supportFragmentManager, ServerRequestModule module) {
+                           FragmentManager supportFragmentManager, ServerRequestModule module,
+                           OnItemRemovedListener callBack) {
         this.context = context;
         this.evnt_list = evnt_list;
-        this.ident = new IdentProvider(context);
-        this.requestQueue = Volley.newRequestQueue(context);
         this.drawn = new HashSet<>();
         this.cardType = type;
         this.supportFragmentManager  = supportFragmentManager;
         this.serverRequestModule = module;
+        this.mCallback = callBack;
     }
 
     @NonNull
@@ -199,9 +198,13 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
                             }
                         });
 
+                        if (mCallback != null) {
+                            mCallback.itemRemoved(getAdapterPosition());
+                        }
                         evnt_list.remove(getAdapterPosition());
                         notifyItemRemoved(getAdapterPosition());
                         notifyItemRangeChanged(getAdapterPosition(), evnt_list.size());
+
                     }
 
                     @Override

@@ -4,20 +4,27 @@ import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.evnt.EvntCardInfo;
 import com.example.evnt.FragHostActivity;
 import com.example.evnt.IdentProvider;
 import com.example.evnt.R;
+import com.example.evnt.adapters.OnItemRemovedListener;
 import com.example.evnt.networking.ServerRequestModule;
 import com.example.evnt.networking.VolleyEventListCallback;
 import com.example.evnt.adapters.EvntListAdapter;
@@ -34,6 +41,17 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private IdentProvider ident;
     private List<EvntCardInfo> evntlist;
     private Fragment ctx;
+    private SearchView searchEventsView;
+    private RecyclerView recyclerView;
+    private List<EvntCardInfo> filteredList;
+    private OnItemRemovedListener browseRemoveCallback = new OnItemRemovedListener() {
+        @Override
+        public void itemRemoved(int position) {
+            if (evntlist != null) {
+                evntlist.remove(position);
+            }
+        }
+    };
 
     public static BrowseFragment newInstance(ServerRequestModule serverRequestModule) {
         BrowseFragment fragment = new BrowseFragment();
@@ -63,6 +81,7 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
         ident = new IdentProvider(getContext());
         mServerRequestModule = (ServerRequestModule) getArguments().getSerializable("server_module");
 
+        setHasOptionsMenu(true);
         evntlist = new ArrayList<>();
         loadList();
     }
@@ -86,12 +105,12 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
         SwipeRefreshLayout swipeView = view.findViewById(R.id.fragment_browse_layout);
         swipeView.setOnRefreshListener(this);
 
-        RecyclerView recyclerView = view.findViewById(R.id.evnt_list_recycler);
+
+        recyclerView = view.findViewById(R.id.evnt_list_recycler);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-        EvntListAdapter evntListAdapter = new EvntListAdapter(context, evntlist, getString(R.string.browse), getActivity().getSupportFragmentManager(), mServerRequestModule);
-        recyclerView.setAdapter(evntListAdapter);
+        filterResults("");
 
         return view;
     }
@@ -132,5 +151,61 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
     @Override
     public void onRefresh() {
         loadList();
+        filterResults("");
+    }
+
+    public void filterResults(String query) {
+        filteredList = new ArrayList<>();
+        if (searchEventsView != null) {
+            for (EvntCardInfo evntCardInfo : evntlist) {
+                if (evntCardInfo.getEvntName().toLowerCase().startsWith(query.toLowerCase())
+                    || evntCardInfo.getDescription().toLowerCase().contains(query.toLowerCase())) {
+                    filteredList.add(evntCardInfo);
+                }
+            }
+        } else {
+            filteredList = evntlist;
+        }
+
+        recyclerView.setAdapter(new EvntListAdapter(context, filteredList,
+                getString(R.string.browse), getActivity().getSupportFragmentManager(),
+                mServerRequestModule, browseRemoveCallback));
+
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.search_menu, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.search_view);
+        searchEventsView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchEventsView.setQueryHint(getString(R.string.search_hint));
+        searchEventsView.setIconifiedByDefault(true);
+        searchEventsView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterResults(newText);
+                return false;
+            }
+        });
+
+        searchEventsView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                filteredList = evntlist;
+
+                recyclerView.setAdapter(new EvntListAdapter(context, filteredList,
+                        getString(R.string.browse), getActivity().getSupportFragmentManager(),
+                        mServerRequestModule, browseRemoveCallback));
+                return false;
+            }
+        });
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 }

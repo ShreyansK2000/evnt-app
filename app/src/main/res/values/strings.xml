@@ -33,6 +33,7 @@
     <string name="event_get_in">https://api.evnt.me/events/api/in/</string>
     <string name="event_get_avail">https://api.evnt.me/events/api/avail/</string>
     <string name="event_create">https://api.evnt.me/events/create/</string>
+    <string name="event_edit">https://api.evnt.me/events/edit/</string>
 
     <string name="map_url_call">https://maps.googleapis.com/maps/api/staticmap?</string>
     <string name="zoom_setting">&amp;zoom=15&amp;size=</string>

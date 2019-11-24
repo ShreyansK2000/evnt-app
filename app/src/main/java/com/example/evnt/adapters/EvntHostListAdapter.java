@@ -2,11 +2,14 @@ package com.example.evnt.adapters;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Rect;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -124,7 +128,7 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
                 @Override
                 public void onClick(View v) {
                     //TODO send api call to add this event to user events.
-                    markAttendance(itemView);
+                    editEvent(itemView);
                 }
             });
 
@@ -137,35 +141,43 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
 
         }
 
-        private void markAttendance(final View v) {
+        private void editEvent(final View v) {
             // TODO change this for editing
-            String url = "https://api.evnt.me/events/api/remove/" + id + "/" + ident.getValue(context.getString(R.string.user_id));
-            StringRequest stringBodyRequest = new StringRequest(Request.Method.PUT, url,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            Toast.makeText(context, "event removed from your profile", Toast.LENGTH_LONG).show();
-                            // Also a hack, jesus this is all bad
-                            v.animate().scaleY(0).alpha(0).setDuration(120).withEndAction(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ViewGroup.LayoutParams params = v.getLayoutParams();
-                                    params.height = 0;
-                                    v.setLayoutParams(params);
-                                    v.setVisibility(View.GONE);
-                                }
-                            });
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            System.out.println(error);
-                            // Fail
-                        }
-                    }
-            );
-            requestQueue.add(stringBodyRequest);
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+            WebView wv = new WebView(context) {
+                @Override
+                protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
+                    super.onFocusChanged(true, direction, previouslyFocusedRect);
+                }
+
+                @Override
+                public boolean onCheckIsTextEditor() {
+                    return true;
+                }
+            };
+
+            HashMap<String, String> params = new HashMap<>();
+            params.put("Content-Type", "application/json; charset=UTF-8");
+            params.put("accessToken", ident.getValue(context.getString(R.string.access_token)));
+            params.put("userId", ident.getValue(context.getString(R.string.user_id)));
+            wv.getSettings().setJavaScriptEnabled(true);
+            wv.loadUrl(context.getString(R.string.event_edit) + evnt_list.get(getAdapterPosition()).getId());
+            wv.setWebViewClient(new WebViewClient() {
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    view.loadUrl(url);
+                    return false;
+                }
+            });
+            builder.setView(wv);
+            builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+            builder.show();
         }
 
         private void delEvent(final View v, final TextView tv) {

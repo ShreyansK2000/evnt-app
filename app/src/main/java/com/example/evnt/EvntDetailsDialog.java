@@ -38,6 +38,8 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
     private ImageView map_image_iv;
     // nothing to initialize
 
+    private String location;
+
     private ImageView close_button;
     private Button cancel_button;
 
@@ -53,8 +55,10 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
         cardType = "browse";
     }
 
-    public EvntDetailsDialog(Context context, String event_name, String date_string, String desc, String cardType, EvntListAdapterCallback callback) {
+    // Use a builder for this, probably
+    public EvntDetailsDialog(Context context, String event_name, String date_string, String desc, String cardType, String location, EvntListAdapterCallback callback) {
         this.event_name = event_name;
+        this.location = location;
         this.date_string = date_string;
         this.desc = desc;
         this.cardType = cardType;
@@ -132,10 +136,12 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
     private void loadImage(String latt, String longt) {
         // TODO setup loading image based on coordinates/address
         String mapImgURL = context.getString(R.string.map_url_call)
-                + "markers=color:red%7C49.262271,-123.250680"
+                + "markers=color:red%7C"
+                + location
                 + context.getString(R.string.zoom_setting)
                 + (Integer.toString(750) + "x" + Integer.toString(550))
                 + context.getString(R.string.static_api_key);
+        System.out.println(mapImgURL);
         Picasso.get().load(mapImgURL)
                      .into(map_image_iv);
     }

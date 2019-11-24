@@ -204,6 +204,7 @@ public class FragHostActivity extends AppCompatActivity {
                         .withDescription((String) obj.get("description"))
                         .withStartTime((String) obj.get("startTime"))
                         .withEndTime((String) obj.get("endTime"))
+                        .withLocation((String) obj.get("location"))
                         .withId((String) obj.get("_id"))
                         .withHost(obj.get("host").equals(you) ? "you" : "Anonymous")
                         .build();

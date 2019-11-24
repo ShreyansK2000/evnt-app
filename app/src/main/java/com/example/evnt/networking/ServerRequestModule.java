@@ -157,5 +157,40 @@ public class ServerRequestModule implements Serializable {
         };
         addToRequestQueue(stringBodyRequest);
     }
+
+    public void getBestEvent(String requestURL, final VolleyBestEventCallback callback) {
+        String url = requestURL;
+        StringRequest stringBodyRequest = new StringRequest(Request.Method.DELETE, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        JSONObject res = null;
+                        try {
+                            res = new JSONObject(response);
+                            callback.onReceivedBestEvent(res);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("accessToken", token);
+                params.put("userId", ident.getValue(context.getString(R.string.user_id)));
+                return params;
+            }
+        };
+        addToRequestQueue(stringBodyRequest);
+    }
 }
 

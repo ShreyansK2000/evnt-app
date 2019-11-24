@@ -23,12 +23,16 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.evnt.GetLocationCallback;
 import com.example.evnt.IdentProvider;
 import com.example.evnt.R;
 import com.example.evnt.networking.ServerRequestModule;
+import com.example.evnt.networking.VolleyBestEventCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -99,11 +103,24 @@ public class PickEvntFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            getLocation();
+            getLocation(new GetLocationCallback() {
+                @Override
+                public void gotLocationString(String location) {
+                    System.out.println(location);
+                    String url = "https://api.evnt.me/events/api/suggest/";
+                    mServerRequestModule.getBestEvent(url, new VolleyBestEventCallback() {
+                        @Override
+                        public void onReceivedBestEvent(JSONObject response) {
+                            // do stuff with response
+                            System.out.println(response);
+                        }
+                    });
+                }
+            });
         }
     };
 
-    private void getLocation() {
+    private void getLocation(final GetLocationCallback callback) {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
 
@@ -126,24 +143,19 @@ public class PickEvntFragment extends Fragment {
             }
 
         } else {
-            System.out.println("reach?");
             System.out.println(fusedLocationClient);
             fusedLocationClient.getLastLocation()
                     .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
                         @Override
                         public void onSuccess(Location location) {
                             // Got last known location. In some rare situations this can be null.
-                            System.out.println("success?");
-                            System.out.println(location);
                             if (location != null) {
-                                System.out.println("waht the hell");
                                 // Logic to handle location object
 
                                 String latt = Double.toString(location.getLatitude());
                                 String longt = Double.toString(location.getLongitude());
 
-                                System.out.println(latt);
-                                System.out.println(longt);
+                                callback.gotLocationString(latt+","+longt);
                             }
                         }
                     });

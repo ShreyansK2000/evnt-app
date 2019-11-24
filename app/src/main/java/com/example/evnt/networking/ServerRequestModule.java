@@ -159,8 +159,8 @@ public class ServerRequestModule implements Serializable {
     }
 
     public void getBestEvent(String requestURL, final VolleyBestEventCallback callback) {
-        String url = requestURL;
-        StringRequest stringBodyRequest = new StringRequest(Request.Method.DELETE, url,
+        String url = requestURL + ident.getValue(context.getString(R.string.user_id));
+        StringRequest stringBodyRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

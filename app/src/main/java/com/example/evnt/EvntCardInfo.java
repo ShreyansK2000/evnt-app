@@ -9,8 +9,10 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 /**
@@ -35,6 +37,12 @@ public class EvntCardInfo implements Serializable {
     private String id;
     private List<String> tag_list;
 
+    private Map<String, Integer> defaultImages = new HashMap<String, Integer>() {{
+        put("sports", R.drawable.sports);
+        put("party", R.drawable.party);
+        put("gmaes", R.drawable.games);
+    }};
+
     // We shouldn't have access to this directly
     private EvntCardInfo(EvntCardInfo.Builder builder) {
         location = builder.location;
@@ -44,9 +52,11 @@ public class EvntCardInfo implements Serializable {
         end_time = builder.end_time;
         description = builder.description;
         inORout = builder.inORout;
-        image = builder.image;
+//        image = builder.image;
         id = builder.id;
         tag_list = builder.tags;
+        image = builder.tags.isEmpty() || !defaultImages.containsKey(builder.tags.get(0)) ?
+                R.drawable.random : defaultImages.get(builder.tags.get(0));
 
         int start_date = 0;
         int end_date = 0;

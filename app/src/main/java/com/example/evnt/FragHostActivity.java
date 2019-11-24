@@ -80,7 +80,7 @@ public class FragHostActivity extends AppCompatActivity {
             Toast.makeText(this, "error creating servermodule", Toast.LENGTH_LONG).show();
         }
 
-        pickEvntFragment = new PickEvntFragment();
+        pickEvntFragment = PickEvntFragment.newInstance(serverRequestModule);
         browseFragment = BrowseFragment.newInstance(serverRequestModule);
         myEventsFragment = MyEventsFragment.newInstance(serverRequestModule);
         profileFragment = new ProfileFragment();
@@ -135,7 +135,7 @@ public class FragHostActivity extends AppCompatActivity {
                 Fragment selected;
 
                 if (current == null) {
-                    pickEvntFragment = new PickEvntFragment();
+                    pickEvntFragment = PickEvntFragment.newInstance(serverRequestModule);
                     current = pickEvntFragment;
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                             pickEvntFragment);
@@ -143,7 +143,7 @@ public class FragHostActivity extends AppCompatActivity {
                 // This lifecycle is a bit suboptimal, as we're creating new fragments every time
                 switch (menuItem.getItemId()) {
                     case R.id.pick_evnt:
-                        if (pickEvntFragment == null) selected = new PickEvntFragment();
+                        if (pickEvntFragment == null) selected = PickEvntFragment.newInstance(serverRequestModule);
                         else selected = pickEvntFragment;
 
                         getSupportFragmentManager().beginTransaction().hide(current).show(selected).commit();
@@ -179,7 +179,7 @@ public class FragHostActivity extends AppCompatActivity {
                         break;
 
                     default:
-                        if (pickEvntFragment == null) selected = new PickEvntFragment();
+                        if (pickEvntFragment == null) selected = PickEvntFragment.newInstance(serverRequestModule);
                         else selected = pickEvntFragment;
 
                         getSupportFragmentManager().beginTransaction().hide(current).show(selected).commit();

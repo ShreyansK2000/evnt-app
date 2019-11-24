@@ -4,8 +4,12 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -29,6 +33,7 @@ public class EvntCardInfo implements Serializable {
     private int image;
     private static String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
     private String id;
+    private List<String> tag_list;
 
     // We shouldn't have access to this directly
     private EvntCardInfo(EvntCardInfo.Builder builder) {
@@ -41,6 +46,7 @@ public class EvntCardInfo implements Serializable {
         inORout = builder.inORout;
         image = builder.image;
         id = builder.id;
+        tag_list = builder.tags;
 
         int start_date = 0;
         int end_date = 0;
@@ -119,6 +125,10 @@ public class EvntCardInfo implements Serializable {
         return id;
     }
 
+    public List<String> getTagList() {
+        return tag_list;
+    }
+
     public static class Builder {
         // I really wish we had Lombok for this
         private String location;
@@ -130,6 +140,7 @@ public class EvntCardInfo implements Serializable {
         private String inORout;
         private int image;
         private String id;
+        private List<String> tags;
 
         public Builder() {
             location = "";
@@ -141,6 +152,7 @@ public class EvntCardInfo implements Serializable {
             inORout = "";
             image = R.drawable.chika;
             id = "";
+            tags = new ArrayList<String>();
         }
 
         public Builder withLocation(String location) {
@@ -185,6 +197,11 @@ public class EvntCardInfo implements Serializable {
 
         public Builder withId(String id) {
             this.id = id;
+            return this;
+        }
+
+        public Builder withTagList(String[] tags) {
+            this.tags = new ArrayList(Arrays.asList(tags));
             return this;
         }
 

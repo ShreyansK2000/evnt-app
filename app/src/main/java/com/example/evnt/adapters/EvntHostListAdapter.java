@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.HashMap;
@@ -54,6 +55,7 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
     private IdentProvider ident;
     private Set<Integer> drawn;
     private ServerRequestModule serverRequestModule;
+    private RecyclerView tagRecyclerView;
 
     public EvntHostListAdapter(Context context, List<EvntCardInfo> evnt_list, ServerRequestModule serverRequestModule) {
         this.context = context;
@@ -82,6 +84,10 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
         holder.descript_tv.setText(evntInfo.getDescription());
         holder.date_tv.setText(evntInfo.getDateString());
         holder.evnt_name_tv.setText(evntInfo.getEvntName());
+        holder.tag_list = evntInfo.getTagList();
+        if (!(holder.tag_list.get(0).equals(""))) {
+            holder.tagRecycler.setAdapter(new TagChipAdapter(context, holder.tag_list));
+        }
 
         holder.event_img_iv.setImageDrawable(context.getDrawable(evntInfo.getImage()));
         setAnimation(holder.itemView, position);
@@ -115,6 +121,8 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
         private Button editButton;
         private Button chatButton;
         private Button deleteButton;
+        private RecyclerView tagRecycler;
+        private List<String> tag_list;
 
         private EvntInfoViewHolder(@NonNull final View itemView) {
             super(itemView);
@@ -126,6 +134,11 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
             editButton = itemView.findViewById(R.id.edit_button);
             deleteButton = itemView.findViewById(R.id.delete_button);
             chatButton = itemView.findViewById(R.id.chat_button);
+            tagRecycler = itemView.findViewById(R.id.tags_recycler);
+            LinearLayoutManager horizontalManager = new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL, false);
+            tagRecycler.setLayoutManager(horizontalManager);
+
+//            tagRecycler.setAdapter();
 
             editButton.setOnClickListener(new View.OnClickListener() {
                 @Override

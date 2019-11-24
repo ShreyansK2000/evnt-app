@@ -199,14 +199,17 @@ public class FragHostActivity extends AppCompatActivity {
             for (int i = 0; i < data.length(); i++) {
                 JSONObject obj = data.getJSONObject(i);
 
+                System.out.println(obj);
                 EvntCardInfo evnt = new EvntCardInfo.Builder()
-                        .withName(obj.get("tagList").toString().replace("\"", "") + " " + obj.get("name"))
+                        .withName(obj.get("name").toString())
                         .withDescription((String) obj.get("description"))
                         .withStartTime((String) obj.get("startTime"))
                         .withEndTime((String) obj.get("endTime"))
                         .withLocation((String) obj.get("location"))
                         .withId((String) obj.get("_id"))
                         .withHost(obj.get("host").equals(you) ? "you" : "Anonymous")
+                        .withTagList((obj.get("tagList").toString().replace("[","")
+                                .replace("]","").replace("\"", "")).split(","))
                         .build();
 
                 // if being requested by HostingEventsFragment, get list of events user is hosting

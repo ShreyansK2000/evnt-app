@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.evnt.EvntCardInfo;
 import com.example.evnt.EvntDetailsDialog;
@@ -88,6 +89,10 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
         holder.date_tv.setText(evntInfo.getDateString());
         holder.evnt_name_tv.setText(evntInfo.getEvntName());
         holder.inButton.setText(buttonType);
+        holder.tag_list = evntInfo.getTagList();
+        if (!(holder.tag_list.get(0).equals(""))) {
+            holder.tagRecycler.setAdapter(new TagChipAdapter(context, holder.tag_list));
+        }
 
         holder.event_img_iv.setImageDrawable(context.getDrawable(evntInfo.getImage()));
         setAnimation(holder.itemView, position);
@@ -149,6 +154,9 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
         private Button moreButton;
         private Button chatButton;
 
+        private RecyclerView tagRecycler;
+        private List<String> tag_list;
+
         private EvntInfoViewHolder(@NonNull final View itemView) {
             super(itemView);
             event_img_iv = itemView.findViewById(R.id.evnt_img);
@@ -159,6 +167,9 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
             inButton = itemView.findViewById(R.id.in_button);
             moreButton = itemView.findViewById(R.id.details_button);
             chatButton = itemView.findViewById(R.id.chat_button);
+            tagRecycler = itemView.findViewById(R.id.tags_recycler);
+            LinearLayoutManager horizontalManager = new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL, false);
+            tagRecycler.setLayoutManager(horizontalManager);
 
             inButton.setOnClickListener(new View.OnClickListener() {
                 @Override

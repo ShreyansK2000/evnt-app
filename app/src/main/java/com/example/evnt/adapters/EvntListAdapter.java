@@ -13,22 +13,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.evnt.EvntCardInfo;
 import com.example.evnt.EvntDetailsDialog;
-import com.example.evnt.IdentProvider;
 import com.example.evnt.R;
 import com.example.evnt.networking.ServerRequestModule;
 import com.example.evnt.networking.VolleyAttendanceCallback;
-import com.example.evnt.networking.VolleyEventListCallback;
 
-import org.json.JSONArray;
 
 import java.util.HashSet;
 import java.util.List;
@@ -98,13 +88,16 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
                 openDialog(evntInfo.getEvntName(), evntInfo.getDateString(), evntInfo.getDescription(),
                     new EvntListAdapterCallback() {
                         @Override
-                        public void removeEvent() {
-                            holder.markAttendance(holder.holderView, false);
-                        }
+                        public void removeEvent() { holder.markAttendance(holder.holderView, false); }
 
                         @Override
                         public void addEvent() {
                             holder.markAttendance(holder.holderView, true);
+                        }
+
+                        @Override
+                        public void deleteEvent() {
+                            // nothing
                         }
                     });
             }

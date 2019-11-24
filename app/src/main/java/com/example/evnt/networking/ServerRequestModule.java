@@ -14,6 +14,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.evnt.IdentProvider;
 import com.example.evnt.R;
+import com.example.evnt.adapters.EvntListAdapterCallback;
 import com.facebook.AccessToken;
 
 import org.json.JSONArray;
@@ -114,6 +115,34 @@ public class ServerRequestModule implements Serializable {
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
                         // Fail
+                    }
+                }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("accessToken", token);
+                params.put("userId", ident.getValue(context.getString(R.string.user_id)));
+                return params;
+            }
+        };
+        addToRequestQueue(stringBodyRequest);
+    }
+
+    public void deleteEventsRequest(String requestURL, final EvntListAdapterCallback callback) {
+        String url = requestURL;
+        StringRequest stringBodyRequest = new StringRequest(Request.Method.DELETE, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        callback.deleteEvent();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
                     }
                 }
         ){

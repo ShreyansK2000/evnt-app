@@ -29,6 +29,8 @@ import com.android.volley.toolbox.Volley;
 import com.example.evnt.EvntCardInfo;
 import com.example.evnt.IdentProvider;
 import com.example.evnt.R;
+import com.example.evnt.networking.ServerRequestModule;
+
 import java.util.Set;
 
 
@@ -46,13 +48,15 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
     private RequestQueue requestQueue;
     private IdentProvider ident;
     private Set<Integer> drawn;
+    private ServerRequestModule serverRequestModule;
 
-    public EvntHostListAdapter(Context context, List<EvntCardInfo> evnt_list) {
+    public EvntHostListAdapter(Context context, List<EvntCardInfo> evnt_list, ServerRequestModule serverRequestModule) {
         this.context = context;
         this.evnt_list = evnt_list;
         this.ident = new IdentProvider(context);
         this.requestQueue = Volley.newRequestQueue(context);
         this.drawn = new HashSet<>();
+        this.serverRequestModule = serverRequestModule;
     }
 
     @NonNull
@@ -166,6 +170,8 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
 
         private void delEvent(final View v, final TextView tv) {
 
+
+
             AlertDialog alertDialog = new AlertDialog.Builder(context).create();
             alertDialog.setTitle("Delete Event");
             alertDialog.setMessage("Are you sure you want to delete the following event? \n \n " + tv.getText());
@@ -173,22 +179,39 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             // TODO add api call to delete event
-                            Toast.makeText(context, "add api call to delete", Toast.LENGTH_LONG).show();
+                            final int position = getAdapterPosition();
+                            String eventId = evnt_list.get(position).getId();
+                            String url = "https://api.evnt.me/events/api/delete/" + eventId;
+                            serverRequestModule.deleteEventsRequest(url, new EvntListAdapterCallback() {
 
-                            // make view disappear, will come back with screen refresh
-                            v.animate().scaleY(0).alpha(0).setDuration(120).withEndAction(new Runnable() {
                                 @Override
-                                public void run() {
-                                    ViewGroup.LayoutParams params = v.getLayoutParams();
-                                    params.height = 0;
-                                    v.setLayoutParams(params);
-                                    v.setVisibility(View.GONE);
+                                public void removeEvent() {
+                                    // nothing
+                                }
+
+                                @Override
+                                public void addEvent() {
+                                    // nothing
+                                }
+
+                                @Override
+                                public void deleteEvent() {
+                                    // make view disappear, will come back with screen refresh
+                                    v.animate().scaleY(0).alpha(0).setDuration(120).withEndAction(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            ViewGroup.LayoutParams params = v.getLayoutParams();
+                                            params.height = 0;
+                                            v.setLayoutParams(params);
+                                            v.setVisibility(View.GONE);
+                                        }
+                                    });
+                                    Toast.makeText(context, "deleted successfully", Toast.LENGTH_LONG).show();
+                                    evnt_list.remove(position);
+                                    notifyItemRemoved(position);
+                                    notifyItemRangeChanged(position, evnt_list.size());
                                 }
                             });
-
-                            evnt_list.remove(getAdapterPosition());
-                            notifyItemRemoved(getAdapterPosition());
-                            notifyItemRangeChanged(getAdapterPosition(), evnt_list.size());
 
                             dialog.dismiss();
                         }

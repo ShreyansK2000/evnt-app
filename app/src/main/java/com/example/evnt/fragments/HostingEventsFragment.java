@@ -31,6 +31,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class HostingEventsFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -112,8 +113,13 @@ public class HostingEventsFragment extends Fragment implements SwipeRefreshLayou
                         return true;
                     }
                 };
+
+                HashMap<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("accessToken", ident.getValue(getString(R.string.access_token)));
+                params.put("userId", ident.getValue(context.getString(R.string.user_id)));
                 wv.getSettings().setJavaScriptEnabled(true);
-                wv.loadUrl(getString(R.string.event_create) + ident.getValue(getString(R.string.user_id)));
+                wv.loadUrl(getString(R.string.event_create) + ident.getValue(getString(R.string.user_id)), params);
                 wv.setWebViewClient(new WebViewClient() {
                     @Override
                     public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -137,7 +143,7 @@ public class HostingEventsFragment extends Fragment implements SwipeRefreshLayou
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-        EvntHostListAdapter evntHostListAdapter = new EvntHostListAdapter(context, evntlist);
+        EvntHostListAdapter evntHostListAdapter = new EvntHostListAdapter(context, evntlist, mServerRequestModule);
         recyclerView.setAdapter(evntHostListAdapter);
 
         return view;

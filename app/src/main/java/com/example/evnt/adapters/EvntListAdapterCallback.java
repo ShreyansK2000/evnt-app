@@ -5,5 +5,6 @@ public interface EvntListAdapterCallback {
 
     void removeEvent();
     void addEvent();
+    void deleteEvent();
 //    void getEventType();
 }

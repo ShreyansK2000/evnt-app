@@ -33,6 +33,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -174,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             JSONObject res = new JSONObject(response);
                             ident.setValue(getString(R.string.user_id), (String)res.get(getString(R.string.user_id)));
+                            ident.setValue(getString(R.string.access_token), (String)res.get(getString(R.string.access_token)));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

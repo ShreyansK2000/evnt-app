@@ -68,6 +68,7 @@ public class HostingEventsFragment extends Fragment implements SwipeRefreshLayou
         ident = new IdentProvider(getContext());
         ctx = this;
         mServerRequestModule = (ServerRequestModule) getArguments().getSerializable("server_module");
+//        mServerRequestModule = ServerRequestModule.getInstance(context.getApplicationContext(), ident);
 
         // TODO server call for user's hosted/ing events here
         evntlist = new ArrayList<>();

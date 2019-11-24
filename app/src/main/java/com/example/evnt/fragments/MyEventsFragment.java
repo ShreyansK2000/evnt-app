@@ -39,7 +39,6 @@ public class MyEventsFragment extends Fragment {
         mViewPager = mFragment.findViewById(R.id.m_view_pager);
         mTabLayout = mFragment.findViewById(R.id.my_events_tab_layout);
         mServerRequestModule = (ServerRequestModule) getArguments().getSerializable("server_module");
-        System.out.println(mServerRequestModule);
 
 
         return view;

@@ -87,9 +87,11 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = getContext();
         ctx = this;
-        ident = new IdentProvider(getContext());
+        ident = new IdentProvider(context);
         mServerRequestModule = (ServerRequestModule) getArguments().getSerializable("server_module");
+//        mServerRequestModule = ServerRequestModule.getInstance(context.getApplicationContext(), ident);
 
         setHasOptionsMenu(true);
         evntlist = new ArrayList<>();

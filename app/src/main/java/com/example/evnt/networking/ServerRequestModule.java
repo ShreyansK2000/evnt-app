@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -13,12 +14,16 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.evnt.IdentProvider;
 import com.example.evnt.R;
+import com.facebook.AccessToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 
 // TODO setup ALL api requests;
@@ -27,10 +32,12 @@ public class ServerRequestModule implements Serializable {
     private RequestQueue mRequestQueue;
     private Context context;
     private IdentProvider ident;
+    private String token;
 
     private ServerRequestModule(Context context, IdentProvider ident) {
         this.context = context.getApplicationContext();
         this.ident = ident;
+        this.token = ident.getValue(context.getString(R.string.access_token));
         mRequestQueue = getRequestQueue();
     }
 
@@ -79,7 +86,16 @@ public class ServerRequestModule implements Serializable {
                         callback.onErrorResponse(error.toString());
                     }
                 }
-        );
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("accessToken", token);
+                params.put("userId", ident.getValue(context.getString(R.string.user_id)));
+                return params;
+            }
+        };
         addToRequestQueue(stringBodyRequest);
     }
 
@@ -100,7 +116,17 @@ public class ServerRequestModule implements Serializable {
                         // Fail
                     }
                 }
-        );
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("accessToken", token);
+                params.put("userId", ident.getValue(context.getString(R.string.user_id)));
+                return params;
+            }
+        };
         addToRequestQueue(stringBodyRequest);
     }
 }
+

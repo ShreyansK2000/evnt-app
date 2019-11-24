@@ -47,7 +47,7 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private OnItemRemovedListener browseRemoveCallback = new OnItemRemovedListener() {
         @Override
         public void itemRemoved(int position) {
-            if (evntlist != null) {
+            if (evntlist != null && position < evntlist.size()) {
                 evntlist.remove(position);
             }
         }

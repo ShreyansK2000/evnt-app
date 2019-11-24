@@ -109,7 +109,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center|center_horizontal"
-                        android:text="I'M IN!"
+                        android:text="@string/im_in"
                         android:textAlignment="viewStart"
                         android:theme="@style/PrimaryFlatButton" />
 
@@ -117,7 +117,15 @@
                         android:id="@+id/details_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="MORE"
+                        android:text="@string/more_button"
+                        android:textAlignment="viewStart"
+                        android:theme="@style/PrimaryFlatButton" />
+
+                    <Button
+                        android:id="@+id/chat_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/chat_button"
                         android:textAlignment="viewStart"
                         android:theme="@style/PrimaryFlatButton" />
                 </LinearLayout>

@@ -9,10 +9,12 @@
     <string name="menu_profile">Profile</string>
     <string name="by_browse_nuance">by </string>
     <string name="you_the_host">by you</string>
-    <string name="im_in">I\'M IN!</string>
+    <string name="im_in">LET\'S GO!</string>
     <string name="nevermind">NEVERMIND</string>
+    <string name="more_button">MORE</string>
     <string name="edit_button">EDIT</string>
     <string name="delete_button">DELETE</string>
+    <string name="chat_button">CHAT</string>
     <string name="browse">browse</string>
     <string name="attending">attending</string>
     <string name="event_details">Event Details</string>
@@ -34,6 +36,7 @@
     <string name="event_get_avail">https://api.evnt.me/events/api/avail/</string>
     <string name="event_create">https://api.evnt.me/events/create/</string>
     <string name="event_edit">https://api.evnt.me/events/edit/</string>
+    <string name="event_chat">https://api.evnt.me/chat/init/</string>
 
     <string name="map_url_call">https://maps.googleapis.com/maps/api/staticmap?</string>
     <string name="zoom_setting">&amp;zoom=15&amp;size=</string>

@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.WebView;
@@ -112,6 +113,7 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
         private CircleImageView event_img_iv;
 
         private Button editButton;
+        private Button chatButton;
         private Button deleteButton;
 
         private EvntInfoViewHolder(@NonNull final View itemView) {
@@ -123,6 +125,7 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
             date_tv = itemView.findViewById(R.id.evnt_time);
             editButton = itemView.findViewById(R.id.edit_button);
             deleteButton = itemView.findViewById(R.id.delete_button);
+            chatButton = itemView.findViewById(R.id.chat_button);
 
             editButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -139,6 +142,12 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
                 }
             });
 
+            chatButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    chatEvent(itemView);
+                }
+            });
         }
 
         private void editEvent(final View v) {
@@ -162,7 +171,7 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
             params.put("accessToken", ident.getValue(context.getString(R.string.access_token)));
             params.put("userId", ident.getValue(context.getString(R.string.user_id)));
             wv.getSettings().setJavaScriptEnabled(true);
-            wv.loadUrl(context.getString(R.string.event_edit) + evnt_list.get(getAdapterPosition()).getId());
+            wv.loadUrl(context.getString(R.string.event_edit) + evnt_list.get(getAdapterPosition()).getId(), params);
             wv.setWebViewClient(new WebViewClient() {
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -177,13 +186,12 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
                     dialog.dismiss();
                 }
             });
-            builder.show();
+            AlertDialog dialog = builder.create();
+            dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+            dialog.show();
         }
 
         private void delEvent(final View v, final TextView tv) {
-
-
-
             AlertDialog alertDialog = new AlertDialog.Builder(context).create();
             alertDialog.setTitle("Delete Event");
             alertDialog.setMessage("Are you sure you want to delete the following event? \n \n " + tv.getText());
@@ -237,6 +245,46 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
                     });
             alertDialog.show();
 
+        }
+
+        private void chatEvent(final View v) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+            WebView wv = new WebView(context) {
+                @Override
+                protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
+                    super.onFocusChanged(true, direction, previouslyFocusedRect);
+                }
+
+                @Override
+                public boolean onCheckIsTextEditor() {
+                    return true;
+                }
+            };
+
+            HashMap<String, String> params = new HashMap<>();
+            params.put("Content-Type", "application/json; charset=UTF-8");
+            params.put("accessToken", ident.getValue(context.getString(R.string.access_token)));
+            params.put("userId", ident.getValue(context.getString(R.string.user_id)));
+            wv.getSettings().setJavaScriptEnabled(true);
+            wv.loadUrl(context.getString(R.string.event_chat) + evnt_list.get(getAdapterPosition()).getId(), params);
+            wv.setWebViewClient(new WebViewClient() {
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    view.loadUrl(url);
+                    return false;
+                }
+            });
+            builder.setView(wv);
+            builder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+            dialog.show();
         }
     }
 

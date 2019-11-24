@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -119,7 +120,7 @@ public class HostingEventsFragment extends Fragment implements SwipeRefreshLayou
                 params.put("accessToken", ident.getValue(getString(R.string.access_token)));
                 params.put("userId", ident.getValue(context.getString(R.string.user_id)));
                 wv.getSettings().setJavaScriptEnabled(true);
-                wv.loadUrl(getString(R.string.event_create) + ident.getValue(getString(R.string.user_id)), params);
+                wv.loadUrl(getString(R.string.event_create), params);
                 wv.setWebViewClient(new WebViewClient() {
                     @Override
                     public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -135,7 +136,9 @@ public class HostingEventsFragment extends Fragment implements SwipeRefreshLayou
                         dialog.dismiss();
                     }
                 });
-                builder.show();
+                AlertDialog dialog = builder.create();
+                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+                dialog.show();
             }
         });
 

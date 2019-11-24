@@ -34,7 +34,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ident = new IdentProvider(getContext());
+        ident = new IdentProvider(getContext().getApplicationContext());
 
         id = ident.getValue(getString(R.string.fb_id));
         name = ident.getValue(getString(R.string.user_name));

@@ -43,9 +43,9 @@ public class HostingEventsFragment extends Fragment implements SwipeRefreshLayou
 
     public static HostingEventsFragment newInstance(ServerRequestModule serverRequestModule) {
         HostingEventsFragment fragment = new HostingEventsFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("server_module", serverRequestModule);
-        fragment.setArguments(bundle);
+//        Bundle bundle = new Bundle();
+//        bundle.putSerializable("server_module", serverRequestModule);
+//        fragment.setArguments(bundle);
 
         return fragment;
     }
@@ -65,9 +65,9 @@ public class HostingEventsFragment extends Fragment implements SwipeRefreshLayou
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ident = new IdentProvider(getContext());
+        ident = new IdentProvider(getContext().getApplicationContext());
         ctx = this;
-        mServerRequestModule = (ServerRequestModule) getArguments().getSerializable("server_module");
+        mServerRequestModule = ServerRequestModule.getInstance(context, ident);
 
         // TODO server call for user's hosted/ing events here
         evntlist = new ArrayList<>();

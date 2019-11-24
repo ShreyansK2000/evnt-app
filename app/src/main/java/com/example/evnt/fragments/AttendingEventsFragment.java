@@ -37,9 +37,9 @@ public class AttendingEventsFragment extends Fragment implements SwipeRefreshLay
 
     public static AttendingEventsFragment newInstance(ServerRequestModule serverRequestModule) {
         AttendingEventsFragment fragment = new AttendingEventsFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("server_module", serverRequestModule);
-        fragment.setArguments(bundle);
+//        Bundle bundle = new Bundle();
+//        bundle.putSerializable("server_module", serverRequestModule);
+//        fragment.setArguments(bundle);
 
         return fragment;
     }
@@ -59,9 +59,9 @@ public class AttendingEventsFragment extends Fragment implements SwipeRefreshLay
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ident = new IdentProvider(getContext());
+        ident = new IdentProvider(getContext().getApplicationContext());
         ctx = this;
-        mServerRequestModule = (ServerRequestModule) getArguments().getSerializable("server_module");
+        mServerRequestModule = ServerRequestModule.getInstance(context, ident);
 
         evntlist = new ArrayList<>();
         loadList();

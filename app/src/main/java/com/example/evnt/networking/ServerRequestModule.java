@@ -22,7 +22,7 @@ import java.io.Serializable;
 
 
 // TODO setup ALL api requests;
-public class ServerRequestModule implements Serializable {
+public class ServerRequestModule {
     private static ServerRequestModule mInstance;
     private RequestQueue mRequestQueue;
     private Context context;
@@ -96,6 +96,7 @@ public class ServerRequestModule implements Serializable {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        callback.onErrorResponse(error.toString());
                         error.printStackTrace();
                         // Fail
                     }

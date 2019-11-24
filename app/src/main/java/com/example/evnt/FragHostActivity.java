@@ -50,15 +50,15 @@ public class FragHostActivity extends AppCompatActivity {
         myEventsFragment = null;
         profileFragment = null;
 
-//        if (savedInstanceState != null) {
-//            pickEvntFragment = (PickEvntFragment) getSupportFragmentManager().getFragment(savedInstanceState, "pickEvntFrag");
-//            browseFragment = (BrowseFragment) getSupportFragmentManager().getFragment(savedInstanceState, "browseFrag");
-//            myEventsFragment = (MyEventsFragment) getSupportFragmentManager().getFragment(savedInstanceState, "myEventsFrag");
-//            profileFragment = (ProfileFragment) getSupportFragmentManager().getFragment(savedInstanceState, "profileFrag");
-//        }
+        if (savedInstanceState != null) {
+            pickEvntFragment = (PickEvntFragment) getSupportFragmentManager().getFragment(savedInstanceState, "pickEvntFrag");
+            browseFragment = (BrowseFragment) getSupportFragmentManager().getFragment(savedInstanceState, "browseFrag");
+            myEventsFragment = (MyEventsFragment) getSupportFragmentManager().getFragment(savedInstanceState, "myEventsFrag");
+            profileFragment = (ProfileFragment) getSupportFragmentManager().getFragment(savedInstanceState, "profileFrag");
+        }
 
         setContentView(R.layout.activity_frag_host);
-        ident = new IdentProvider(this);
+        ident = new IdentProvider(this.getApplicationContext());
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
         bottomNav.setOnNavigationItemSelectedListener(listener);
@@ -72,13 +72,13 @@ public class FragHostActivity extends AppCompatActivity {
             retrieveFBUserDetails(loginAccessToken);
         }
 
-        serverCommArgs = new Bundle();
+//        serverCommArgs = new Bundle();
         serverRequestModule = ServerRequestModule.getInstance(getApplicationContext(), ident);
-        if (serverRequestModule != null) {
-            serverCommArgs.putSerializable("server_module", serverRequestModule);
-        } else {
-            Toast.makeText(this, "error creating servermodule", Toast.LENGTH_LONG).show();
-        }
+//        if (serverRequestModule != null) {
+//            serverCommArgs.putSerializable("server_module", serverRequestModule);
+//        } else {
+//            Toast.makeText(this, "error creating servermodule", Toast.LENGTH_LONG).show();
+//        }
 
         pickEvntFragment = new PickEvntFragment();
         browseFragment = BrowseFragment.newInstance(serverRequestModule);
@@ -224,15 +224,15 @@ public class FragHostActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-//
-//    @Override
-//    protected void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//
-//        getSupportFragmentManager().putFragment(outState, "pickEvntFrag", pickEvntFragment);
-//        getSupportFragmentManager().putFragment(outState, "browseFrag", browseFragment);
-//        getSupportFragmentManager().putFragment(outState, "myEventsFrag", myEventsFragment);
-//        getSupportFragmentManager().putFragment(outState, "profileFrag", profileFragment);
-//
-//    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        getSupportFragmentManager().putFragment(outState, "pickEvntFrag", pickEvntFragment);
+        getSupportFragmentManager().putFragment(outState, "browseFrag", browseFragment);
+        getSupportFragmentManager().putFragment(outState, "myEventsFrag", myEventsFragment);
+        getSupportFragmentManager().putFragment(outState, "profileFrag", profileFragment);
+
+    }
 }

@@ -55,27 +55,27 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     public static BrowseFragment newInstance(ServerRequestModule serverRequestModule) {
         BrowseFragment fragment = new BrowseFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("server_module", serverRequestModule);
-        fragment.setArguments(bundle);
+//        Bundle bundle = new Bundle();
+//        bundle.putSerializable("server_module", serverRequestModule);
+//        fragment.setArguments(bundle);
 
         return fragment;
     }
 
-//    @Override
-//    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-//        super.onActivityCreated(savedInstanceState);
-//        if (savedInstanceState != null) {
-//            //Restore the fragment's state here
-//        }
-//
-//    }
-//
-//    @Override
-//    public void onSaveInstanceState(@NonNull Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        //Save the fragment's state here
-//    }
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            //Restore the fragment's state here
+        }
+
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //Save the fragment's state here
+    }
 
     /**
      * This is where we will be opening the saved state of the fragmend (if available)
@@ -88,8 +88,8 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ctx = this;
-        ident = new IdentProvider(getContext());
-        mServerRequestModule = (ServerRequestModule) getArguments().getSerializable("server_module");
+        ident = new IdentProvider(getContext().getApplicationContext());
+        mServerRequestModule = ServerRequestModule.getInstance(context, ident);
 
         setHasOptionsMenu(true);
         evntlist = new ArrayList<>();

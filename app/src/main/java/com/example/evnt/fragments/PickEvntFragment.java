@@ -1,5 +1,6 @@
 package com.example.evnt.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,6 +14,8 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.evnt.FragHostActivity;
+import com.example.evnt.MessagingActivity;
 import com.example.evnt.R;
 
 // TODO see if we need to add more specific information to include in a search profile (date, time, tag)
@@ -40,6 +43,8 @@ public class PickEvntFragment extends Fragment {
                 // TODO server calls, open new fragment with event information.
                 // get most likely even logic here, maybe even create a new fragment on top
                 // of this one to show the result
+                Intent messageIntent = new Intent(getActivity(), MessagingActivity.class);
+                startActivity(messageIntent);
 
                 // LOGIC
             }

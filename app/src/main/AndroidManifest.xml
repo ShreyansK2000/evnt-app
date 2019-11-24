@@ -17,6 +17,9 @@
             android:name=".FragHostActivity"
             android:screenOrientation="portrait"/>
         <activity
+            android:name=".MessagingActivity"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>

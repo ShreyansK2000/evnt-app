@@ -50,7 +50,7 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
     public EvntHostListAdapter(Context context, List<EvntCardInfo> evnt_list) {
         this.context = context;
         this.evnt_list = evnt_list;
-        this.ident = new IdentProvider(context);
+        this.ident = new IdentProvider(context.getApplicationContext());
         this.requestQueue = Volley.newRequestQueue(context);
         this.drawn = new HashSet<>();
     }

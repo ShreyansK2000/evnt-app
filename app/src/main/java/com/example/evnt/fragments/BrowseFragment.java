@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -44,12 +45,16 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private SearchView searchEventsView;
     private RecyclerView recyclerView;
     private List<EvntCardInfo> filteredList;
+    private Parcelable recyclerViewState;
+
     private OnItemRemovedListener browseRemoveCallback = new OnItemRemovedListener() {
         @Override
         public void itemRemoved(int position) {
             if (evntlist != null && position < evntlist.size()) {
                 evntlist.remove(position);
             }
+            recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
+            onRefresh();
         }
     };
 
@@ -186,7 +191,11 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
         recyclerView.setAdapter(new EvntListAdapter(context, filteredList,
                 getString(R.string.browse), getActivity().getSupportFragmentManager(),
-                mServerRequestModule, browseRemoveCallback));
+                mServerRequestModule));
+
+        if (recyclerViewState != null) {
+            recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+        }
 
     }
 
@@ -218,7 +227,7 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
                 recyclerView.setAdapter(new EvntListAdapter(context, filteredList,
                         getString(R.string.browse), getActivity().getSupportFragmentManager(),
-                        mServerRequestModule, browseRemoveCallback));
+                        mServerRequestModule));
                 return false;
             }
         });

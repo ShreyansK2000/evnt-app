@@ -99,7 +99,7 @@ public class AttendingEventsFragment extends Fragment implements SwipeRefreshLay
         EvntListAdapter evntListAdapter = new EvntListAdapter(context, evntlist,
                                                         getString(R.string.attending),
                                                         getActivity().getSupportFragmentManager(),
-                                                        mServerRequestModule, null);
+                                                        mServerRequestModule);
         recyclerView.setAdapter(evntListAdapter);
 
         return view;

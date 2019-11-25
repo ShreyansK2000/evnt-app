@@ -146,8 +146,6 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
             LinearLayoutManager horizontalManager = new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL, false);
             tagRecycler.setLayoutManager(horizontalManager);
 
-//            tagRecycler.setAdapter();
-
             editButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

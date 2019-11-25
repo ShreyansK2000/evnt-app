@@ -56,8 +56,7 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
     private Set<Integer> drawn;
 
     public EvntListAdapter(Context context, List<EvntCardInfo> evnt_list, String type,
-                           FragmentManager supportFragmentManager, ServerRequestModule module,
-                           OnItemRemovedListener callBack) {
+                           FragmentManager supportFragmentManager, ServerRequestModule module) {
         this.context = context;
         this.evnt_list = evnt_list;
         this.drawn = new HashSet<>();
@@ -93,6 +92,7 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
         holder.date_tv.setText(evntInfo.getDateString());
         holder.evnt_name_tv.setText(evntInfo.getEvntName());
         holder.inButton.setText(buttonType);
+        holder.inButton.setEnabled(true);
         holder.tag_list = evntInfo.getTagList();
         if (!(holder.tag_list.get(0).equals(""))) {
             holder.tagRecycler.setAdapter(new TagChipAdapter(context, holder.tag_list));

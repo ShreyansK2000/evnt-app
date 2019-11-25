@@ -33,12 +33,10 @@ public class ServerRequestModule { //implements Serializable {
     private RequestQueue mRequestQueue;
     private Context context;
     private IdentProvider ident;
-    private String token;
 
     private ServerRequestModule(Context context, IdentProvider ident) {
         this.context = context.getApplicationContext();
         this.ident = ident;
-        this.token = ident.getValue(context.getString(R.string.access_token));
         mRequestQueue = getRequestQueue();
     }
 
@@ -99,7 +97,7 @@ public class ServerRequestModule { //implements Serializable {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<>();
                 params.put("Content-Type", "application/json; charset=UTF-8");
-                params.put("accessToken", token);
+                params.put("accessToken", ident.getValue(context.getString(R.string.access_token)));
                 params.put("userId", ident.getValue(context.getString(R.string.user_id)));
                 return params;
             }
@@ -129,7 +127,7 @@ public class ServerRequestModule { //implements Serializable {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<>();
                 params.put("Content-Type", "application/json; charset=UTF-8");
-                params.put("accessToken", token);
+                params.put("accessToken", ident.getValue(context.getString(R.string.access_token)));
                 params.put("userId", ident.getValue(context.getString(R.string.user_id)));
                 return params;
             }
@@ -157,7 +155,7 @@ public class ServerRequestModule { //implements Serializable {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<>();
                 params.put("Content-Type", "application/json; charset=UTF-8");
-                params.put("accessToken", token);
+                params.put("accessToken", ident.getValue(context.getString(R.string.access_token)));
                 params.put("userId", ident.getValue(context.getString(R.string.user_id)));
                 return params;
             }
@@ -193,7 +191,7 @@ public class ServerRequestModule { //implements Serializable {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> params = new HashMap<>();
                 params.put("Content-Type", "application/json; charset=UTF-8");
-                params.put("accessToken", token);
+                params.put("accessToken", ident.getValue(context.getString(R.string.access_token)));
                 params.put("userId", ident.getValue(context.getString(R.string.user_id)));
                 params.put("userLocation", location);
                 return params;

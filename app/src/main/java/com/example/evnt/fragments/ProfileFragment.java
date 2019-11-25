@@ -25,6 +25,7 @@ public class ProfileFragment extends Fragment {
     private String id;
     private String email;
     private IdentProvider ident;
+    private View view;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -45,8 +46,27 @@ public class ProfileFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_profile,
+        view = inflater.inflate(R.layout.fragment_profile,
                 container, false);
+        if (id == null) {
+            ident = new IdentProvider(getContext());
+
+            id = ident.getValue(getString(R.string.fb_id));
+            name = ident.getValue(getString(R.string.user_name));
+            email = ident.getValue(getString(R.string.user_email));
+        }
+        setupViews();
+        return view;
+    }
+
+    public void updateIdent(IdentProvider ident) {
+        id = ident.getValue(getString(R.string.fb_id));
+        name = ident.getValue(getString(R.string.user_name));
+        email = ident.getValue(getString(R.string.user_email));
+        setupViews();
+    }
+
+    private void setupViews() {
         ProfilePictureView PPView = (ProfilePictureView) view.findViewById(R.id.profilePictureView);
         PPView.setProfileId(id);
 
@@ -73,6 +93,5 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        return view;
     }
 }

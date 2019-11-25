@@ -113,6 +113,9 @@ public class FragHostActivity extends AppCompatActivity {
                     ident.setValue(getString(R.string.user_email), email);
                     ident.setValue(getString(R.string.fb_id), id);
                     ident.setValue(getString(R.string.profile_pic), profilePicURI.toString());
+                    if (profileFragment != null) {
+                        profileFragment.updateIdent(ident);
+                    }
                 } catch(JSONException e) {
                     e.printStackTrace();
                 } catch (MalformedURLException e) {

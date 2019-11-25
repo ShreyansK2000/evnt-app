@@ -8,7 +8,7 @@
     android:background="@color/colorPrimary">
 
 
-    <de.hdodenhof.circleimageview.CircleImageView
+    <com.example.evnt.TintableButton
         android:id="@+id/evnt_button"
         android:layout_width="300dp"
         android:layout_height="300dp"

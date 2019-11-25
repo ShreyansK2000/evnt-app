@@ -192,6 +192,9 @@ public class PickEvntFragment extends Fragment {
                                 String longt = Double.toString(location.getLongitude());
 
                                 callback.gotLocationString(latt+","+longt);
+                            } else {
+                                Toast.makeText(context, "There seems to be an issue getting your location",
+                                        Toast.LENGTH_LONG).show();
                             }
                         }
                     });

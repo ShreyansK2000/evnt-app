@@ -14,12 +14,17 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.example.evnt.adapters.EvntListAdapterCallback;
+import com.example.evnt.adapters.TagChipAdapter;
 import com.example.evnt.networking.ServerRequestModule;
 import com.example.evnt.networking.VolleyAttendanceCallback;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -52,6 +57,9 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
     private EvntListAdapterCallback callback;
     private ServerRequestModule serverRequestModule;
     private String eventId;
+    private int image;
+    private List<String> tags;
+    private RecyclerView recyclerView;
 
     public EvntDetailsDialog() {
         event_name = "";
@@ -61,7 +69,7 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
     }
 
     // Use a builder for this, probably
-    public EvntDetailsDialog(Context context, String event_name, String date_string, String desc, String cardType, String location, EvntListAdapterCallback callback) {
+    public EvntDetailsDialog(Context context, String event_name, String date_string, String desc, String cardType, String location, int image, List<String> tags, EvntListAdapterCallback callback) {
         this.event_name = event_name;
         this.location = location;
         this.date_string = date_string;
@@ -69,10 +77,12 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
         this.cardType = cardType;
         this.callback = callback;
         this.context = context;
+        this.image = image;
         this.serverRequestModule = null;
+        this.tags = tags;
     }
 
-    public EvntDetailsDialog(Context context, String event_name, String date_string, String desc, String location, ServerRequestModule serverRequestModule, String eventId) {
+    public EvntDetailsDialog(Context context, String event_name, String date_string, String desc, String location, ServerRequestModule serverRequestModule, String eventId, int image, List<String> tags) {
         this.event_name = event_name;
         this.location = location;
         this.date_string = date_string;
@@ -80,8 +90,10 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
         this.cardType = "NA";
         this.callback = callback;
         this.context = context;
+        this.image = image;
         this.serverRequestModule = serverRequestModule;
         this.eventId = eventId;
+        this.tags = tags;
     }
 
     @Override
@@ -102,10 +114,17 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
         description_tv.setText(desc);
 
         evnt_img_civ = view.findViewById(R.id.evnt_img);
-        evnt_img_civ.setImageResource(R.drawable.chika);
+        evnt_img_civ.setImageResource(image);
 
         map_image_iv = view.findViewById(R.id.map_image);
         loadImage("","");
+
+
+        recyclerView = view.findViewById(R.id.tags_recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        if (!(tags.get(0).equals(""))) {
+            recyclerView.setAdapter(new TagChipAdapter(context, tags));
+        }
 
         close_button = view.findViewById(R.id.close_button);
         cancel_button = view.findViewById(R.id.cancel_button);
@@ -148,7 +167,8 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
 
                     if (serverRequestModule != null) {
 
-                        serverRequestModule.markUserAttendance("https://api.evnt.me/events/api/add/" + eventId + "/",
+                        serverRequestModule.markUserAttendance("https://api.evnt.me/events/api/add/"
+                                                                        + eventId + "/",
                                 new VolleyAttendanceCallback() {
                                     @Override
                                     public void onAttendanceSuccessResponse() {
@@ -161,6 +181,9 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
 
                                     @Override
                                     public void onErrorResponse(String result) {
+                                        Toast.makeText(context.getApplicationContext(),
+                                                "Internal error",
+                                                Toast.LENGTH_LONG).show();
                                         System.out.println("there was an error");
                                     }
                                 });

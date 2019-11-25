@@ -35,14 +35,14 @@ public class AttendingEventsFragment extends Fragment implements SwipeRefreshLay
     private IdentProvider ident;
     private Fragment ctx;
 
-    public static AttendingEventsFragment newInstance(ServerRequestModule serverRequestModule) {
-        AttendingEventsFragment fragment = new AttendingEventsFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("server_module", serverRequestModule);
-        fragment.setArguments(bundle);
-
-        return fragment;
-    }
+//    public static AttendingEventsFragment newInstance(ServerRequestModule serverRequestModule) {
+//        AttendingEventsFragment fragment = new AttendingEventsFragment();
+//        Bundle bundle = new Bundle();
+//        bundle.putSerializable("server_module", serverRequestModule);
+//        fragment.setArguments(bundle);
+//
+//        return fragment;
+//    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -62,9 +62,12 @@ public class AttendingEventsFragment extends Fragment implements SwipeRefreshLay
         context = getContext();
         ident = new IdentProvider(context);
         ctx = this;
-        mServerRequestModule = (ServerRequestModule) getArguments().getSerializable("server_module");
-//        mServerRequestModule = ServerRequestModule.getInstance(context.getApplicationContext(), ident);
-
+//        mServerRequestModule = (ServerRequestModule) getArguments().getSerializable("server_module");
+////        mServerRequestModule = ServerRequestModule.getInstance(context.getApplicationContext(), ident);
+        mServerRequestModule = ServerRequestModule.getInstance();
+        if (mServerRequestModule == null) {
+            Toast.makeText(context, "serverProblem", Toast.LENGTH_LONG).show();
+        }
 
         evntlist = new ArrayList<>();
         loadList();

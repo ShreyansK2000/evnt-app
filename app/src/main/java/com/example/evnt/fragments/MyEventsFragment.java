@@ -10,6 +10,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.evnt.R;
 import com.example.evnt.networking.ServerRequestModule;
@@ -21,15 +22,17 @@ public class MyEventsFragment extends Fragment {
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
     private ServerRequestModule mServerRequestModule;
+    private HostingEventsFragment hostingEventsFragment;
+    private AttendingEventsFragment attendingEventsFragment;
 
-    public static MyEventsFragment newInstance(ServerRequestModule serverRequestModule) {
-        MyEventsFragment fragment = new MyEventsFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("server_module", serverRequestModule);
-        fragment.setArguments(bundle);
-
-        return fragment;
-    }
+//    public static MyEventsFragment newInstance(ServerRequestModule serverRequestModule) {
+//        MyEventsFragment fragment = new MyEventsFragment();
+//        Bundle bundle = new Bundle();
+//        bundle.putSerializable("server_module", serverRequestModule);
+//        fragment.setArguments(bundle);
+//
+//        return fragment;
+//    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -38,8 +41,11 @@ public class MyEventsFragment extends Fragment {
 
         mViewPager = mFragment.findViewById(R.id.m_view_pager);
         mTabLayout = mFragment.findViewById(R.id.my_events_tab_layout);
-        mServerRequestModule = (ServerRequestModule) getArguments().getSerializable("server_module");
-
+//        mServerRequestModule = (ServerRequestModule) getArguments().getSerializable("server_module");
+        mServerRequestModule = ServerRequestModule.getInstance();
+        if (mServerRequestModule == null) {
+            Toast.makeText(getContext(), "serverProblem", Toast.LENGTH_LONG).show();
+        }
 
         return view;
     }
@@ -73,8 +79,16 @@ public class MyEventsFragment extends Fragment {
     private void setUpViewPager(ViewPager mViewPager) {
         MyEventsTabAdapter myEventsTabAdapter = new MyEventsTabAdapter(getChildFragmentManager());
 
-        myEventsTabAdapter.addFragment(HostingEventsFragment.newInstance(mServerRequestModule), "HOSTING");
-        myEventsTabAdapter.addFragment(AttendingEventsFragment.newInstance(mServerRequestModule), "ATTENDING");
+        if (attendingEventsFragment == null) {
+            attendingEventsFragment = new AttendingEventsFragment();
+        }
+
+        if (hostingEventsFragment == null) {
+            hostingEventsFragment = new HostingEventsFragment();
+        }
+
+        myEventsTabAdapter.addFragment(hostingEventsFragment, "HOSTING");
+        myEventsTabAdapter.addFragment(attendingEventsFragment, "ATTENDING");
 
         mViewPager.setAdapter(myEventsTabAdapter);
 

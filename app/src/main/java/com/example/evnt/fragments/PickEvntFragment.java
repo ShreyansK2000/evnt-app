@@ -52,15 +52,15 @@ public class PickEvntFragment extends Fragment {
     private FusedLocationProviderClient fusedLocationClient;
     private int locationPermissionGranted;
     private ServerRequestModule mServerRequestModule;
-
-    public static PickEvntFragment newInstance(ServerRequestModule serverRequestModule) {
-        PickEvntFragment fragment = new PickEvntFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("server_module", serverRequestModule);
-        fragment.setArguments(bundle);
-
-        return fragment;
-    }
+//
+//    public static PickEvntFragment newInstance(ServerRequestModule serverRequestModule) {
+//        PickEvntFragment fragment = new PickEvntFragment();
+//        Bundle bundle = new Bundle();
+//        bundle.putSerializable("server_module", serverRequestModule);
+//        fragment.setArguments(bundle);
+//
+//        return fragment;
+//    }
     /**
      * This is where we will be opening the saved state of the fragmend (if available)
      * and also passing in the serverrequestmodule to be able to fetch events from the server
@@ -74,9 +74,13 @@ public class PickEvntFragment extends Fragment {
         context = getContext();
         ctx = this;
         ident = new IdentProvider(context);
-        mServerRequestModule = (ServerRequestModule) getArguments().getSerializable("server_module");
-//        mServerRequestModule = ServerRequestModule.getInstance(context.getApplicationContext(), ident);
+//        mServerRequestModule = (ServerRequestModule) getArguments().getSerializable("server_module");
+////        mServerRequestModule = ServerRequestModule.getInstance(context.getApplicationContext(), ident);
 
+        mServerRequestModule = ServerRequestModule.getInstance();
+        if (mServerRequestModule == null) {
+            Toast.makeText(context, "serverProblem", Toast.LENGTH_LONG).show();
+        }
         setHasOptionsMenu(true);
     }
 
@@ -110,7 +114,7 @@ public class PickEvntFragment extends Fragment {
                 @Override
                 public void gotLocationString(final String location) {
                     String url = "https://api.evnt.me/events/api/suggest/";
-                    mServerRequestModule.getBestEvent(url, new VolleyBestEventCallback() {
+                    mServerRequestModule.getBestEvent(url, location, new VolleyBestEventCallback() {
                         @Override
                         public void onReceivedBestEvent(JSONObject response) {
                             // do stuff with response
@@ -133,9 +137,18 @@ public class PickEvntFragment extends Fragment {
                                 e.printStackTrace();
                             }
                             if (evnt != null) {
-                                EvntDetailsDialog detailsDialog = new EvntDetailsDialog(context, evnt.getEvntName(), evnt.getDateString(), evnt.getDescription(), location, mServerRequestModule, evnt.getId());
+                                EvntDetailsDialog detailsDialog = new EvntDetailsDialog(context,
+                                        evnt.getEvntName(), evnt.getDateString(), evnt.getDescription(),
+                                        location, mServerRequestModule, evnt.getId(), evnt.getImage(), evnt.getTagList());
                                 detailsDialog.show(getFragmentManager(), "");
                             }
+                        }
+
+                        @Override
+                        public void onErrorResponse(String error) {
+                            Toast.makeText(context.getApplicationContext(),
+                                    "Either no events to suggest, or internal error",
+                                    Toast.LENGTH_LONG).show();
                         }
                     });
                 }

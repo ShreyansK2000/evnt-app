@@ -33,7 +33,7 @@ public class EvntCardInfo implements Serializable {
     private String description;
     private String inORout;
     private int image;
-    private static String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+    private String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
     private String id;
     private List<String> tag_list;
 

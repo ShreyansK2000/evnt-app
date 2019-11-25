@@ -28,7 +28,7 @@ import java.util.Map;
 
 
 // TODO setup ALL api requests;
-public class ServerRequestModule implements Serializable {
+public class ServerRequestModule { //implements Serializable {
     private static ServerRequestModule mInstance;
     private RequestQueue mRequestQueue;
     private Context context;
@@ -48,6 +48,13 @@ public class ServerRequestModule implements Serializable {
             mInstance = new ServerRequestModule(context, ident);
         }
         return mInstance;
+    }
+
+    public static synchronized ServerRequestModule getInstance() {
+        if (mInstance != null) {
+            return mInstance;
+        }
+        return null;
     }
 
     private RequestQueue getRequestQueue() {
@@ -158,7 +165,7 @@ public class ServerRequestModule implements Serializable {
         addToRequestQueue(stringBodyRequest);
     }
 
-    public void getBestEvent(String requestURL, final VolleyBestEventCallback callback) {
+    public void getBestEvent(String requestURL, final String location, final VolleyBestEventCallback callback) {
         String url = requestURL + ident.getValue(context.getString(R.string.user_id));
         StringRequest stringBodyRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -178,6 +185,7 @@ public class ServerRequestModule implements Serializable {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
+                        callback.onErrorResponse(error.toString());
                     }
                 }
         ){
@@ -187,7 +195,7 @@ public class ServerRequestModule implements Serializable {
                 params.put("Content-Type", "application/json; charset=UTF-8");
                 params.put("accessToken", token);
                 params.put("userId", ident.getValue(context.getString(R.string.user_id)));
-                params.put("userLocation", "");
+                params.put("userLocation", location);
                 return params;
             }
         };

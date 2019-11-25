@@ -53,14 +53,14 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
         }
     };
 
-    public static BrowseFragment newInstance(ServerRequestModule serverRequestModule) {
-        BrowseFragment fragment = new BrowseFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("server_module", serverRequestModule);
-        fragment.setArguments(bundle);
-
-        return fragment;
-    }
+//    public static BrowseFragment newInstance(ServerRequestModule serverRequestModule) {
+//        BrowseFragment fragment = new BrowseFragment();
+//        Bundle bundle = new Bundle();
+//        bundle.putSerializable("server_module", serverRequestModule);
+//        fragment.setArguments(bundle);
+//
+//        return fragment;
+//    }
 
 //    @Override
 //    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -90,8 +90,11 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
         context = getContext();
         ctx = this;
         ident = new IdentProvider(context);
-        mServerRequestModule = (ServerRequestModule) getArguments().getSerializable("server_module");
-//        mServerRequestModule = ServerRequestModule.getInstance(context.getApplicationContext(), ident);
+//        mServerRequestModule = (ServerRequestModule) getArguments().getSerializable("server_module");
+        mServerRequestModule = ServerRequestModule.getInstance();
+        if (mServerRequestModule == null) {
+            Toast.makeText(context, "serverProblem", Toast.LENGTH_LONG).show();
+        }
 
         setHasOptionsMenu(true);
         evntlist = new ArrayList<>();

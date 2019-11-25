@@ -50,7 +50,6 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
     private String cardType;
     private FragmentManager supportFragmentManager;
     private ServerRequestModule serverRequestModule;
-    private OnItemRemovedListener mCallback;
     private IdentProvider ident;
 
     private Set<Integer> drawn;
@@ -65,7 +64,6 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
         this.ident = new IdentProvider(context);
         this.supportFragmentManager  = supportFragmentManager;
         this.serverRequestModule = module;
-        this.mCallback = callBack;
     }
 
     @NonNull
@@ -229,12 +227,9 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
                         int position = getAdapterPosition();
 
                         evnt_list.remove(position);
-                        if (mCallback != null) {
-                            mCallback.itemRemoved(position);
-                        }
+
                         notifyItemRemoved(position);
                         notifyItemRangeChanged(position, evnt_list.size());
-
                     }
 
                     @Override

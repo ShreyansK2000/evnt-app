@@ -183,6 +183,7 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
                     } else {
                         markAttendance(itemView, false);
                     }
+                    inButton.setEnabled(false);
                 }
             });
 

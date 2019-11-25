@@ -166,10 +166,12 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
                     if (cardType.equals(context.getString(R.string.browse))) {
                         cardType = context.getString(R.string.attending);
                         attendance_button.setText(context.getString(R.string.nevermind));
+                        attendance_button.setEnabled(false);
                         callback.addEvent();
                     } else {
                         cardType = context.getString(R.string.browse);
                         attendance_button.setText(context.getString(R.string.im_in));
+                        attendance_button.setEnabled(false);
                         callback.removeEvent();
                     }
                 } else {

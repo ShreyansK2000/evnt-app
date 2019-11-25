@@ -40,7 +40,6 @@ public class ProfileFragment extends Fragment {
         id = ident.getValue(getString(R.string.fb_id));
         name = ident.getValue(getString(R.string.user_name));
         email = ident.getValue(getString(R.string.user_email));
-
     }
 
     @Nullable
@@ -48,13 +47,6 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_profile,
                 container, false);
-        if (id == null) {
-            ident = new IdentProvider(getContext());
-
-            id = ident.getValue(getString(R.string.fb_id));
-            name = ident.getValue(getString(R.string.user_name));
-            email = ident.getValue(getString(R.string.user_email));
-        }
         setupViews();
         return view;
     }

@@ -10,12 +10,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
 
 import com.example.evnt.adapters.EvntListAdapterCallback;
+import com.example.evnt.networking.ServerRequestModule;
+import com.example.evnt.networking.VolleyAttendanceCallback;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -47,6 +50,8 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
     private String cardType;
 
     private EvntListAdapterCallback callback;
+    private ServerRequestModule serverRequestModule;
+    private String eventId;
 
     public EvntDetailsDialog() {
         event_name = "";
@@ -64,6 +69,19 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
         this.cardType = cardType;
         this.callback = callback;
         this.context = context;
+        this.serverRequestModule = null;
+    }
+
+    public EvntDetailsDialog(Context context, String event_name, String date_string, String desc, String location, ServerRequestModule serverRequestModule, String eventId) {
+        this.event_name = event_name;
+        this.location = location;
+        this.date_string = date_string;
+        this.desc = desc;
+        this.cardType = "NA";
+        this.callback = callback;
+        this.context = context;
+        this.serverRequestModule = serverRequestModule;
+        this.eventId = eventId;
     }
 
     @Override
@@ -92,7 +110,7 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
         close_button = view.findViewById(R.id.close_button);
         cancel_button = view.findViewById(R.id.cancel_button);
         attendance_button = view.findViewById(R.id.attending_button);
-        String buttonType = cardType.equals(context.getString(R.string.browse)) ? context.getString(R.string.im_in) :
+        String buttonType = (cardType.equals(context.getString(R.string.browse)) || cardType.equals("NA")) ? context.getString(R.string.im_in) :
                 context.getString(R.string.nevermind);
         attendance_button.setText(buttonType);
 
@@ -116,14 +134,38 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
             @Override
             public void onClick(View v) {
 
-                if (cardType.equals(context.getString(R.string.browse))) {
-                    cardType = context.getString(R.string.attending);
-                    attendance_button.setText(context.getString(R.string.nevermind));
-                    callback.addEvent();
+                if (!cardType.equals("NA")) {
+                    if (cardType.equals(context.getString(R.string.browse))) {
+                        cardType = context.getString(R.string.attending);
+                        attendance_button.setText(context.getString(R.string.nevermind));
+                        callback.addEvent();
+                    } else {
+                        cardType = context.getString(R.string.browse);
+                        attendance_button.setText(context.getString(R.string.im_in));
+                        callback.removeEvent();
+                    }
                 } else {
-                    cardType = context.getString(R.string.browse);
-                    attendance_button.setText(context.getString(R.string.im_in));
-                    callback.removeEvent();
+
+                    if (serverRequestModule != null) {
+
+                        serverRequestModule.markUserAttendance("https://api.evnt.me/events/api/add/" + eventId + "/",
+                                new VolleyAttendanceCallback() {
+                                    @Override
+                                    public void onAttendanceSuccessResponse() {
+                                        Toast.makeText(context.getApplicationContext(),
+                                                "Added successfully, please see My Events: Attending",
+                                                Toast.LENGTH_LONG).show();
+                                        System.out.println("added attendance successfully");
+                                        dismiss();
+                                    }
+
+                                    @Override
+                                    public void onErrorResponse(String result) {
+                                        System.out.println("there was an error");
+                                    }
+                                });
+                    }
+
                 }
 
                 // do we want this to stay open once the user has chosen I'm in/nevermind?

@@ -199,7 +199,6 @@ public class FragHostActivity extends AppCompatActivity {
             for (int i = 0; i < data.length(); i++) {
                 JSONObject obj = data.getJSONObject(i);
 
-                System.out.println(obj);
                 EvntCardInfo evnt = new EvntCardInfo.Builder()
                         .withName(obj.get("name").toString())
                         .withDescription((String) obj.get("description"))

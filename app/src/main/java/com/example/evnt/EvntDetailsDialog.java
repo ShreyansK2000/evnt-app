@@ -215,7 +215,6 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
                 + context.getString(R.string.zoom_setting)
                 + (Integer.toString(600) + "x" + Integer.toString(350))
                 + context.getString(R.string.static_api_key);
-        System.out.println(mapImgURL);
         Picasso.get().load(mapImgURL)
                      .into(map_image_iv);
     }

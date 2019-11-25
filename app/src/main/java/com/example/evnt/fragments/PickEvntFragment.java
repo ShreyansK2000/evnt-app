@@ -118,7 +118,6 @@ public class PickEvntFragment extends Fragment {
                         @Override
                         public void onReceivedBestEvent(JSONObject response) {
                             // do stuff with response
-                            System.out.println(response);
                             EvntCardInfo evnt = null;
                             try {
                                 JSONObject data = (JSONObject) response.get("data");
@@ -140,7 +139,7 @@ public class PickEvntFragment extends Fragment {
                             if (evnt != null) {
                                 EvntDetailsDialog detailsDialog = new EvntDetailsDialog(context,
                                         evnt.getEvntName(), evnt.getDateString(), evnt.getDescription(),
-                                        location, mServerRequestModule, evnt.getId(), evnt.getImage(), evnt.getTagList(),
+                                        evnt.getLocation(), mServerRequestModule, evnt.getId(), evnt.getImage(), evnt.getTagList(),
                                         evnt.getHostName());
                                 detailsDialog.show(getFragmentManager(), "");
                             }

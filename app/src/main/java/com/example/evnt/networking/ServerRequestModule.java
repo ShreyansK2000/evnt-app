@@ -187,6 +187,7 @@ public class ServerRequestModule implements Serializable {
                 params.put("Content-Type", "application/json; charset=UTF-8");
                 params.put("accessToken", token);
                 params.put("userId", ident.getValue(context.getString(R.string.user_id)));
+                params.put("userLocation", "");
                 return params;
             }
         };

@@ -23,6 +23,8 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.evnt.EvntCardInfo;
+import com.example.evnt.EvntDetailsDialog;
 import com.example.evnt.GetLocationCallback;
 import com.example.evnt.IdentProvider;
 import com.example.evnt.R;
@@ -32,6 +34,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -105,14 +108,34 @@ public class PickEvntFragment extends Fragment {
         public void onClick(View v) {
             getLocation(new GetLocationCallback() {
                 @Override
-                public void gotLocationString(String location) {
-                    System.out.println(location);
+                public void gotLocationString(final String location) {
                     String url = "https://api.evnt.me/events/api/suggest/";
                     mServerRequestModule.getBestEvent(url, new VolleyBestEventCallback() {
                         @Override
                         public void onReceivedBestEvent(JSONObject response) {
                             // do stuff with response
                             System.out.println(response);
+                            EvntCardInfo evnt = null;
+                            try {
+                                JSONObject data = (JSONObject) response.get("data");
+                                 evnt = new EvntCardInfo.Builder()
+                                        .withName(data.get("name").toString())
+                                        .withDescription((String) data.get("description"))
+                                        .withStartTime((String) data.get("startTime"))
+                                        .withEndTime((String) data.get("endTime"))
+                                        .withLocation((String) data.get("location"))
+                                        .withId((String) data.get("_id"))
+                                        .withHost(data.get("host").equals(ident.getValue(context.getString(R.string.user_id))) ? "you" : "Anonymous")
+                                        .withTagList((data.get("tagList").toString().replace("[","")
+                                                .replace("]","").replace("\"", "")).split(","))
+                                        .build();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            if (evnt != null) {
+                                EvntDetailsDialog detailsDialog = new EvntDetailsDialog(context, evnt.getEvntName(), evnt.getDateString(), evnt.getDescription(), location, mServerRequestModule, evnt.getId());
+                                detailsDialog.show(getFragmentManager(), "");
+                            }
                         }
                     });
                 }

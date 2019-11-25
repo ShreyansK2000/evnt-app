@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -92,9 +93,11 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
         holder.tag_list = evntInfo.getTagList();
         if (!(holder.tag_list.get(0).equals(""))) {
             holder.tagRecycler.setAdapter(new TagChipAdapter(context, holder.tag_list));
+        } else {
+            holder.tagRecycler.setAdapter(null);
         }
 
-        holder.event_img_iv.setImageDrawable(context.getDrawable(evntInfo.getImage()));
+        holder.event_img_iv.setImageResource(evntInfo.getImage());
         setAnimation(holder.itemView, position);
 
     }

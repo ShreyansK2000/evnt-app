@@ -129,8 +129,9 @@ public class PickEvntFragment extends Fragment {
                                         .withEndTime((String) data.get("endTime"))
                                         .withLocation((String) data.get("location"))
                                         .withId((String) data.get("_id"))
-                                        .withHost(data.get("host").equals(ident.getValue(context.getString(R.string.user_id))) ? "you" : "Anonymous")
-                                        .withTagList((data.get("tagList").toString().replace("[","")
+                                        .withHostId(data.get("host").equals(ident.getValue(context.getString(R.string.user_id))) ? "you" : "Anonymous")
+                                         .withHostName((data.get("hostname")).toString())
+                                         .withTagList((data.get("tagList").toString().replace("[","")
                                                 .replace("]","").replace("\"", "")).split(","))
                                         .build();
                             } catch (JSONException e) {
@@ -139,7 +140,8 @@ public class PickEvntFragment extends Fragment {
                             if (evnt != null) {
                                 EvntDetailsDialog detailsDialog = new EvntDetailsDialog(context,
                                         evnt.getEvntName(), evnt.getDateString(), evnt.getDescription(),
-                                        location, mServerRequestModule, evnt.getId(), evnt.getImage(), evnt.getTagList());
+                                        location, mServerRequestModule, evnt.getId(), evnt.getImage(), evnt.getTagList(),
+                                        evnt.getHostName());
                                 detailsDialog.show(getFragmentManager(), "");
                             }
                         }

@@ -84,7 +84,12 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
                                                         context.getString(R.string.nevermind);
         holder.id = evntInfo.getId();
         holder.evnt_name_tv.setText(evntInfo.getEvntName());
-        holder.host_name_tv.setText(evntInfo.getHostName());
+        if (evntInfo.getHostId().equals(ident.getValue(context.getString(R.string.user_id)))) {
+            holder.host_name_tv.setText(context.getString(R.string.you_the_host));
+        } else {
+            String hostOut = "by " + evntInfo.getHostName();
+            holder.host_name_tv.setText(hostOut);
+        }
         holder.descript_tv.setText(evntInfo.getDescription());
         holder.date_tv.setText(evntInfo.getDateString());
         holder.evnt_name_tv.setText(evntInfo.getEvntName());
@@ -100,7 +105,7 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
         holder.moreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openDialog(evntInfo.getEvntName(), evntInfo.getDateString(), evntInfo.getLocation(), evntInfo.getDescription(), evntInfo.getImage(), evntInfo.getTagList(),
+                openDialog(evntInfo.getEvntName(), evntInfo.getDateString(), evntInfo.getLocation(), evntInfo.getDescription(), evntInfo.getImage(), evntInfo.getTagList(), evntInfo.getHostName(),
                     new EvntListAdapterCallback() {
                         @Override
                         public void removeEvent() { holder.markAttendance(holder.holderView, false); }
@@ -120,8 +125,8 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
 
     }
 
-    private void openDialog(String event_name, String date_string, String location, String desc, int image, List<String> tags, EvntListAdapterCallback callback) {
-        EvntDetailsDialog detailsDialog = new EvntDetailsDialog(context, event_name, date_string, desc, cardType, location, image, tags, callback);
+    private void openDialog(String event_name, String date_string, String location, String desc, int image, List<String> tags, String host_name, EvntListAdapterCallback callback) {
+        EvntDetailsDialog detailsDialog = new EvntDetailsDialog(context, event_name, date_string, desc, cardType, location, image, tags,host_name, callback);
         detailsDialog.show(supportFragmentManager, "");
     }
 

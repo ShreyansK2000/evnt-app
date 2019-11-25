@@ -80,7 +80,12 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
 
         holder.id = evntInfo.getId();
         holder.evnt_name_tv.setText(evntInfo.getEvntName());
-        holder.host_name_tv.setText(evntInfo.getHostName());
+        if (evntInfo.getHostId().equals(ident.getValue(context.getString(R.string.user_id)))) {
+            holder.host_name_tv.setText(context.getString(R.string.you_the_host));
+        } else {
+            String hostOut = "by " + evntInfo.getHostName();
+            holder.host_name_tv.setText(hostOut);
+        }
         holder.descript_tv.setText(evntInfo.getDescription());
         holder.date_tv.setText(evntInfo.getDateString());
         holder.evnt_name_tv.setText(evntInfo.getEvntName());

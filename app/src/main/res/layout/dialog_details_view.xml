@@ -46,6 +46,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/evnt_img" />
 
+    <TextView
+        android:id="@+id/host_name"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_name_field" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tags_recycler"
         android:layout_width="0dp"
@@ -55,22 +68,23 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toTopOf="@+id/event_time"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/event_name_field" />
+        app:layout_constraintTop_toBottomOf="@+id/host_name" />
 
     <TextView
         android:id="@+id/event_time"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="68dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="24dp"
         android:gravity="center_vertical"
         android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/event_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/event_name_field" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/event_description"
@@ -88,24 +102,24 @@
     <ImageView
         android:id="@+id/map_image"
         android:layout_width="match_parent"
-        android:layout_height="550px"
-        android:layout_marginTop="36dp"
+        android:layout_height="225dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/cancel_button"
         app:layout_constraintTop_toBottomOf="@+id/event_description"
-        tools:layout_editor_absoluteX="8dp" />
+        app:layout_constraintVertical_bias="0.403"
+        tools:layout_editor_absoluteX="0dp" />
 
     <Button
         android:id="@+id/cancel_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="144dp"
         android:layout_marginBottom="8dp"
         android:text="Cancel"
         android:theme="@style/PrimaryFlatButton"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/map_image"
-        app:layout_constraintVertical_bias="0.957" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/attending_button"
@@ -122,4 +136,5 @@
         app:layout_constraintStart_toEndOf="@+id/cancel_button"
         app:layout_constraintTop_toBottomOf="@+id/map_image"
         app:layout_constraintVertical_bias="0.957" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

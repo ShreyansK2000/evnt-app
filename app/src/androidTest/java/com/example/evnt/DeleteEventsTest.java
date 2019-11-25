@@ -61,8 +61,8 @@ public class DeleteEventsTest {
                     // This lifecycle is a bit suboptimal, as we're creating new fragments every time
                     switch (menuItem.getItemId()) {
                         case R.id.pick_evnt:  selected = new PickEvntFragment(); break;
-                        case R.id.browse_evnt: selected = BrowseFragment.newInstance(serverRequestModule); break;
-                        case R.id.my_events: selected = MyEventsFragment.newInstance(serverRequestModule); break;
+                        case R.id.browse_evnt: selected = new BrowseFragment(); break;
+                        case R.id.my_events: selected = new MyEventsFragment(); break;
                         case R.id.profile_evnt: selected = new ProfileFragment(); break;
                         default: selected = new PickEvntFragment(); break;
                     }

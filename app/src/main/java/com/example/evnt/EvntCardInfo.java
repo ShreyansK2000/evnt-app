@@ -27,6 +27,7 @@ public class EvntCardInfo implements Serializable {
     private String location;
     private String evnt_name;
     private String host_name;
+    private String host_id;
     private String start_time;
     private String end_time;
     private String dateString;
@@ -47,6 +48,7 @@ public class EvntCardInfo implements Serializable {
     private EvntCardInfo(EvntCardInfo.Builder builder) {
         location = builder.location;
         evnt_name = builder.evnt_name;
+        host_id = builder.host_id;
         host_name = builder.host_name;
         start_time = builder.start_time;
         end_time = builder.end_time;
@@ -109,6 +111,10 @@ public class EvntCardInfo implements Serializable {
         return evnt_name;
     }
 
+    public String getHostId() {
+        return host_id;
+    }
+
     public String getHostName() {
         return host_name;
     }
@@ -144,6 +150,7 @@ public class EvntCardInfo implements Serializable {
         private String location;
         private String evnt_name;
         private String host_name;
+        private String host_id;
         private String start_time;
         private String end_time;
         private String description;
@@ -156,6 +163,7 @@ public class EvntCardInfo implements Serializable {
             location = "";
             evnt_name = "";
             host_name = "Anonymous";
+
             start_time = "";
             end_time = "";
             description = "";
@@ -175,8 +183,13 @@ public class EvntCardInfo implements Serializable {
             return this;
         }
 
-        public Builder withHost(String host) {
-            this.host_name = host;
+        public Builder withHostId(String host_id) {
+            this.host_id = host_id;
+            return this;
+        }
+
+        public Builder withHostName(String host_name) {
+            this.host_name = host_name;
             return this;
         }
 

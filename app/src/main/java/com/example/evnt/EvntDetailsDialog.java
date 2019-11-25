@@ -51,6 +51,8 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
     private ImageView close_button;
     private Button cancel_button;
 
+    private TextView host_name_tv;
+
     private Button attendance_button;
     private String cardType;
 
@@ -60,6 +62,7 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
     private int image;
     private List<String> tags;
     private RecyclerView recyclerView;
+    private String host_name;
 
     public EvntDetailsDialog() {
         event_name = "";
@@ -69,7 +72,7 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
     }
 
     // Use a builder for this, probably
-    public EvntDetailsDialog(Context context, String event_name, String date_string, String desc, String cardType, String location, int image, List<String> tags, EvntListAdapterCallback callback) {
+    public EvntDetailsDialog(Context context, String event_name, String date_string, String desc, String cardType, String location, int image, List<String> tags, String host_name, EvntListAdapterCallback callback) {
         this.event_name = event_name;
         this.location = location;
         this.date_string = date_string;
@@ -80,9 +83,10 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
         this.image = image;
         this.serverRequestModule = null;
         this.tags = tags;
+        this.host_name = host_name;
     }
 
-    public EvntDetailsDialog(Context context, String event_name, String date_string, String desc, String location, ServerRequestModule serverRequestModule, String eventId, int image, List<String> tags) {
+    public EvntDetailsDialog(Context context, String event_name, String date_string, String desc, String location, ServerRequestModule serverRequestModule, String eventId, int image, List<String> tags, String host_name) {
         this.event_name = event_name;
         this.location = location;
         this.date_string = date_string;
@@ -94,6 +98,7 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
         this.serverRequestModule = serverRequestModule;
         this.eventId = eventId;
         this.tags = tags;
+        this.host_name = host_name;
     }
 
     @Override
@@ -106,6 +111,10 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
 
         evnt_name_tv = view.findViewById(R.id.event_name_field);
         evnt_name_tv.setText(event_name);
+
+        String hostOut = "by " + host_name;
+        host_name_tv = view.findViewById(R.id.host_name);
+        host_name_tv.setText(hostOut);
 
         date_string_tv = view.findViewById(R.id.event_time);
         date_string_tv.setText(date_string);
@@ -204,7 +213,7 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
                 + "markers=color:red%7C"
                 + location
                 + context.getString(R.string.zoom_setting)
-                + (Integer.toString(750) + "x" + Integer.toString(550))
+                + (Integer.toString(600) + "x" + Integer.toString(350))
                 + context.getString(R.string.static_api_key);
         System.out.println(mapImgURL);
         Picasso.get().load(mapImgURL)

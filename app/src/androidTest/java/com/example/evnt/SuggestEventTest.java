@@ -11,6 +11,7 @@ import androidx.test.espresso.action.ViewActions;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -69,8 +70,8 @@ public class SuggestEventTest {
                     // This lifecycle is a bit suboptimal, as we're creating new fragments every time
                     switch (menuItem.getItemId()) {
                         case R.id.pick_evnt:  selected = new PickEvntFragment(); break;
-                        case R.id.browse_evnt: selected = BrowseFragment.newInstance(serverRequestModule); break;
-                        case R.id.my_events: selected = MyEventsFragment.newInstance(serverRequestModule); break;
+                        case R.id.browse_evnt: selected = new BrowseFragment(); break;
+                        case R.id.my_events: selected = new MyEventsFragment(); break;
                         case R.id.profile_evnt: selected = new ProfileFragment(); break;
                         default: selected = new PickEvntFragment(); break;
                     }
@@ -117,7 +118,11 @@ public class SuggestEventTest {
         onView(withId(R.id.fragment_browse_layout)).check(matches(isDisplayed()));
         System.out.println("On browse fragment");
 
-        Thread.sleep(1000);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         onView(withId(R.id.evnt_list_recycler)).check(new SuggestEventTest.RecyclerViewItemCountAssertion(true));
         System.out.println("At least one event.");
 
@@ -157,7 +162,11 @@ public class SuggestEventTest {
         onView(withId(R.id.fragment_browse_layout)).check(matches(isDisplayed()));
         System.out.println("On browse fragment");
 
-        Thread.sleep(1000);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         onView(withId(R.id.evnt_list_recycler)).check(new SuggestEventTest.RecyclerViewItemCountAssertion(false));
         System.out.println("No events.");
 
@@ -175,18 +184,15 @@ public class SuggestEventTest {
                         withId(R.id.evnt_button)
                 ))
                 .perform(click());
-        onView(withId(R.id.details_dialog)).check(
-                matches(
-                        not(isDisplayed())
-                )
-        );
+
+        onView(withId(R.id.details_dialog)).check(doesNotExist());
         System.out.println("Detail is not open");
 
         System.out.println("Success!");
     }
 
     public class RecyclerViewItemCountAssertion implements ViewAssertion {
-        private static  final boolean value;
+        private final boolean value;
 
         public RecyclerViewItemCountAssertion(boolean value) {
             this.value = value;

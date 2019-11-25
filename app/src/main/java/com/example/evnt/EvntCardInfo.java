@@ -41,7 +41,7 @@ public class EvntCardInfo implements Serializable {
     private Map<String, Integer> defaultImages = new HashMap<String, Integer>() {{
         put("sports", R.drawable.sports);
         put("party", R.drawable.party);
-        put("gmaes", R.drawable.games);
+        put("games", R.drawable.games);
     }};
 
     // We shouldn't have access to this directly

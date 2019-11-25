@@ -181,7 +181,6 @@ public class PickEvntFragment extends Fragment {
             }
 
         } else {
-            System.out.println(fusedLocationClient);
             fusedLocationClient.getLastLocation()
                     .addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
                         @Override
@@ -204,7 +203,8 @@ public class PickEvntFragment extends Fragment {
         final LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            buildAlertMessageNoGps();
+            Toast.makeText(context, "Please turn on location services and try again", Toast.LENGTH_LONG).show();
+//            buildAlertMessageNoGps();
         }
     }
 

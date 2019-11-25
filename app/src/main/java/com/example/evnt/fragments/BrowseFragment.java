@@ -175,7 +175,7 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
         filteredList = new ArrayList<>();
         if (searchEventsView != null) {
             for (EvntCardInfo evntCardInfo : evntlist) {
-                if (evntCardInfo.getEvntName().toLowerCase().startsWith(query.toLowerCase())
+                if (evntCardInfo.getEvntName().toLowerCase().contains(query.toLowerCase())
                     || evntCardInfo.getDescription().toLowerCase().contains(query.toLowerCase())) {
                     filteredList.add(evntCardInfo);
                 }

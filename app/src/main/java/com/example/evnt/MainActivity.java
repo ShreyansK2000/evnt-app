@@ -12,11 +12,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -46,12 +48,14 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private CallbackManager callbackManager;
     private IdentProvider ident;
+    private Toast statusToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ident = new IdentProvider(this);
+        statusToast = Toast.makeText(this, "", Toast.LENGTH_LONG);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create channel to show notifications.
@@ -122,9 +126,10 @@ public class MainActivity extends AppCompatActivity {
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+                statusToast.setText("Authenticated with Facebook");
+                statusToast.show();
                 AccessToken loginAccessToken = loginResult.getAccessToken();
                 final String loginToken = loginAccessToken.getToken();
-
                 Log.d(TAG, loginToken);
                 Log.d(TAG, "User has successfully logged in");
 
@@ -163,6 +168,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void serviceAuthentication(final AccessToken accessToken, final String registrationToken) {
+        statusToast.setText("Authenticating with Evnt Service");
+        statusToast.show();
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = getString(R.string.oauth_endpoint);
 
@@ -179,6 +186,9 @@ public class MainActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
 
+                        statusToast.setText("Success!");
+                        statusToast.show();
+
                         Intent intent = new Intent(getApplicationContext(), FragHostActivity.class);
                         // Pass this token into the next intent
                         intent.putExtra("accessToken", accessToken);
@@ -189,6 +199,8 @@ public class MainActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        statusToast.setText("Error authenticating with Evnt");
+                        statusToast.show();
                         // Fail
                         error.printStackTrace();
                     }
@@ -202,6 +214,24 @@ public class MainActivity extends AppCompatActivity {
                 return headers;
             }
         };
+
+        jsonBody.setRetryPolicy(new RetryPolicy() {
+            @Override
+            public int getCurrentTimeout() {
+                return 50000;
+            }
+
+            @Override
+            public int getCurrentRetryCount() {
+                return 50000;
+            }
+
+            @Override
+            public void retry(VolleyError error) throws VolleyError {
+                Toast.makeText(getApplication(), "Request failed", Toast.LENGTH_LONG).show();
+            }
+        });
+
         queue.add(jsonBody);
     }
 }

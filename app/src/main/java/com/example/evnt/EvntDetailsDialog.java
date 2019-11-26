@@ -63,20 +63,20 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
 
     // Use a builder for this, probably
     public EvntDetailsDialog(
-            Context context, String event_name, String date_string,
-            String desc, String cardType, String location, int image,
-            List<String> tags, String host_name, EvntListAdapterCallback callback) {
-        this.event_name = event_name;
-        this.location = location;
-        this.date_string = date_string;
-        this.desc = desc;
+            Context context, String[] args, String cardType, int image,
+            List<String> tags, EvntListAdapterCallback callback) {
+        this.event_name = args[0];
+        this.host_name = args[1];
+        this.location = args[2];
+        this.eventId = "";
+        this.desc = args[4];
+        this.date_string = args[5];
         this.cardType = cardType;
         this.callback = callback;
         this.context = context;
         this.image = image;
         this.serverRequestModule = null;
         this.tags = tags;
-        this.host_name = host_name;
     }
 
     public EvntDetailsDialog(

@@ -119,15 +119,8 @@ public class PickEvntFragment extends Fragment {
                                     e.printStackTrace();
                                 }
                                 if (evnt != null) {
-                                    String[] stringArgs = new String[6];
-                                    stringArgs[0] = evnt.getEvntName();
-                                    stringArgs[1] = evnt.getHostName();
-                                    stringArgs[2] = evnt.getLocation();
-                                    stringArgs[3] = evnt.getId();
-                                    stringArgs[4] = evnt.getDescription();
-                                    stringArgs[5] = evnt.getDateString();
                                     EvntDetailsDialog detailsDialog = new EvntDetailsDialog(context,
-                                            stringArgs, mServerRequestModule, evnt.getImage(), evnt.getTagList());
+                                            evnt, mServerRequestModule, evnt.getImage(), evnt.getTagList());
                                     detailsDialog.show(getFragmentManager(), "");
                                     imageView.setClickable(true);
                                     clickCount = 0;

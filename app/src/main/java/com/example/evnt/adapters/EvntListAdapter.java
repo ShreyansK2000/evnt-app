@@ -105,14 +105,7 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
         holder.moreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String[] stringArgs = new String[6];
-                stringArgs[0] = evntInfo.getEvntName();
-                stringArgs[1] = evntInfo.getHostName();
-                stringArgs[2] = evntInfo.getLocation();
-                stringArgs[3] = evntInfo.getId();
-                stringArgs[4] = evntInfo.getDescription();
-                stringArgs[5] = evntInfo.getDateString();
-                openDialog(stringArgs, evntInfo.getImage(), evntInfo.getTagList(),
+                openDialog(evntInfo, evntInfo.getImage(), evntInfo.getTagList(),
                     new EvntListAdapterCallback() {
                         @Override
                         public void removeEvent() { holder.markAttendance(holder.holderView, false); }
@@ -132,8 +125,8 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
 
     }
 
-    private void openDialog(String[] args, int image, List<String> tags, EvntListAdapterCallback callback) {
-        EvntDetailsDialog detailsDialog = new EvntDetailsDialog(context, args, cardType, image, tags, callback);
+    private void openDialog(EvntCardInfo evntCardInfo, int image, List<String> tags, EvntListAdapterCallback callback) {
+        EvntDetailsDialog detailsDialog = new EvntDetailsDialog(context, evntCardInfo, cardType, image, tags, callback);
         detailsDialog.show(supportFragmentManager, "");
     }
 

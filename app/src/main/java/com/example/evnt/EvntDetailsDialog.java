@@ -63,14 +63,14 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
 
     // Use a builder for this, probably
     public EvntDetailsDialog(
-            Context context, String[] args, String cardType, int image,
+            Context context, EvntCardInfo evntCardInfo, String cardType, int image,
             List<String> tags, EvntListAdapterCallback callback) {
-        this.event_name = args[0];
-        this.host_name = args[1];
-        this.location = args[2];
-        this.eventId = "";
-        this.desc = args[4];
-        this.date_string = args[5];
+        this.event_name = evntCardInfo.getEvntName();
+        this.host_name = evntCardInfo.getHostName();
+        this.location = evntCardInfo.getLocation();
+        this.eventId = evntCardInfo.getId();
+        this.desc = evntCardInfo.getDescription();
+        this.date_string = evntCardInfo.getDateString();
         this.cardType = cardType;
         this.callback = callback;
         this.context = context;
@@ -80,14 +80,14 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
     }
 
     public EvntDetailsDialog(
-            Context context, String[] args,ServerRequestModule serverRequestModule,
+            Context context, EvntCardInfo evntCardInfo,ServerRequestModule serverRequestModule,
             int image, List<String> tags) {
-        this.event_name = args[0];
-        this.host_name = args[1];
-        this.location = args[2];
-        this.eventId = args[3];
-        this.desc = args[4];
-        this.date_string = args[5];
+        this.event_name = evntCardInfo.getEvntName();
+        this.host_name = evntCardInfo.getHostName();
+        this.location = evntCardInfo.getLocation();
+        this.eventId = evntCardInfo.getId();
+        this.desc = evntCardInfo.getDescription();
+        this.date_string = evntCardInfo.getDateString();
         this.cardType = "NA";
         this.context = context;
         this.image = image;

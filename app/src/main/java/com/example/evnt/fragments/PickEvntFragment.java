@@ -120,12 +120,11 @@ public class PickEvntFragment extends Fragment {
                                 }
                                 if (evnt != null) {
                                     EvntDetailsDialog detailsDialog = new EvntDetailsDialog(context,
-                                            evnt, mServerRequestModule, evnt.getImage(), evnt.getTagList());
+                                            evnt, mServerRequestModule);
                                     detailsDialog.show(getFragmentManager(), "");
                                     imageView.setClickable(true);
                                     clickCount = 0;
                                 }
-
                             }
 
                             @Override

@@ -54,46 +54,60 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
     private List<String> tags;
     private String host_name;
 
-    public EvntDetailsDialog() {
-        event_name = "";
-        date_string = "";
-        desc = "";
-        cardType = "browse";
-    }
-
-    // Use a builder for this, probably
-    public EvntDetailsDialog(
-            Context context, EvntCardInfo evntCardInfo, String cardType, int image,
-            List<String> tags, EvntListAdapterCallback callback) {
-        this.event_name = evntCardInfo.getEvntName();
-        this.host_name = evntCardInfo.getHostName();
-        this.location = evntCardInfo.getLocation();
-        this.eventId = evntCardInfo.getId();
-        this.desc = evntCardInfo.getDescription();
-        this.date_string = evntCardInfo.getDateString();
+    /**
+     * Constructor for detailed view for events from the Event list adapters.
+     * It registers a callback and which sends calls to the REST apis to
+     * add or remove users from events through the appropriate adapter class
+     *
+     * @param context The context to draw the dialog
+     * @param evntCardInfo The eventCardInfo object corresponding to this details view
+     * @param cardType The cardType indicates the kind of
+     *                 adapter, thus the kind of button on the dialog,
+     *                 which dicatates the callback method used
+     * @param callback The registered callback which returns to the list adapters
+     *                 to either add the user to the event remove them from the event
+     */
+    public EvntDetailsDialog(Context context, EvntCardInfo evntCardInfo,
+                             String cardType, EvntListAdapterCallback callback) {
+        attachVariables(context, evntCardInfo);
         this.cardType = cardType;
         this.callback = callback;
-        this.context = context;
-        this.image = image;
         this.serverRequestModule = null;
-        this.tags = tags;
     }
 
-    public EvntDetailsDialog(
-            Context context, EvntCardInfo evntCardInfo,ServerRequestModule serverRequestModule,
-            int image, List<String> tags) {
+    /**
+     * Constructor for detailed view for events from the Pick Event Fragment.
+     * it does not register a callback and allows the dialog to directly interact
+     * with the serverCommunicationModule.
+     *
+     * @param context The context to draw the dialog
+     * @param evntCardInfo The eventCardInfo object corresponding to this details view
+     * @param serverRequestModule Server communication module for requests if not from adapters
+     */
+    public EvntDetailsDialog(Context context, EvntCardInfo evntCardInfo,
+                             ServerRequestModule serverRequestModule) {
+        attachVariables(context, evntCardInfo);
+        this.cardType = "NA";
+        this.serverRequestModule = serverRequestModule;
+    }
+
+    /**
+     * Constructor helper to extract information and attach to field instances
+     * @param context The context to draw the dialog
+     * @param evntCardInfo The eventCardInfo object corresponding to this details view
+     */
+    private void attachVariables(Context context, EvntCardInfo evntCardInfo) {
         this.event_name = evntCardInfo.getEvntName();
         this.host_name = evntCardInfo.getHostName();
         this.location = evntCardInfo.getLocation();
         this.eventId = evntCardInfo.getId();
         this.desc = evntCardInfo.getDescription();
         this.date_string = evntCardInfo.getDateString();
-        this.cardType = "NA";
+        this.image = evntCardInfo.getImage();
+        this.tags = evntCardInfo.getTagList();
         this.context = context;
-        this.image = image;
-        this.serverRequestModule = serverRequestModule;
-        this.tags = tags;
     }
+
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -106,6 +120,10 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
 
         final AlertDialog detailsView = builder.create();
 
+        /*
+         * The cancel button and close button simply close the dialog
+         * The close button is added to more intuitive understanding of the UI
+         */
         cancel_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,10 +138,19 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
             }
         });
 
+        /*
+         * The attendance button is used to add or remove the user from the
+         * event depending on the adapter in which the MORE button was clicked.
+         */
         attendance_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                /*
+                 * browse corresponds to the cards in the browse/search view
+                 * attending corresponds to the my events view
+                 * NA corresponds to the complex logic function call
+                 */
                 if (!"NA".equals(cardType)) {
                     if (cardType.equals(context.getString(R.string.browse))) {
                         cardType = context.getString(R.string.attending);
@@ -137,7 +164,6 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
                         callback.removeEvent();
                     }
                 } else {
-
                     if (serverRequestModule != null) {
 
                         serverRequestModule.markUserAttendance("https://api.evnt.me/events/api/add/"
@@ -170,8 +196,11 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
         return detailsView;
     }
 
+    /**
+     * Use this method to load the image returned by the Google Static Maps api
+     * into the image view in the details dialog.
+     */
     private void loadImage() {
-        // TODO setup loading image based on coordinates/address
         String mapImgURL = context.getString(R.string.map_url_call)
                 + "markers=color:red%7C"
                 + location
@@ -182,6 +211,10 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
                      .into(map_image_iv);
     }
 
+    /**
+     * Setup all the views on the dialog
+     * @param view The inflated alert dialog views where we will place other items
+     */
     private void setViews(View view) {
         TextView evnt_name_tv = view.findViewById(R.id.event_name_field);
         evnt_name_tv.setText(event_name);
@@ -204,7 +237,8 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
 
 
         RecyclerView recyclerView = view.findViewById(R.id.tags_recycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setLayoutManager(new LinearLayoutManager(context,
+                LinearLayoutManager.HORIZONTAL, false));
         if (!(tags.get(0).equals(""))) {
             recyclerView.setAdapter(new TagChipAdapter(context, tags));
         }

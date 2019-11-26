@@ -42,15 +42,6 @@ public class HostingEventsFragment extends Fragment implements SwipeRefreshLayou
     private List<EvntCardInfo> evntlist;
     private IdentProvider ident;
     private Fragment ctx;
-//
-//    public static HostingEventsFragment newInstance(ServerRequestModule serverRequestModule) {
-//        HostingEventsFragment fragment = new HostingEventsFragment();
-//        Bundle bundle = new Bundle();
-//        bundle.putSerializable("server_module", serverRequestModule);
-//        fragment.setArguments(bundle);
-//
-//        return fragment;
-//    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -69,8 +60,7 @@ public class HostingEventsFragment extends Fragment implements SwipeRefreshLayou
         super.onCreate(savedInstanceState);
         ident = new IdentProvider(getContext());
         ctx = this;
-//        mServerRequestModule = (ServerRequestModule) getArguments().getSerializable("server_module");
-////        mServerRequestModule = ServerRequestModule.getInstance(context.getApplicationContext(), ident);
+
         mServerRequestModule = ServerRequestModule.getInstance();
         if (mServerRequestModule == null) {
             Toast.makeText(context, "serverProblem", Toast.LENGTH_LONG).show();

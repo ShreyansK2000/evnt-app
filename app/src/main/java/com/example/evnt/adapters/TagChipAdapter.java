@@ -11,8 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.evnt.R;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 
 public class TagChipAdapter extends RecyclerView.Adapter<TagChipAdapter.TagTextViewHolder> {

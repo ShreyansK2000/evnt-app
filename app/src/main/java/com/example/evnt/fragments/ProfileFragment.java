@@ -18,7 +18,6 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.login.widget.ProfilePictureView;
 
-// TODO decide what items we need to show here and what functionality.
 public class ProfileFragment extends Fragment {
 
     private String name;

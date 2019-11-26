@@ -25,15 +25,6 @@ public class MyEventsFragment extends Fragment {
     private HostingEventsFragment hostingEventsFragment;
     private AttendingEventsFragment attendingEventsFragment;
 
-//    public static MyEventsFragment newInstance(ServerRequestModule serverRequestModule) {
-//        MyEventsFragment fragment = new MyEventsFragment();
-//        Bundle bundle = new Bundle();
-//        bundle.putSerializable("server_module", serverRequestModule);
-//        fragment.setArguments(bundle);
-//
-//        return fragment;
-//    }
-
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_my_events, container, false);
@@ -41,7 +32,6 @@ public class MyEventsFragment extends Fragment {
 
         mViewPager = mFragment.findViewById(R.id.m_view_pager);
         mTabLayout = mFragment.findViewById(R.id.my_events_tab_layout);
-//        mServerRequestModule = (ServerRequestModule) getArguments().getSerializable("server_module");
         mServerRequestModule = ServerRequestModule.getInstance();
         if (mServerRequestModule == null) {
             Toast.makeText(getContext(), "serverProblem", Toast.LENGTH_LONG).show();

@@ -1,6 +1,5 @@
 package com.example.evnt;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.AttributeSet;

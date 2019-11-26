@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,11 +26,7 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.evnt.EvntCardInfo;
 import com.example.evnt.IdentProvider;
@@ -52,17 +47,14 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
 
     private Context context;
     private List<EvntCardInfo> evnt_list;
-    private RequestQueue requestQueue;
     private IdentProvider ident;
     private Set<Integer> drawn;
     private ServerRequestModule serverRequestModule;
-    private RecyclerView tagRecyclerView;
 
     public EvntHostListAdapter(Context context, List<EvntCardInfo> evnt_list, ServerRequestModule serverRequestModule) {
         this.context = context;
         this.evnt_list = evnt_list;
         this.ident = new IdentProvider(context);
-        this.requestQueue = Volley.newRequestQueue(context);
         this.drawn = new HashSet<>();
         this.serverRequestModule = serverRequestModule;
     }

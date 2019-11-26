@@ -1,6 +1,5 @@
 package com.example.evnt;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -12,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -41,7 +39,6 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
     private String desc;
 
     private CircleImageView evnt_img_civ;
-    // TODO init with user img
 
     private ImageView map_image_iv;
     // nothing to initialize
@@ -202,7 +199,6 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
 
                 }
 
-                // do we want this to stay open once the user has chosen I'm in/nevermind?
             }
         });
 

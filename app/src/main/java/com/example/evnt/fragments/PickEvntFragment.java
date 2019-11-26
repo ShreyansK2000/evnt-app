@@ -2,25 +2,18 @@ package com.example.evnt.fragments;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.evnt.EvntCardInfo;
@@ -37,8 +30,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 // TODO see if we need to add more specific information to include in a search profile (date, time, tag)
@@ -54,15 +45,7 @@ public class PickEvntFragment extends Fragment {
     private ServerRequestModule mServerRequestModule;
     private CircleImageView imageView;
     private int clickCount;
-//
-//    public static PickEvntFragment newInstance(ServerRequestModule serverRequestModule) {
-//        PickEvntFragment fragment = new PickEvntFragment();
-//        Bundle bundle = new Bundle();
-//        bundle.putSerializable("server_module", serverRequestModule);
-//        fragment.setArguments(bundle);
-//
-//        return fragment;
-//    }
+
     /**
      * This is where we will be opening the saved state of the fragmend (if available)
      * and also passing in the serverrequestmodule to be able to fetch events from the server
@@ -76,8 +59,6 @@ public class PickEvntFragment extends Fragment {
         context = getContext();
         ctx = this;
         ident = new IdentProvider(context);
-//        mServerRequestModule = (ServerRequestModule) getArguments().getSerializable("server_module");
-////        mServerRequestModule = ServerRequestModule.getInstance(context.getApplicationContext(), ident);
 
         mServerRequestModule = ServerRequestModule.getInstance();
         if (mServerRequestModule == null) {
@@ -220,27 +201,7 @@ public class PickEvntFragment extends Fragment {
 
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             Toast.makeText(context, "Please turn on location services and try again", Toast.LENGTH_LONG).show();
-//            buildAlertMessageNoGps();
         }
     }
-
-    private void buildAlertMessageNoGps() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
-                .setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(final DialogInterface dialog, final int id) {
-                        dialog.cancel();
-                    }
-                });
-        final AlertDialog alert = builder.create();
-        alert.show();
-    }
-
 
 }

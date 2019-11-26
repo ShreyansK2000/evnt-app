@@ -11,21 +11,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.evnt.EvntCardInfo;
 import com.example.evnt.FragHostActivity;
 import com.example.evnt.IdentProvider;
 import com.example.evnt.R;
-import com.example.evnt.adapters.OnItemRemovedListener;
 import com.example.evnt.networking.ServerRequestModule;
 import com.example.evnt.networking.VolleyEventListCallback;
 import com.example.evnt.adapters.EvntListAdapter;
@@ -45,42 +42,6 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
     private SearchView searchEventsView;
     private RecyclerView recyclerView;
     private List<EvntCardInfo> filteredList;
-    private Parcelable recyclerViewState;
-
-    private OnItemRemovedListener browseRemoveCallback = new OnItemRemovedListener() {
-        @Override
-        public void itemRemoved(int position) {
-            if (evntlist != null && position < evntlist.size()) {
-                evntlist.remove(position);
-            }
-            recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
-            onRefresh();
-        }
-    };
-
-//    public static BrowseFragment newInstance(ServerRequestModule serverRequestModule) {
-//        BrowseFragment fragment = new BrowseFragment();
-//        Bundle bundle = new Bundle();
-//        bundle.putSerializable("server_module", serverRequestModule);
-//        fragment.setArguments(bundle);
-//
-//        return fragment;
-//    }
-
-//    @Override
-//    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-//        super.onActivityCreated(savedInstanceState);
-//        if (savedInstanceState != null) {
-//            //Restore the fragment's state here
-//        }
-//
-//    }
-//
-//    @Override
-//    public void onSaveInstanceState(@NonNull Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        //Save the fragment's state here
-//    }
 
     /**
      * This is where we will be opening the saved state of the fragmend (if available)
@@ -141,7 +102,6 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
      * so this is function should be used to reload the event list
      * in case of searches, by passing in a list of events with info
      *
-     * TODO need to modify the params and use them to build arraylist
      */
     private void loadList() {
         evntlist.clear();
@@ -157,7 +117,6 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
                     e.printStackTrace();
                 }
 
-                // TODO This is a hack to refresh the view, so we redraw the list
                 if (getFragmentManager() != null) {
                     getFragmentManager().beginTransaction().detach(ctx).attach(ctx).commit();
                 }
@@ -192,11 +151,6 @@ public class BrowseFragment extends Fragment implements SwipeRefreshLayout.OnRef
         recyclerView.setAdapter(new EvntListAdapter(context, filteredList,
                 getString(R.string.browse), getActivity().getSupportFragmentManager(),
                 mServerRequestModule));
-
-        if (recyclerViewState != null) {
-            recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
-        }
-
     }
 
     @Override

@@ -14,9 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
@@ -32,8 +30,6 @@ import java.util.List;
 
 public class FragHostActivity extends AppCompatActivity {
 
-    public String TAG = "FragHost";
-    protected Bundle serverCommArgs;
     private ServerRequestModule serverRequestModule;
     private IdentProvider ident;
     private PickEvntFragment pickEvntFragment;
@@ -71,14 +67,7 @@ public class FragHostActivity extends AppCompatActivity {
             final AccessToken loginAccessToken = extras.getParcelable("accessToken");
             retrieveFBUserDetails(loginAccessToken);
         }
-//
-//        serverCommArgs = new Bundle();
         serverRequestModule = ServerRequestModule.getInstance(getApplicationContext(), ident);
-//        if (serverRequestModule != null) {
-//            serverCommArgs.putSerializable("server_module", serverRequestModule);
-//        } else {
-//            Toast.makeText(this, "error creating servermodule", Toast.LENGTH_LONG).show();
-//        }
 
         pickEvntFragment = new PickEvntFragment();
         browseFragment = new BrowseFragment();
@@ -157,8 +146,6 @@ public class FragHostActivity extends AppCompatActivity {
                         if (browseFragment == null) selected = new BrowseFragment();
                         else selected = browseFragment;
 
-                        // require onRefresh to load list again to get changes from the server
-//                        ((BrowseFragment) selected).onRefresh();
                         getSupportFragmentManager().beginTransaction().hide(current).show(selected).commit();
                         current = selected;
                         break;
@@ -187,9 +174,6 @@ public class FragHostActivity extends AppCompatActivity {
                         current = selected;
                         break;
                 }
-//
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-//                        selected).commit();
 
                 return true;
             }

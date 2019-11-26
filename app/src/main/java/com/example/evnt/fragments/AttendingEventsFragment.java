@@ -35,15 +35,6 @@ public class AttendingEventsFragment extends Fragment implements SwipeRefreshLay
     private IdentProvider ident;
     private Fragment ctx;
 
-//    public static AttendingEventsFragment newInstance(ServerRequestModule serverRequestModule) {
-//        AttendingEventsFragment fragment = new AttendingEventsFragment();
-//        Bundle bundle = new Bundle();
-//        bundle.putSerializable("server_module", serverRequestModule);
-//        fragment.setArguments(bundle);
-//
-//        return fragment;
-//    }
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -62,8 +53,6 @@ public class AttendingEventsFragment extends Fragment implements SwipeRefreshLay
         context = getContext();
         ident = new IdentProvider(context);
         ctx = this;
-//        mServerRequestModule = (ServerRequestModule) getArguments().getSerializable("server_module");
-////        mServerRequestModule = ServerRequestModule.getInstance(context.getApplicationContext(), ident);
         mServerRequestModule = ServerRequestModule.getInstance();
         if (mServerRequestModule == null) {
             Toast.makeText(context, "serverProblem", Toast.LENGTH_LONG).show();
@@ -109,11 +98,9 @@ public class AttendingEventsFragment extends Fragment implements SwipeRefreshLay
      * so this is function should be used to reload the event list
      * in case of searches, by passing in a list of events with info
      *
-     * TODO need to modify the params and use them to build arraylist
      */
     private void loadList() {
 
-        // TODO need to filter non-hosting events
         evntlist.clear();
         mServerRequestModule.getEventsRequest(getString(R.string.event_get_in), new VolleyEventListCallback() {
             @Override
@@ -127,7 +114,6 @@ public class AttendingEventsFragment extends Fragment implements SwipeRefreshLay
                     e.printStackTrace();
                 }
 
-                // TODO This is a hack to refresh the view, so we redraw the list
                 if (getFragmentManager() != null) {
                     getFragmentManager().beginTransaction().detach(ctx).attach(ctx).commit();
                 }

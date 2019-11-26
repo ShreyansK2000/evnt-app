@@ -43,7 +43,7 @@
 
     <string name="static_api_key">&amp;key=AIzaSyCLAL5fWb0dCVQCkeZOi94UV0tsL1Dukq0</string>
 
-    <!-- Notifs TODO -->
+    <!-- Notifs -->
     <string name="default_notification_channel_name">event</string>
     <string name="default_notification_channel_id">fcm_event_channel</string>
 </resources>

@@ -15,11 +15,11 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import com.example.evnt.adapters.EvntListAdapterCallback;
 import com.example.evnt.adapters.TagChipAdapter;
 import com.example.evnt.networking.ServerRequestModule;
 import com.example.evnt.networking.VolleyAttendanceCallback;
+
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -27,32 +27,34 @@ import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+/**
+ * EvntDetailsDialog class/objects represent the AlertDialogs that
+ * appear when the user clicks on the MORE button corresponding to any
+ * event.
+ */
 public class EvntDetailsDialog extends AppCompatDialogFragment {
+
     private Context context;
 
+    // Event card information to be extracted
+    private String eventId;
     private String event_name;
-
+    private String host_name;
     private String date_string;
-
     private String desc;
+    private String location;
+    private int image;
+    private List<String> tags;
+
+    private String cardType;
 
     private ImageView map_image_iv;
-    // nothing to initialize
-
-    private String location;
-
     private ImageView close_button;
     private Button cancel_button;
-
     private Button attendance_button;
-    private String cardType;
 
     private EvntListAdapterCallback callback;
     private ServerRequestModule serverRequestModule;
-    private String eventId;
-    private int image;
-    private List<String> tags;
-    private String host_name;
 
     /**
      * Constructor for detailed view for events from the Event list adapters.
@@ -108,7 +110,9 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
         this.context = context;
     }
 
-
+    /**
+     * Create a new event details dialog.
+     */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -167,7 +171,7 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
                     if (serverRequestModule != null) {
 
                         serverRequestModule.markUserAttendance("https://api.evnt.me/events/api/add/"
-                                                                        + eventId + "/",
+                                                             + eventId + "/",
                                 new VolleyAttendanceCallback() {
                                     @Override
                                     public void onAttendanceSuccessResponse() {
@@ -194,6 +198,7 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
         });
 
         return detailsView;
+
     }
 
     /**
@@ -201,6 +206,7 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
      * into the image view in the details dialog.
      */
     private void loadImage() {
+
         String mapImgURL = context.getString(R.string.map_url_call)
                 + "markers=color:red%7C"
                 + location
@@ -209,6 +215,7 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
                 + context.getString(R.string.static_api_key);
         Picasso.get().load(mapImgURL)
                      .into(map_image_iv);
+
     }
 
     /**
@@ -216,6 +223,7 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
      * @param view The inflated alert dialog views where we will place other items
      */
     private void setViews(View view) {
+
         TextView evnt_name_tv = view.findViewById(R.id.event_name_field);
         evnt_name_tv.setText(event_name);
 

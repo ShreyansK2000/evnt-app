@@ -1,18 +1,19 @@
 package com.example.evnt;
 
-import android.content.Intent;
-import androidx.annotation.NonNull;
-
 import com.example.evnt.fragments.BrowseFragment;
 import com.example.evnt.fragments.MyEventsFragment;
 import com.example.evnt.fragments.PickEvntFragment;
 import com.example.evnt.fragments.ProfileFragment;
 import com.example.evnt.networking.ServerRequestModule;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.annotation.NonNull;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -56,6 +57,7 @@ public class FragHostActivity extends AppCompatActivity {
         setContentView(R.layout.activity_frag_host);
         ident = new IdentProvider(this);
 
+        /* Setup the main app navigation */
         BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
         bottomNav.setOnNavigationItemSelectedListener(listener);
         bottomNav.setSelectedItemId(R.id.pick_evnt);
@@ -70,6 +72,8 @@ public class FragHostActivity extends AppCompatActivity {
         ServerRequestModule serverRequestModule = ServerRequestModule.getInstance(getApplicationContext(), ident);
 
         if (serverRequestModule != null) {
+
+            /* Initialize instances for all the fragments we will be using and switching between*/
             pickEvntFragment = new PickEvntFragment();
             browseFragment = new BrowseFragment();
             myEventsFragment = new MyEventsFragment();
@@ -81,18 +85,30 @@ public class FragHostActivity extends AppCompatActivity {
             fm.beginTransaction().add(R.id.fragment_container, myEventsFragment, "myEvents").hide(myEventsFragment).commit();
             fm.beginTransaction().add(R.id.fragment_container, pickEvntFragment, "pick").commit();
             current = pickEvntFragment;
+
         } else {
+            /*
+             * If we're unable to create server comm module, app cannot work.
+             * Ideally, we don't come here
+             */
             Toast.makeText(this, "Could not create server request module", Toast.LENGTH_LONG).show();
         }
     }
+
+    /**
+     * This method populates the IdentProvider object for this application
+     * using GraphRequest to retrieve information from Facebook
+     * which allows us to cache the user's details and, in turn,
+     * facilitate communication with the server
+     *
+     * @param token The access token of the user to validate the GraphRequest call
+     */
     private void retrieveFBUserDetails(final AccessToken token) {
         GraphRequest request = GraphRequest.newMeRequest(token, new GraphRequest.GraphJSONObjectCallback() {
             @Override
             public void onCompleted(JSONObject object, GraphResponse response) {
                 try {
 
-                    // retrieve relevant Facebook account information for use in the main activity,
-                    // and send it in the intent
                     String id;
                     String name;
                     String email;
@@ -100,12 +116,20 @@ public class FragHostActivity extends AppCompatActivity {
                     id = object.getString("id");
                     name = object.getString("name");
                     email = object.getString("email");
-                    URL profilePicURI = new URL("https://graph.facebook.com/"+ object.getString("id")+"/picture?width=250&height=250");
+                    URL profilePicURI = new URL("https://graph.facebook.com/"+
+                                        object.getString("id")+"/picture?width=250&height=250");
+
                     //keep for profile page
                     ident.setValue(getString(R.string.user_name), name);
                     ident.setValue(getString(R.string.user_email), email);
                     ident.setValue(getString(R.string.fb_id), id);
                     ident.setValue(getString(R.string.profile_pic), profilePicURI.toString());
+
+                    /*
+                     * At login the IdentProvider settings are not properly set so
+                     * profile fragment gets null values. Call this method to send new
+                     * ident values when they are received.
+                     */
                     if (profileFragment != null) {
                         profileFragment.updateIdent(ident);
                     }
@@ -123,6 +147,15 @@ public class FragHostActivity extends AppCompatActivity {
         request.executeAsync();
     }
 
+    /*
+     * This listener is used to detect events on the bottom navigation menu
+     * to correctly switch between fragments.
+     *
+     * On switch, the active fragment is switched and the one corresponding with
+     * the menu option is shown. We do this in order to avoid creating new fragments
+     * everytime we switch, and instead save an instance of each fragment in this
+     * activity.
+     */
     private BottomNavigationView.OnNavigationItemSelectedListener listener =
         new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -136,7 +169,7 @@ public class FragHostActivity extends AppCompatActivity {
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                             pickEvntFragment);
                 }
-                // This lifecycle is a bit suboptimal, as we're creating new fragments every time
+
                 switch (menuItem.getItemId()) {
                     case R.id.pick_evnt:
                         if (pickEvntFragment == null) selected = new PickEvntFragment();
@@ -170,6 +203,10 @@ public class FragHostActivity extends AppCompatActivity {
                         current = selected;
                         break;
 
+                    /*
+                     * By default, i.e. at the start of the activity, select the complex logic/
+                     * pick event fragment
+                     */
                     default:
                         if (pickEvntFragment == null) selected = new PickEvntFragment();
                         else selected = pickEvntFragment;
@@ -183,6 +220,18 @@ public class FragHostActivity extends AppCompatActivity {
             }
         };
 
+    /**
+     * This method parses the JSON response from the server and constructs EvntCardInfo objects
+     * which will be displayed using adapters in tha appropriate views.
+     *
+     * @param evntlist The list to populate with the resulting EvntCardInfo objects
+     * @param data server JSONArray response to traverse and construct objects
+     * @param you gets user_id string from cache,
+     *            equivalent to ident.getValue(getString(R.string.user_id))
+     * @param host A boolean to indicate if the list is for the HostingEventsFragment
+     *             in which case the events with host id = user id are added and others excluded
+     *             and vice versa
+     */
     public void sortResponseToList(List<EvntCardInfo> evntlist, JSONArray data, String you, boolean host){
         try {
             for (int i = 0; i < data.length(); i++) {
@@ -201,8 +250,10 @@ public class FragHostActivity extends AppCompatActivity {
                                 .replace("]","").replace("\"", "")).split(","))
                         .build();
 
-                // if being requested by HostingEventsFragment, get list of events user is hosting
-                // else return events they are attending or can browse
+                /*
+                 * if being requested by HostingEventsFragment, get list of events that user
+                 * is hosting, else return events they are attending or can browse
+                 */
                 if (host) {
                     if (obj.get("host").equals(you)) {
                         evntlist.add(evnt);

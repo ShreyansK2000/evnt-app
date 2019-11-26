@@ -31,15 +31,10 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
     private Context context;
 
     private String event_name;
-    private TextView evnt_name_tv;
-
-    private TextView host_name_tv;
 
     private String date_string;
-    private TextView date_string_tv;
 
     private String desc;
-    private TextView description_tv;
 
     private ImageView map_image_iv;
     // nothing to initialize
@@ -47,7 +42,6 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
     private String location;
 
     private ImageView close_button;
-    private CircleImageView evnt_img_civ;
     private Button cancel_button;
 
     private Button attendance_button;
@@ -86,20 +80,19 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
     }
 
     public EvntDetailsDialog(
-            Context context, String event_name, String date_string,
-            String desc, String location, ServerRequestModule serverRequestModule,
-            String eventId, int image, List<String> tags, String host_name) {
-        this.event_name = event_name;
-        this.location = location;
-        this.date_string = date_string;
-        this.desc = desc;
+            Context context, String[] args,ServerRequestModule serverRequestModule,
+            int image, List<String> tags) {
+        this.event_name = args[0];
+        this.host_name = args[1];
+        this.location = args[2];
+        this.eventId = args[3];
+        this.desc = args[4];
+        this.date_string = args[5];
         this.cardType = "NA";
         this.context = context;
         this.image = image;
         this.serverRequestModule = serverRequestModule;
-        this.eventId = eventId;
         this.tags = tags;
-        this.host_name = host_name;
     }
 
     @Override
@@ -190,20 +183,20 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
     }
 
     private void setViews(View view) {
-        evnt_name_tv = view.findViewById(R.id.event_name_field);
+        TextView evnt_name_tv = view.findViewById(R.id.event_name_field);
         evnt_name_tv.setText(event_name);
 
         String hostOut = "by " + host_name;
-        host_name_tv = view.findViewById(R.id.host_name);
+        TextView host_name_tv = view.findViewById(R.id.host_name);
         host_name_tv.setText(hostOut);
 
-        date_string_tv = view.findViewById(R.id.event_time);
+        TextView date_string_tv = view.findViewById(R.id.event_time);
         date_string_tv.setText(date_string);
 
-        description_tv = view.findViewById(R.id.event_description);
+        TextView description_tv = view.findViewById(R.id.event_description);
         description_tv.setText(desc);
 
-        evnt_img_civ = view.findViewById(R.id.evnt_img);
+        CircleImageView evnt_img_civ = view.findViewById(R.id.evnt_img);
         evnt_img_civ.setImageResource(image);
 
         map_image_iv = view.findViewById(R.id.map_image);

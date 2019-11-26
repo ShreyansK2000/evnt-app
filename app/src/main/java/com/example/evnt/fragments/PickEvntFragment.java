@@ -37,7 +37,6 @@ public class PickEvntFragment extends Fragment {
     // save the result from the selected item in the spinner
     private Context context;
     private IdentProvider ident;
-    private FusedLocationProviderClient fusedLocationClient;
     private int locationPermissionGranted;
     private ServerRequestModule mServerRequestModule;
     private CircleImageView imageView;
@@ -149,7 +148,7 @@ public class PickEvntFragment extends Fragment {
     };
 
     private void getLocation(final GetLocationCallback callback) {
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
 
             // Permission is not granted
@@ -159,6 +158,7 @@ public class PickEvntFragment extends Fragment {
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
+                System.out.println("Show permission rationale here");
             } else {
                 // No explanation needed; request the permission
                 ActivityCompat.requestPermissions(getActivity(),

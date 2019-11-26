@@ -31,15 +31,24 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
     private Context context;
 
     private String event_name;
+    private TextView evnt_name_tv;
+
+    private TextView host_name_tv;
 
     private String date_string;
+    private TextView date_string_tv;
 
     private String desc;
+    private TextView description_tv;
 
     private ImageView map_image_iv;
     // nothing to initialize
 
     private String location;
+
+    private ImageView close_button;
+    private CircleImageView evnt_img_civ;
+    private Button cancel_button;
 
     private Button attendance_button;
     private String cardType;
@@ -59,7 +68,10 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
     }
 
     // Use a builder for this, probably
-    public EvntDetailsDialog(Context context, String event_name, String date_string, String desc, String cardType, String location, int image, List<String> tags, String host_name, EvntListAdapterCallback callback) {
+    public EvntDetailsDialog(
+            Context context, String event_name, String date_string,
+            String desc, String cardType, String location, int image,
+            List<String> tags, String host_name, EvntListAdapterCallback callback) {
         this.event_name = event_name;
         this.location = location;
         this.date_string = date_string;
@@ -73,7 +85,10 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
         this.host_name = host_name;
     }
 
-    public EvntDetailsDialog(Context context, String event_name, String date_string, String desc, String location, ServerRequestModule serverRequestModule, String eventId, int image, List<String> tags, String host_name) {
+    public EvntDetailsDialog(
+            Context context, String event_name, String date_string,
+            String desc, String location, ServerRequestModule serverRequestModule,
+            String eventId, int image, List<String> tags, String host_name) {
         this.event_name = event_name;
         this.location = location;
         this.date_string = date_string;
@@ -94,39 +109,7 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
         View view = inflater.inflate(R.layout.dialog_details_view, null);
 
         builder.setView(view);
-
-        TextView evnt_name_tv = view.findViewById(R.id.event_name_field);
-        evnt_name_tv.setText(event_name);
-
-        String hostOut = "by " + host_name;
-        TextView host_name_tv = view.findViewById(R.id.host_name);
-        host_name_tv.setText(hostOut);
-
-        TextView date_string_tv = view.findViewById(R.id.event_time);
-        date_string_tv.setText(date_string);
-
-        TextView description_tv = view.findViewById(R.id.event_description);
-        description_tv.setText(desc);
-
-        CircleImageView evnt_img_civ = view.findViewById(R.id.evnt_img);
-        evnt_img_civ.setImageResource(image);
-
-        map_image_iv = view.findViewById(R.id.map_image);
-        loadImage();
-
-
-        RecyclerView recyclerView = view.findViewById(R.id.tags_recycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-        if (!(tags.get(0).equals(""))) {
-            recyclerView.setAdapter(new TagChipAdapter(context, tags));
-        }
-
-        ImageView close_button = view.findViewById(R.id.close_button);
-        Button cancel_button = view.findViewById(R.id.cancel_button);
-        attendance_button = view.findViewById(R.id.attending_button);
-        String buttonType = (context.getString(R.string.browse).equals(cardType) || "NA".equals(cardType)) ? context.getString(R.string.im_in) :
-                context.getString(R.string.nevermind);
-        attendance_button.setText(buttonType);
+        this.setViews(view);
 
         final AlertDialog detailsView = builder.create();
 
@@ -148,7 +131,7 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
             @Override
             public void onClick(View v) {
 
-                if (!cardType.equals("NA")) {
+                if (!"NA".equals(cardType)) {
                     if (cardType.equals(context.getString(R.string.browse))) {
                         cardType = context.getString(R.string.attending);
                         attendance_button.setText(context.getString(R.string.nevermind));
@@ -204,6 +187,43 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
                 + context.getString(R.string.static_api_key);
         Picasso.get().load(mapImgURL)
                      .into(map_image_iv);
+    }
+
+    private void setViews(View view) {
+        evnt_name_tv = view.findViewById(R.id.event_name_field);
+        evnt_name_tv.setText(event_name);
+
+        String hostOut = "by " + host_name;
+        host_name_tv = view.findViewById(R.id.host_name);
+        host_name_tv.setText(hostOut);
+
+        date_string_tv = view.findViewById(R.id.event_time);
+        date_string_tv.setText(date_string);
+
+        description_tv = view.findViewById(R.id.event_description);
+        description_tv.setText(desc);
+
+        evnt_img_civ = view.findViewById(R.id.evnt_img);
+        evnt_img_civ.setImageResource(image);
+
+        map_image_iv = view.findViewById(R.id.map_image);
+        loadImage();
+
+
+        RecyclerView recyclerView = view.findViewById(R.id.tags_recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        if (!(tags.get(0).equals(""))) {
+            recyclerView.setAdapter(new TagChipAdapter(context, tags));
+        }
+
+        close_button = view.findViewById(R.id.close_button);
+        cancel_button = view.findViewById(R.id.cancel_button);
+        attendance_button = view.findViewById(R.id.attending_button);
+        String buttonType = (context.getString(R.string.browse).equals(cardType) ||
+                "NA".equals(cardType)) ? context.getString(R.string.im_in) :
+                context.getString(R.string.nevermind);
+        attendance_button.setText(buttonType);
+
     }
 
 }

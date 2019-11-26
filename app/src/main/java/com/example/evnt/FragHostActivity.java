@@ -31,7 +31,6 @@ import java.util.List;
 
 public class FragHostActivity extends AppCompatActivity {
 
-    private ServerRequestModule serverRequestModule;
     private IdentProvider ident;
     private PickEvntFragment pickEvntFragment;
     private BrowseFragment browseFragment;
@@ -68,7 +67,7 @@ public class FragHostActivity extends AppCompatActivity {
             final AccessToken loginAccessToken = extras.getParcelable("accessToken");
             retrieveFBUserDetails(loginAccessToken);
         }
-        serverRequestModule = ServerRequestModule.getInstance(getApplicationContext(), ident);
+        ServerRequestModule serverRequestModule = ServerRequestModule.getInstance(getApplicationContext(), ident);
 
         if (serverRequestModule != null) {
             pickEvntFragment = new PickEvntFragment();

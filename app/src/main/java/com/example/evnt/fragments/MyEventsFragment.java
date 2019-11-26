@@ -21,7 +21,6 @@ public class MyEventsFragment extends Fragment {
 
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
-    private ServerRequestModule mServerRequestModule;
     private HostingEventsFragment hostingEventsFragment;
     private AttendingEventsFragment attendingEventsFragment;
 
@@ -32,7 +31,7 @@ public class MyEventsFragment extends Fragment {
 
         mViewPager = mFragment.findViewById(R.id.m_view_pager);
         mTabLayout = mFragment.findViewById(R.id.my_events_tab_layout);
-        mServerRequestModule = ServerRequestModule.getInstance();
+        ServerRequestModule mServerRequestModule = ServerRequestModule.getInstance();
         if (mServerRequestModule == null) {
             Toast.makeText(getContext(), "serverProblem", Toast.LENGTH_LONG).show();
         }

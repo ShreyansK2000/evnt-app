@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
@@ -69,17 +70,21 @@ public class FragHostActivity extends AppCompatActivity {
         }
         serverRequestModule = ServerRequestModule.getInstance(getApplicationContext(), ident);
 
-        pickEvntFragment = new PickEvntFragment();
-        browseFragment = new BrowseFragment();
-        myEventsFragment = new MyEventsFragment();
-        profileFragment = new ProfileFragment();
-        FragmentManager fm = getSupportFragmentManager();
+        if (serverRequestModule != null) {
+            pickEvntFragment = new PickEvntFragment();
+            browseFragment = new BrowseFragment();
+            myEventsFragment = new MyEventsFragment();
+            profileFragment = new ProfileFragment();
+            FragmentManager fm = getSupportFragmentManager();
 
-        fm.beginTransaction().add(R.id.fragment_container, profileFragment, "profile").hide(profileFragment).commit();
-        fm.beginTransaction().add(R.id.fragment_container, browseFragment, "browse").hide(browseFragment).commit();
-        fm.beginTransaction().add(R.id.fragment_container, myEventsFragment, "myEvents").hide(myEventsFragment).commit();
-        fm.beginTransaction().add(R.id.fragment_container, pickEvntFragment, "pick").commit();
-        current = pickEvntFragment;
+            fm.beginTransaction().add(R.id.fragment_container, profileFragment, "profile").hide(profileFragment).commit();
+            fm.beginTransaction().add(R.id.fragment_container, browseFragment, "browse").hide(browseFragment).commit();
+            fm.beginTransaction().add(R.id.fragment_container, myEventsFragment, "myEvents").hide(myEventsFragment).commit();
+            fm.beginTransaction().add(R.id.fragment_container, pickEvntFragment, "pick").commit();
+            current = pickEvntFragment;
+        } else {
+            Toast.makeText(this, "Could not create server request module", Toast.LENGTH_LONG).show();
+        }
     }
     private void retrieveFBUserDetails(final AccessToken token) {
         GraphRequest request = GraphRequest.newMeRequest(token, new GraphRequest.GraphJSONObjectCallback() {

@@ -26,8 +26,6 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.example.evnt.EvntCardInfo;
 import com.example.evnt.IdentProvider;
 import com.example.evnt.R;
@@ -142,7 +140,7 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
                 @Override
                 public void onClick(View v) {
                     //TODO send api call to add this event to user events.
-                    editEvent(itemView);
+                    editEvent();
                 }
             });
 
@@ -156,12 +154,12 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
             chatButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    chatEvent(itemView);
+                    chatEvent();
                 }
             });
         }
 
-        private void editEvent(final View v) {
+        private void editEvent() {
             // TODO change this for editing
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
@@ -258,7 +256,7 @@ public class EvntHostListAdapter extends RecyclerView.Adapter<EvntHostListAdapte
 
         }
 
-        private void chatEvent(final View v) {
+        private void chatEvent() {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
             WebView wv = new WebView(context) {

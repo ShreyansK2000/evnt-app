@@ -32,12 +32,9 @@ import org.json.JSONObject;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-// TODO see if we need to add more specific information to include in a search profile (date, time, tag)
 public class PickEvntFragment extends Fragment {
 
     // save the result from the selected item in the spinner
-    private String spinnerString;
-    private Fragment ctx;
     private Context context;
     private IdentProvider ident;
     private FusedLocationProviderClient fusedLocationClient;
@@ -57,7 +54,6 @@ public class PickEvntFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getContext();
-        ctx = this;
         ident = new IdentProvider(context);
 
         mServerRequestModule = ServerRequestModule.getInstance();
@@ -172,6 +168,7 @@ public class PickEvntFragment extends Fragment {
                 // app-defined int constant. The callback method gets the
                 // result of the request.
                 statusCheck();
+                System.out.println(locationPermissionGranted);
             }
 
         } else {

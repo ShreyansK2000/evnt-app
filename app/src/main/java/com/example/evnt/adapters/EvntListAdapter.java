@@ -192,7 +192,7 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
             chatButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    chatEvent(itemView);
+                    chatEvent();
                 }
             });
 
@@ -242,7 +242,7 @@ public class EvntListAdapter extends RecyclerView.Adapter<EvntListAdapter.EvntIn
                 });
         }
 
-        private void chatEvent(final View v) {
+        private void chatEvent() {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
             WebView wv = new WebView(context) {

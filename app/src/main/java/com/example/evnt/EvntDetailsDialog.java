@@ -23,32 +23,23 @@ import com.example.evnt.networking.VolleyAttendanceCallback;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class EvntDetailsDialog extends AppCompatDialogFragment {
     private Context context;
 
-    private TextView evnt_name_tv;
     private String event_name;
 
-    private TextView date_string_tv;
     private String date_string;
 
-    private TextView description_tv;
     private String desc;
-
-    private CircleImageView evnt_img_civ;
 
     private ImageView map_image_iv;
     // nothing to initialize
 
     private String location;
-
-    private ImageView close_button;
-    private Button cancel_button;
-
-    private TextView host_name_tv;
 
     private Button attendance_button;
     private String cardType;
@@ -58,7 +49,6 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
     private String eventId;
     private int image;
     private List<String> tags;
-    private RecyclerView recyclerView;
     private String host_name;
 
     public EvntDetailsDialog() {
@@ -89,7 +79,6 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
         this.date_string = date_string;
         this.desc = desc;
         this.cardType = "NA";
-        this.callback = callback;
         this.context = context;
         this.image = image;
         this.serverRequestModule = serverRequestModule;
@@ -101,41 +90,41 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = getActivity().getLayoutInflater();
+        LayoutInflater inflater = Objects.requireNonNull(getActivity()).getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_details_view, null);
 
         builder.setView(view);
 
-        evnt_name_tv = view.findViewById(R.id.event_name_field);
+        TextView evnt_name_tv = view.findViewById(R.id.event_name_field);
         evnt_name_tv.setText(event_name);
 
         String hostOut = "by " + host_name;
-        host_name_tv = view.findViewById(R.id.host_name);
+        TextView host_name_tv = view.findViewById(R.id.host_name);
         host_name_tv.setText(hostOut);
 
-        date_string_tv = view.findViewById(R.id.event_time);
+        TextView date_string_tv = view.findViewById(R.id.event_time);
         date_string_tv.setText(date_string);
 
-        description_tv = view.findViewById(R.id.event_description);
+        TextView description_tv = view.findViewById(R.id.event_description);
         description_tv.setText(desc);
 
-        evnt_img_civ = view.findViewById(R.id.evnt_img);
+        CircleImageView evnt_img_civ = view.findViewById(R.id.evnt_img);
         evnt_img_civ.setImageResource(image);
 
         map_image_iv = view.findViewById(R.id.map_image);
-        loadImage("","");
+        loadImage();
 
 
-        recyclerView = view.findViewById(R.id.tags_recycler);
+        RecyclerView recyclerView = view.findViewById(R.id.tags_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         if (!(tags.get(0).equals(""))) {
             recyclerView.setAdapter(new TagChipAdapter(context, tags));
         }
 
-        close_button = view.findViewById(R.id.close_button);
-        cancel_button = view.findViewById(R.id.cancel_button);
+        ImageView close_button = view.findViewById(R.id.close_button);
+        Button cancel_button = view.findViewById(R.id.cancel_button);
         attendance_button = view.findViewById(R.id.attending_button);
-        String buttonType = (cardType.equals(context.getString(R.string.browse)) || cardType.equals("NA")) ? context.getString(R.string.im_in) :
+        String buttonType = (context.getString(R.string.browse).equals(cardType) || "NA".equals(cardType)) ? context.getString(R.string.im_in) :
                 context.getString(R.string.nevermind);
         attendance_button.setText(buttonType);
 
@@ -205,7 +194,7 @@ public class EvntDetailsDialog extends AppCompatDialogFragment {
         return detailsView;
     }
 
-    private void loadImage(String latt, String longt) {
+    private void loadImage() {
         // TODO setup loading image based on coordinates/address
         String mapImgURL = context.getString(R.string.map_url_call)
                 + "markers=color:red%7C"

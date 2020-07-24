@@ -10,21 +10,21 @@ evnt is an event management application. It allows users to browse a list of pre
 
 As part of course work for CPEN 321 (Software Engineering) at UBC, the application had 3 major requirements to fulfill:
 
- - to be useful to someone
- - to integrate external API
- - to have real-time notifications or live chat
+-   to be useful to someone
+-   to integrate external API
+-   to have real-time notifications or live chat
 
 ## Application Design
 
 ### Use cases
 
-1. Get the app to pick an event for you
-2. Browsing events
-3. Adding and removing events from personal list
-4. Create and delete events as a host
-5. Live chat with users planning to attend the same event
-6. Location screenshots from Google Maps API
-7. User authentication using Facebook OAuth
+1.  Get the app to pick an event for you
+2.  Browsing events
+3.  Adding and removing events from personal list
+4.  Create and delete events as a host
+5.  Live chat with users planning to attend the same event
+6.  Location screenshots from Google Maps API
+7.  User authentication using Facebook OAuth
 
 ### Main components and application architecture
 
@@ -34,15 +34,15 @@ We used an MVC model to plan and implement the required functionality for our ap
 
 Some more helpful diagrams can be found in the `img` folder of the repository.
 
-## Technologies used (front-end only):
+## Technologies used (front-end only)
 
-- Android Studio for native Android builds
-- Volley for server communication
-- Facebook OAuth services
-- Firebase Messaging for real-time notifications
-- Websockets for live chat functionality
-- Google Maps API for event location screenshots
-- Espresso testing framework for automated UI tests
+-   Android Studio for native Android builds
+-   Volley for server communication
+-   Facebook OAuth services
+-   Firebase Messaging for real-time notifications
+-   Websockets for live chat functionality
+-   Google Maps API for event location screenshots
+-   Espresso testing framework for automated UI tests
 
 ## What it looks like
 
